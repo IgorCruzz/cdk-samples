@@ -12,6 +12,7 @@
     "lint": "eslint '*.ts' --quiet --fix"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.149",
     "@types/jest": "^29.5.14",
     "@types/node": "22.7.9",
     "@typescript-eslint/eslint-plugin": "^5.10.2",
