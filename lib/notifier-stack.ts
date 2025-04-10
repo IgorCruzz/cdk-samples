@@ -3,10 +3,20 @@ import { Construct } from 'constructs';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Architecture, LoggingFormat, Runtime, Tracing } from 'aws-cdk-lib/aws-lambda';
 import { RestApi } from 'aws-cdk-lib/aws-apigateway';
+import { Topic } from 'aws-cdk-lib/aws-sns';
 
 export class NotifierStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
+
+        const notifierSNSTopic = new Topic(this, 'notifierSNS', {
+            displayName: 'Notifier SNS Topic',
+            topicName: 'notifierTopic',
+            tracingConfig: cdk.aws_sns.TracingConfig.ACTIVE,
+        });
+
+        cdk.Tags.of(notifierSNSTopic).add('Project', 'Notifier');
+        cdk.Tags.of(notifierSNSTopic).add('Environment', notifierSNSTopic.stack.stackName);
 
         const notifierValidationFunction = new NodejsFunction(this, 'notifierValidationFunction', {
             memorySize: 256,
@@ -18,7 +28,7 @@ export class NotifierStack extends cdk.Stack {
             entry: 'lambda/notifier-validation.ts',
             handler: 'handler',
             environment: {
-                SNS_TOPIC_ARN: 'something',
+                SNS_TOPIC_ARN: notifierSNSTopic.topicArn,
             },
             bundling: {
                 minify: true,
