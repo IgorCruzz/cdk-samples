@@ -3,7 +3,7 @@ import { Construct } from 'constructs';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Architecture, LoggingFormat, Runtime, Tracing } from 'aws-cdk-lib/aws-lambda';
 import { RestApi, RequestValidator, Model, LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
-import { Topic } from 'aws-cdk-lib/aws-sns';
+import { Topic, Subscription, SubscriptionFilter, SubscriptionProtocol } from 'aws-cdk-lib/aws-sns';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 
 export class NotifierStack extends cdk.Stack {
@@ -34,6 +34,42 @@ export class NotifierStack extends cdk.Stack {
             queueName: 'notifierLowPriorityQueue',
             visibilityTimeout: cdk.Duration.seconds(30),
             retentionPeriod: cdk.Duration.days(1),
+        });
+
+        new Subscription(this, 'highPrioritySubscription', {
+            topic: notifierSNSTopic,
+            endpoint: notifierHighPriorityQueue.queueArn,
+            protocol: SubscriptionProtocol.SQS,
+            rawMessageDelivery: true,
+            filterPolicy: {
+                priority: SubscriptionFilter.stringFilter({
+                    allowlist: ['HIGH'],
+                }),
+            },
+        });
+
+        new Subscription(this, 'mediumPrioritySubscription', {
+            topic: notifierSNSTopic,
+            endpoint: notifierMediumPriorityQueue.queueArn,
+            protocol: SubscriptionProtocol.SQS,
+            rawMessageDelivery: true,
+            filterPolicy: {
+                priority: SubscriptionFilter.stringFilter({
+                    allowlist: ['MEDIUM'],
+                }),
+            },
+        });
+
+        new Subscription(this, 'lowPrioritySubscription', {
+            topic: notifierSNSTopic,
+            endpoint: notifierLowPriorityQueue.queueArn,
+            protocol: SubscriptionProtocol.SQS,
+            rawMessageDelivery: true,
+            filterPolicy: {
+                priority: SubscriptionFilter.stringFilter({
+                    allowlist: ['LOW'],
+                }),
+            },
         });
 
         //LAMBDA
