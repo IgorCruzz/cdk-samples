@@ -1,5 +1,5 @@
 import { PublishBatchCommand, PublishBatchCommandInput, SNSClient } from '@aws-sdk/client-sns';
-import { NotifyType } from '../types';
+import { NotifyType } from '../types/notifier-types';
 import { randomUUID } from 'node:crypto';
 
 const snsClient = new SNSClient({});
