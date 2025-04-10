@@ -1,4 +1,6 @@
 export const handler = async (event: any) => {
+    console.log('Event:', event);
+
     try {
         return {
             statusCode: 200,
