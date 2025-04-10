@@ -2,22 +2,21 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Architecture, LoggingFormat, Runtime, Tracing } from 'aws-cdk-lib/aws-lambda';
-import { RestApi } from 'aws-cdk-lib/aws-apigateway';
+import { RestApi, RequestValidator, Model, LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
 import { Topic } from 'aws-cdk-lib/aws-sns';
 
 export class NotifierStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
+        //SNS
         const notifierSNSTopic = new Topic(this, 'notifierSNS', {
             displayName: 'Notifier SNS Topic',
             topicName: 'notifierTopic',
             tracingConfig: cdk.aws_sns.TracingConfig.ACTIVE,
         });
 
-        cdk.Tags.of(notifierSNSTopic).add('Project', 'Notifier');
-        cdk.Tags.of(notifierSNSTopic).add('Environment', notifierSNSTopic.stack.stackName);
-
+        //LAMBDA
         const notifierValidationFunction = new NodejsFunction(this, 'notifierValidationFunction', {
             memorySize: 256,
             architecture: Architecture.X86_64,
@@ -40,9 +39,9 @@ export class NotifierStack extends cdk.Stack {
             logRetention: cdk.aws_logs.RetentionDays.ONE_WEEK,
         });
 
-        cdk.Tags.of(notifierValidationFunction).add('Project', 'Notifier');
-        cdk.Tags.of(notifierValidationFunction).add('Environment', notifierValidationFunction.stack.stackName);
+        notifierSNSTopic.grantPublish(notifierValidationFunction);
 
+        //API GATEWAY
         const notifierApi = new RestApi(this, 'notifierApi', {
             restApiName: 'Notifier API',
             description: 'API for the Notifier service',
@@ -63,14 +62,11 @@ export class NotifierStack extends cdk.Stack {
             },
         });
 
-        cdk.Tags.of(notifierApi).add('Project', 'Notifier');
-        cdk.Tags.of(notifierApi).add('Environment', notifierApi.stack.stackName);
-
         const notifierResource = notifierApi.root.addResource('notifications');
 
-        const notifierIntegration = new cdk.aws_apigateway.LambdaIntegration(notifierValidationFunction);
+        const notifierIntegration = new LambdaIntegration(notifierValidationFunction);
 
-        const notificationsPostRequestModel = new cdk.aws_apigateway.Model(this, 'notificationsPostRequestModel', {
+        const notificationsPostRequestModel = new Model(this, 'notificationsPostRequestModel', {
             restApi: notifierApi,
             contentType: 'application/json',
             modelName: 'notificationsPostRequestModel',
@@ -105,15 +101,11 @@ export class NotifierStack extends cdk.Stack {
             },
         });
 
-        const notificationsPostRequestValidator = new cdk.aws_apigateway.RequestValidator(
-            this,
-            'notificationsPostRequestValidator',
-            {
-                restApi: notifierApi,
-                requestValidatorName: 'notificationsPostRequestValidator',
-                validateRequestBody: true,
-            },
-        );
+        const notificationsPostRequestValidator = new RequestValidator(this, 'notificationsPostRequestValidator', {
+            restApi: notifierApi,
+            requestValidatorName: 'notificationsPostRequestValidator',
+            validateRequestBody: true,
+        });
 
         notifierResource.addMethod('POST', notifierIntegration, {
             requestModels: {
@@ -121,5 +113,12 @@ export class NotifierStack extends cdk.Stack {
             },
             requestValidator: notificationsPostRequestValidator,
         });
+
+        cdk.Tags.of(notifierSNSTopic).add('Project', 'Notifier');
+        cdk.Tags.of(notifierSNSTopic).add('Environment', notifierSNSTopic.stack.stackName);
+        cdk.Tags.of(notifierValidationFunction).add('Project', 'Notifier');
+        cdk.Tags.of(notifierValidationFunction).add('Environment', notifierValidationFunction.stack.stackName);
+        cdk.Tags.of(notifierApi).add('Project', 'Notifier');
+        cdk.Tags.of(notifierApi).add('Environment', notifierApi.stack.stackName);
     }
 }
