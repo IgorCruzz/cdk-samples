@@ -1,20 +1,25 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { NotifyType } from './types/notifier-types';
+import { NotifyRepository } from './services/sns-services';
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    console.log('Event:', event);
-
     try {
+        const body: { notifications: NotifyType[] } = JSON.parse(event.body || '');
+
+        await NotifyRepository.publishMessage(body.notifications);
+
         return {
             statusCode: 200,
             body: JSON.stringify({
-                foo: 'bar',
+                message: 'Notificação enviada com sucesso',
             }),
         };
-    } catch (error) {
+    } catch (err) {
+        console.log(err);
         return {
             statusCode: 500,
             body: JSON.stringify({
-                error: 'Internal Server Error',
+                message: 'Ocorreu um problema interno',
             }),
         };
     }
