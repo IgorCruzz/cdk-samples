@@ -4,6 +4,7 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Architecture, LoggingFormat, Runtime, Tracing } from 'aws-cdk-lib/aws-lambda';
 import { RestApi, RequestValidator, Model, LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
 import { Topic } from 'aws-cdk-lib/aws-sns';
+import { Queue } from 'aws-cdk-lib/aws-sqs';
 
 export class NotifierStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -14,6 +15,25 @@ export class NotifierStack extends cdk.Stack {
             displayName: 'Notifier SNS Topic',
             topicName: 'notifierTopic',
             tracingConfig: cdk.aws_sns.TracingConfig.ACTIVE,
+        });
+
+        //SQS
+        const notifierHighPriorityQueue = new Queue(this, 'notifierHighPriorityQueue', {
+            queueName: 'notifierHighPriorityQueue',
+            visibilityTimeout: cdk.Duration.seconds(30),
+            retentionPeriod: cdk.Duration.days(1),
+        });
+
+        const notifierMediumPriorityQueue = new Queue(this, 'notifierMediumPriorityQueue', {
+            queueName: 'notifierMediumPriorityQueue',
+            visibilityTimeout: cdk.Duration.seconds(30),
+            retentionPeriod: cdk.Duration.days(1),
+        });
+
+        const notifierLowPriorityQueue = new Queue(this, 'notifierLowPriorityQueue', {
+            queueName: 'notifierLowPriorityQueue',
+            visibilityTimeout: cdk.Duration.seconds(30),
+            retentionPeriod: cdk.Duration.days(1),
         });
 
         //LAMBDA
