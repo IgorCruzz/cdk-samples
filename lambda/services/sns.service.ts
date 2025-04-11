@@ -13,6 +13,7 @@ export const SnsService = {
                     userId: item.userId,
                     message: item.message,
                     priority: item.priority,
+                    title: item.title,
                 }),
                 MessageAttributes: {
                     priority: {
