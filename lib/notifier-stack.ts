@@ -5,6 +5,7 @@ import { Architecture, LoggingFormat, Runtime, Tracing } from 'aws-cdk-lib/aws-l
 import { RestApi, RequestValidator, Model, LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
 import { Topic, Subscription, SubscriptionFilter, SubscriptionProtocol } from 'aws-cdk-lib/aws-sns';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
+import { TableV2, Billing } from 'aws-cdk-lib/aws-dynamodb';
 
 export class NotifierStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -97,6 +98,25 @@ export class NotifierStack extends cdk.Stack {
 
         notifierSNSTopic.grantPublish(notifierValidationFunction);
 
+        const notifierTable = new TableV2(this, 'notifierTable', {
+            tableName: 'notifierTable',
+            partitionKey: { name: 'PK', type: cdk.aws_dynamodb.AttributeType.STRING },
+            sortKey: { name: 'SK', type: cdk.aws_dynamodb.AttributeType.STRING },
+            globalSecondaryIndexes: [
+                {
+                    indexName: 'GSI1',
+                    partitionKey: { name: 'GSI1PK', type: cdk.aws_dynamodb.AttributeType.STRING },
+                    sortKey: { name: 'GSI1SK', type: cdk.aws_dynamodb.AttributeType.STRING },
+                    projectionType: cdk.aws_dynamodb.ProjectionType.ALL,
+                },
+            ],
+            billing: Billing.onDemand(),
+            tags: [
+                { key: 'Project', value: 'Notifier' },
+                { key: 'Environment', value: 'Notifier' },
+            ],
+        });
+
         const notiferProcessFunction = new NodejsFunction(this, 'notifierProcessFunction', {
             memorySize: 256,
             architecture: Architecture.X86_64,
@@ -107,7 +127,7 @@ export class NotifierStack extends cdk.Stack {
             entry: 'lambda/notifier-process.ts',
             handler: 'handler',
             environment: {
-                DYNAMODB_TABLE_NAME: 'Table',
+                DYNAMODB_TABLE_NAME: notifierTable.tableName,
             },
             bundling: {
                 minify: true,
@@ -118,6 +138,8 @@ export class NotifierStack extends cdk.Stack {
             tracing: Tracing.ACTIVE,
             logRetention: cdk.aws_logs.RetentionDays.ONE_WEEK,
         });
+
+        notifierTable.grantWriteData(notiferProcessFunction);
 
         //API GATEWAY
         const notifierApi = new RestApi(this, 'notifierApi', {
