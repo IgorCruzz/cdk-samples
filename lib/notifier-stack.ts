@@ -97,6 +97,29 @@ export class NotifierStack extends cdk.Stack {
 
         notifierSNSTopic.grantPublish(notifierValidationFunction);
 
+        const notiferProcessFunction = new NodejsFunction(this, 'notifierProcessFunction', {
+            memorySize: 256,
+            architecture: Architecture.X86_64,
+            runtime: Runtime.NODEJS_20_X,
+            timeout: cdk.Duration.seconds(30),
+            functionName: 'notiferProcessFunction',
+            description: 'A Lambda function to process notifications',
+            entry: 'lambda/notifier-process.ts',
+            handler: 'handler',
+            environment: {
+                SNS_TOPIC_ARN: 'alert',
+                DYNAMODB_TABLE_NAME: 'Table',
+            },
+            bundling: {
+                minify: true,
+                sourceMap: true,
+                target: 'es2020',
+            },
+            loggingFormat: LoggingFormat.JSON,
+            tracing: Tracing.ACTIVE,
+            logRetention: cdk.aws_logs.RetentionDays.ONE_WEEK,
+        });
+
         //API GATEWAY
         const notifierApi = new RestApi(this, 'notifierApi', {
             restApiName: 'Notifier API',
