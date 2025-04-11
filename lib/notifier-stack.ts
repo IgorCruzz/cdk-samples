@@ -187,6 +187,24 @@ export class NotifierStack extends cdk.Stack {
         notifierLowPriorityQueue.grantConsumeMessages(notiferProcessFunction);
         notifierTable.grantWriteData(notiferProcessFunction);
 
+        notiferProcessFunction.addEventSource(
+            new cdk.aws_lambda_event_sources.SqsEventSource(notifierHighPriorityQueue, {
+                batchSize: 10,
+            }),
+        );
+
+        notiferProcessFunction.addEventSource(
+            new cdk.aws_lambda_event_sources.SqsEventSource(notifierMediumPriorityQueue, {
+                batchSize: 10,
+            }),
+        );
+
+        notiferProcessFunction.addEventSource(
+            new cdk.aws_lambda_event_sources.SqsEventSource(notifierLowPriorityQueue, {
+                batchSize: 10,
+            }),
+        );
+
         //API GATEWAY
         const notifierApi = new RestApi(this, 'notifierApi', {
             restApiName: 'Notifier API',
