@@ -23,7 +23,6 @@ export const DynamoDBService = {
                 GSI1PK: message.priority,
                 GSI1SK: `USER#${message.userId}`,
             },
-            ConditionExpression: 'attribute_not_exists(ID)',
         };
 
         const command = new PutCommand(params);
