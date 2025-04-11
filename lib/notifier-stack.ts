@@ -6,6 +6,7 @@ import { RestApi, RequestValidator, Model, LambdaIntegration } from 'aws-cdk-lib
 import { Topic, Subscription, SubscriptionFilter, SubscriptionProtocol } from 'aws-cdk-lib/aws-sns';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { TableV2, Billing } from 'aws-cdk-lib/aws-dynamodb';
+import { ServicePrincipal, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
 export class NotifierStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -36,6 +37,48 @@ export class NotifierStack extends cdk.Stack {
             visibilityTimeout: cdk.Duration.seconds(30),
             retentionPeriod: cdk.Duration.days(1),
         });
+
+        notifierHighPriorityQueue.addToResourcePolicy(
+            new PolicyStatement({
+                actions: ['SQS:SendMessage'],
+                resources: [notifierHighPriorityQueue.queueArn],
+                principals: [new ServicePrincipal('sns.amazonaws.com')],
+                effect: cdk.aws_iam.Effect.ALLOW,
+                conditions: {
+                    ArnEquals: {
+                        'aws:SourceArn': notifierSNSTopic.topicArn,
+                    },
+                },
+            }),
+        );
+
+        notifierMediumPriorityQueue.addToResourcePolicy(
+            new PolicyStatement({
+                actions: ['SQS:SendMessage'],
+                resources: [notifierMediumPriorityQueue.queueArn],
+                principals: [new ServicePrincipal('sns.amazonaws.com')],
+                effect: cdk.aws_iam.Effect.ALLOW,
+                conditions: {
+                    ArnEquals: {
+                        'aws:SourceArn': notifierSNSTopic.topicArn,
+                    },
+                },
+            }),
+        );
+
+        notifierLowPriorityQueue.addToResourcePolicy(
+            new PolicyStatement({
+                actions: ['SQS:SendMessage'],
+                resources: [notifierLowPriorityQueue.queueArn],
+                principals: [new ServicePrincipal('sns.amazonaws.com')],
+                effect: cdk.aws_iam.Effect.ALLOW,
+                conditions: {
+                    ArnEquals: {
+                        'aws:SourceArn': notifierSNSTopic.topicArn,
+                    },
+                },
+            }),
+        );
 
         new Subscription(this, 'highPrioritySubscription', {
             topic: notifierSNSTopic,
