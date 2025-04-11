@@ -107,7 +107,6 @@ export class NotifierStack extends cdk.Stack {
             entry: 'lambda/notifier-process.ts',
             handler: 'handler',
             environment: {
-                SNS_TOPIC_ARN: 'alert',
                 DYNAMODB_TABLE_NAME: 'Table',
             },
             bundling: {
