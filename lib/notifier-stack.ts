@@ -182,6 +182,9 @@ export class NotifierStack extends cdk.Stack {
             logRetention: cdk.aws_logs.RetentionDays.ONE_WEEK,
         });
 
+        notifierHighPriorityQueue.grantConsumeMessages(notiferProcessFunction);
+        notifierMediumPriorityQueue.grantConsumeMessages(notiferProcessFunction);
+        notifierLowPriorityQueue.grantConsumeMessages(notiferProcessFunction);
         notifierTable.grantWriteData(notiferProcessFunction);
 
         //API GATEWAY
