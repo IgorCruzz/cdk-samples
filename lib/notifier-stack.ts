@@ -20,22 +20,36 @@ export class NotifierStack extends cdk.Stack {
         });
 
         //SQS
+        const notifierDLQ = new Queue(this, 'notifierDLQ', {
+            queueName: 'notifierDLQ',
+            retentionPeriod: cdk.Duration.days(1),
+            visibilityTimeout: cdk.Duration.seconds(30),
+        });
+
+        const deadLetterQueueConfig = {
+            maxReceiveCount: 5,
+            queue: notifierDLQ,
+        };
+
         const notifierHighPriorityQueue = new Queue(this, 'notifierHighPriorityQueue', {
             queueName: 'notifierHighPriorityQueue',
             visibilityTimeout: cdk.Duration.seconds(30),
             retentionPeriod: cdk.Duration.days(1),
+            deadLetterQueue: deadLetterQueueConfig,
         });
 
         const notifierMediumPriorityQueue = new Queue(this, 'notifierMediumPriorityQueue', {
             queueName: 'notifierMediumPriorityQueue',
             visibilityTimeout: cdk.Duration.seconds(30),
             retentionPeriod: cdk.Duration.days(1),
+            deadLetterQueue: deadLetterQueueConfig,
         });
 
         const notifierLowPriorityQueue = new Queue(this, 'notifierLowPriorityQueue', {
             queueName: 'notifierLowPriorityQueue',
             visibilityTimeout: cdk.Duration.seconds(30),
             retentionPeriod: cdk.Duration.days(1),
+            deadLetterQueue: deadLetterQueueConfig,
         });
 
         notifierHighPriorityQueue.addToResourcePolicy(
