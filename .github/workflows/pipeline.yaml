@@ -17,12 +17,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       
-      - name: Deploy to AWS
-        uses: aws-actions/aws-cdk@v2
-        with:
-          cdk-commands: |
-            cdk synth
-            cdk deploy --require-approval never
+      - name: CDK install 
+        run: npm i -g aws-cdk
+
+      - name: Synth
+        run: cdk synth
+      
+      - name: Deploy
+        run: cdk deploy --require-approval never
 
 
   
