@@ -28,6 +28,9 @@ jobs:
       - name: CDK install 
         run: npm i -g aws-cdk
 
+      - name: CDK bootstrap
+        run: cdk bootstrap
+
       - name: Synth
         run: cdk synth
       
