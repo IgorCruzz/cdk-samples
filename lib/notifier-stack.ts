@@ -7,6 +7,7 @@ import { Topic, Subscription, SubscriptionFilter, SubscriptionProtocol } from 'a
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { TableV2, Billing } from 'aws-cdk-lib/aws-dynamodb';
 import { ServicePrincipal, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { ARecord, RecordTarget } from 'aws-cdk-lib/aws-route53';
 
 export class NotifierStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -249,6 +250,16 @@ export class NotifierStack extends cdk.Stack {
                 endpointType: cdk.aws_apigateway.EndpointType.REGIONAL,
                 securityPolicy: cdk.aws_apigateway.SecurityPolicy.TLS_1_2,
             },
+        });
+
+        new ARecord(this, 'notifierApiAliasRecord', {
+            zone: cdk.aws_route53.HostedZone.fromHostedZoneAttributes(this, 'notifierHostedZone', {
+                hostedZoneId: 'Z003963137OYAJQ6GTESI',
+                zoneName: 'igorcruz.space',
+            }),
+            recordName: 'api.igorcruz.space',
+            ttl: cdk.Duration.minutes(1),
+            target: RecordTarget.fromAlias(new cdk.aws_route53_targets.ApiGateway(notifierApi)),
         });
 
         const notifierResource = notifierApi.root.addResource('notifications');
