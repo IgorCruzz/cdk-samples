@@ -238,6 +238,7 @@ export class NotifierStack extends cdk.Stack {
                 allowMethods: ['OPTIONS', 'POST'],
                 allowHeaders: ['Content-Type', 'X-Amz-Date', 'Authorization', 'X-Api-Key', 'X-Amz-Security-Token'],
             },
+            disableExecuteApiEndpoint: true,
         });
 
         const notifierResource = notifierApi.root.addResource('notifications');
