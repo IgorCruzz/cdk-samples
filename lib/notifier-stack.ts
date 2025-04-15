@@ -239,6 +239,16 @@ export class NotifierStack extends cdk.Stack {
                 allowHeaders: ['Content-Type', 'X-Amz-Date', 'Authorization', 'X-Api-Key', 'X-Amz-Security-Token'],
             },
             disableExecuteApiEndpoint: true,
+            domainName: {
+                domainName: 'api.igorcruz.space',
+                certificate: cdk.aws_certificatemanager.Certificate.fromCertificateArn(
+                    this,
+                    'notifierCertificate',
+                    'arn:aws:acm:us-east-1:652824104144:certificate/0e3eb6c0-371a-4aac-a5b5-7b12d06e9d57',
+                ),
+                endpointType: cdk.aws_apigateway.EndpointType.REGIONAL,
+                securityPolicy: cdk.aws_apigateway.SecurityPolicy.TLS_1_2,
+            },
         });
 
         const notifierResource = notifierApi.root.addResource('notifications');
