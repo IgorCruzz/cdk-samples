@@ -28,14 +28,14 @@ jobs:
       - name: CDK install 
         run: npm i -g aws-cdk
 
-      - name: CDK bootstrap
+      - name: Bootstrap
         run: cdk bootstrap
 
       - name: Synth
         run: cdk synth
       
       - name: Deploy
-        run: cdk deploy --require-approval never
+        run: cdk deploy -all --require-approval never
 
 
   
