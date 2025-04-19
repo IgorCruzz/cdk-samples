@@ -23,7 +23,11 @@ export class ApiStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props);
 
-        const certificate = StringParameter.fromStringParameterName(this, 'notifierCertificate', '/certs/notifier-api');
+        const certificate = StringParameter.fromStringParameterName(
+            this,
+            'notifierCertificateParameter',
+            '/certs/notifier-api',
+        );
 
         this.notifierApi = new RestApi(this, 'notifierApi', {
             restApiName: 'Notifier API',
