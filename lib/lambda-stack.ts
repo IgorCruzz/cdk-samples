@@ -7,12 +7,12 @@ import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
 import { ApiStack } from './api-stack';
 import { SNSStack } from './sns-stack';
-import { DatabaseStack } from './database-stack';
+import { DynamoStack } from './dynamo-stack';
 import { SQSStack } from './sqs-stack';
 
 interface LambdaStackProps extends StackProps {
     sqsStack: SQSStack;
-    databaseStack: DatabaseStack;
+    databaseStack: DynamoStack;
     snsStack: SNSStack;
     apiStack: ApiStack;
 }
