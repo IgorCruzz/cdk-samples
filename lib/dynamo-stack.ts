@@ -1,8 +1,8 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { TableV2, Billing, AttributeType, ProjectionType } from 'aws-cdk-lib/aws-dynamodb';
 
-export class DatabaseStack extends Stack {
+export class DynamoStack extends Stack {
     public readonly notifierTable: TableV2;
 
     constructor(scope: Construct, id: string, props: StackProps) {
@@ -21,6 +21,7 @@ export class DatabaseStack extends Stack {
                 },
             ],
             billing: Billing.onDemand(),
+            removalPolicy: RemovalPolicy.RETAIN,
         });
     }
 }
