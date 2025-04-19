@@ -12,6 +12,7 @@ import {
     Resource,
 } from 'aws-cdk-lib/aws-apigateway';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
 export class ApiStack extends Stack {
     public readonly notifierApi: RestApi;
@@ -21,6 +22,8 @@ export class ApiStack extends Stack {
 
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props);
+
+        const certificate = StringParameter.fromStringParameterName(this, 'notifierCertificate', '/certs/notifier-api');
 
         this.notifierApi = new RestApi(this, 'notifierApi', {
             restApiName: 'Notifier API',
@@ -43,11 +46,7 @@ export class ApiStack extends Stack {
             disableExecuteApiEndpoint: true,
             domainName: {
                 domainName: 'api.igorcruz.space',
-                certificate: Certificate.fromCertificateArn(
-                    this,
-                    'notifierCertificate',
-                    'arn:aws:acm:us-east-1:652824104144:certificate/09ef7073-01c6-4dbe-ad5e-d77d2120027e',
-                ),
+                certificate: Certificate.fromCertificateArn(this, 'notifierCertificate', certificate.stringValue),
                 endpointType: EndpointType.REGIONAL,
                 securityPolicy: SecurityPolicy.TLS_1_2,
             },
