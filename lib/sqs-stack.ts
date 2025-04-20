@@ -2,11 +2,19 @@ import { Duration, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { PolicyStatement, ServicePrincipal, Effect } from 'aws-cdk-lib/aws-iam';
-import { Subscription, SubscriptionFilter, SubscriptionProtocol } from 'aws-cdk-lib/aws-sns';
+import { ITopic, Subscription, SubscriptionFilter, SubscriptionProtocol } from 'aws-cdk-lib/aws-sns';
 import { SNSStack } from './sns-stack';
 
 interface SQSStackProps extends StackProps {
     snsStack: SNSStack;
+}
+
+interface QueueProps {
+    deadLetterQueue: { maxReceiveCount: number; queue: Queue };
+    notifierSNSTopic: ITopic;
+    queueName: string;
+    subscriptionName: string;
+    priority: 'LOW' | 'MEDIUM' | 'HIGH';
 }
 
 export class SQSStack extends Stack {
@@ -21,42 +29,64 @@ export class SQSStack extends Stack {
             snsStack: { notifierSNSTopic },
         } = props;
 
+        const deadLetterQueue = this.createNotifierDLQ();
+
+        this.notifierHighPriorityQueue = this.createNotifierPriorityQueue({
+            deadLetterQueue,
+            notifierSNSTopic,
+            priority: 'HIGH',
+            queueName: 'notifierHighPriorityQueue',
+            subscriptionName: 'highPrioritySubscription',
+        });
+
+        this.notifierMediumPriorityQueue = this.createNotifierPriorityQueue({
+            deadLetterQueue,
+            notifierSNSTopic,
+            priority: 'MEDIUM',
+            queueName: 'notifierMediumPriorityQueue',
+            subscriptionName: 'mediumPrioritySubscription',
+        });
+
+        this.notifierLowPriorityQueue = this.createNotifierPriorityQueue({
+            deadLetterQueue,
+            notifierSNSTopic,
+            priority: 'LOW',
+            queueName: 'notifierLowPriorityQueue',
+            subscriptionName: 'lowPrioritySubscription',
+        });
+    }
+
+    private createNotifierDLQ() {
         const notifierDLQ = new Queue(this, 'notifierDLQ', {
             queueName: 'notifierDLQ',
             retentionPeriod: Duration.days(1),
             visibilityTimeout: Duration.seconds(30),
         });
 
-        const deadLetterQueueConfig = {
+        return {
             maxReceiveCount: 5,
             queue: notifierDLQ,
         };
+    }
 
-        this.notifierHighPriorityQueue = new Queue(this, 'notifierHighPriorityQueue', {
-            queueName: 'notifierHighPriorityQueue',
+    private createNotifierPriorityQueue({
+        deadLetterQueue,
+        notifierSNSTopic,
+        queueName,
+        subscriptionName,
+        priority,
+    }: QueueProps) {
+        const notifierPriorityQueue = new Queue(this, queueName, {
+            queueName,
             visibilityTimeout: Duration.seconds(30),
             retentionPeriod: Duration.days(1),
-            deadLetterQueue: deadLetterQueueConfig,
+            deadLetterQueue,
         });
 
-        this.notifierMediumPriorityQueue = new Queue(this, 'notifierMediumPriorityQueue', {
-            queueName: 'notifierMediumPriorityQueue',
-            visibilityTimeout: Duration.seconds(30),
-            retentionPeriod: Duration.days(1),
-            deadLetterQueue: deadLetterQueueConfig,
-        });
-
-        this.notifierLowPriorityQueue = new Queue(this, 'notifierLowPriorityQueue', {
-            queueName: 'notifierLowPriorityQueue',
-            visibilityTimeout: Duration.seconds(30),
-            retentionPeriod: Duration.days(1),
-            deadLetterQueue: deadLetterQueueConfig,
-        });
-
-        this.notifierHighPriorityQueue.addToResourcePolicy(
+        notifierPriorityQueue.addToResourcePolicy(
             new PolicyStatement({
                 actions: ['SQS:SendMessage'],
-                resources: [this.notifierHighPriorityQueue.queueArn],
+                resources: [notifierPriorityQueue.queueArn],
                 principals: [new ServicePrincipal('sns.amazonaws.com')],
                 effect: Effect.ALLOW,
                 conditions: {
@@ -67,68 +97,18 @@ export class SQSStack extends Stack {
             }),
         );
 
-        this.notifierMediumPriorityQueue.addToResourcePolicy(
-            new PolicyStatement({
-                actions: ['SQS:SendMessage'],
-                resources: [this.notifierMediumPriorityQueue.queueArn],
-                principals: [new ServicePrincipal('sns.amazonaws.com')],
-                effect: Effect.ALLOW,
-                conditions: {
-                    ArnEquals: {
-                        'aws:SourceArn': notifierSNSTopic.topicArn,
-                    },
-                },
-            }),
-        );
-
-        this.notifierLowPriorityQueue.addToResourcePolicy(
-            new PolicyStatement({
-                actions: ['SQS:SendMessage'],
-                resources: [this.notifierLowPriorityQueue.queueArn],
-                principals: [new ServicePrincipal('sns.amazonaws.com')],
-                effect: Effect.ALLOW,
-                conditions: {
-                    ArnEquals: {
-                        'aws:SourceArn': notifierSNSTopic.topicArn,
-                    },
-                },
-            }),
-        );
-
-        new Subscription(this, 'highPrioritySubscription', {
+        new Subscription(this, subscriptionName, {
             topic: notifierSNSTopic,
-            endpoint: this.notifierHighPriorityQueue.queueArn,
+            endpoint: notifierPriorityQueue.queueArn,
             protocol: SubscriptionProtocol.SQS,
             rawMessageDelivery: true,
             filterPolicy: {
                 priority: SubscriptionFilter.stringFilter({
-                    allowlist: ['HIGH'],
+                    allowlist: [priority],
                 }),
             },
         });
 
-        new Subscription(this, 'mediumPrioritySubscription', {
-            topic: notifierSNSTopic,
-            endpoint: this.notifierMediumPriorityQueue.queueArn,
-            protocol: SubscriptionProtocol.SQS,
-            rawMessageDelivery: true,
-            filterPolicy: {
-                priority: SubscriptionFilter.stringFilter({
-                    allowlist: ['MEDIUM'],
-                }),
-            },
-        });
-
-        new Subscription(this, 'lowPrioritySubscription', {
-            topic: notifierSNSTopic,
-            endpoint: this.notifierLowPriorityQueue.queueArn,
-            protocol: SubscriptionProtocol.SQS,
-            rawMessageDelivery: true,
-            filterPolicy: {
-                priority: SubscriptionFilter.stringFilter({
-                    allowlist: ['LOW'],
-                }),
-            },
-        });
+        return notifierPriorityQueue;
     }
 }

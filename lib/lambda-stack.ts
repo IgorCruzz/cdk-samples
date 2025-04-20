@@ -18,21 +18,21 @@ interface LambdaStackProps extends StackProps {
 }
 
 export class LambdaStack extends Stack {
-    public notifierValidationFunction: NodejsFunction;
-    public notiferProcessFunction: NodejsFunction;
+    public readonly notifierValidationFunction: NodejsFunction;
+    public readonly notiferProcessFunction: NodejsFunction;
 
     constructor(scope: Construct, id: string, props: LambdaStackProps) {
         super(scope, id, props);
 
-        this.validationFunction(props);
-        this.processFunction(props);
+        this.notifierValidationFunction = this.createValidationFunction(props);
+        this.notiferProcessFunction = this.createProcessFunction(props);
     }
 
-    validationFunction(props: LambdaStackProps) {
+    private createValidationFunction(props: LambdaStackProps) {
         const { notifierSNSTopic } = props.snsStack;
         const { notifierResource, notificationsPostRequestModel, notificationsPostRequestValidator } = props.apiStack;
 
-        this.notifierValidationFunction = new NodejsFunction(this, 'notifierValidationFunction', {
+        const notifierValidationFunction = new NodejsFunction(this, 'notifierValidationFunction', {
             memorySize: 256,
             architecture: Architecture.X86_64,
             runtime: Runtime.NODEJS_20_X,
@@ -62,13 +62,15 @@ export class LambdaStack extends Stack {
             },
             requestValidator: notificationsPostRequestValidator,
         });
+
+        return notifierValidationFunction;
     }
 
-    processFunction(props: LambdaStackProps) {
+    private createProcessFunction(props: LambdaStackProps) {
         const { notifierTable } = props.databaseStack;
         const { notifierHighPriorityQueue, notifierMediumPriorityQueue, notifierLowPriorityQueue } = props.sqsStack;
 
-        this.notiferProcessFunction = new NodejsFunction(this, 'notifierProcessFunction', {
+        const notiferProcessFunction = new NodejsFunction(this, 'notifierProcessFunction', {
             memorySize: 256,
             architecture: Architecture.X86_64,
             runtime: Runtime.NODEJS_20_X,
@@ -90,30 +92,32 @@ export class LambdaStack extends Stack {
             logRetention: RetentionDays.ONE_WEEK,
         });
 
-        this.notiferProcessFunction.addEventSource(
+        notiferProcessFunction.addEventSource(
             new SqsEventSource(notifierHighPriorityQueue, {
                 batchSize: 10,
                 reportBatchItemFailures: true,
             }),
         );
 
-        this.notiferProcessFunction.addEventSource(
+        notiferProcessFunction.addEventSource(
             new SqsEventSource(notifierMediumPriorityQueue, {
                 batchSize: 10,
                 reportBatchItemFailures: true,
             }),
         );
 
-        this.notiferProcessFunction.addEventSource(
+        notiferProcessFunction.addEventSource(
             new SqsEventSource(notifierLowPriorityQueue, {
                 batchSize: 10,
                 reportBatchItemFailures: true,
             }),
         );
 
-        notifierHighPriorityQueue.grantConsumeMessages(this.notiferProcessFunction);
-        notifierMediumPriorityQueue.grantConsumeMessages(this.notiferProcessFunction);
-        notifierLowPriorityQueue.grantConsumeMessages(this.notiferProcessFunction);
-        notifierTable.grantWriteData(this.notiferProcessFunction);
+        notifierHighPriorityQueue.grantConsumeMessages(notiferProcessFunction);
+        notifierMediumPriorityQueue.grantConsumeMessages(notiferProcessFunction);
+        notifierLowPriorityQueue.grantConsumeMessages(notiferProcessFunction);
+        notifierTable.grantWriteData(notiferProcessFunction);
+
+        return notiferProcessFunction;
     }
 }

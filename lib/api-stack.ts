@@ -23,15 +23,33 @@ export class ApiStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props);
 
-        const certificate = StringParameter.fromStringParameterName(
+        const certificate = this.getCertificateArn();
+
+        this.notifierApi = this.createNotifierApi({
+            certificate,
+        });
+
+        this.notifierResource = this.notifierApi.root.addResource('notifications');
+
+        this.notificationsPostRequestModel = this.createNotificationsPostRequestModel();
+
+        this.notificationsPostRequestValidator = this.createNotificationsPostRequestValidator();
+    }
+
+    private getCertificateArn() {
+        const parameter = StringParameter.fromStringParameterName(
             this,
             'notifierCertificateParameter',
             '/certs/notifier-api',
         );
 
-        this.notifierApi = new RestApi(this, 'notifierApi', {
+        return parameter.stringValue;
+    }
+
+    private createNotifierApi({ certificate }: { certificate: string }) {
+        return new RestApi(this, 'notifierApi', {
             restApiName: 'Notifier API',
-            description: 'API for the Notifier service',
+            description: 'API for sending notifications',
             endpointConfiguration: {
                 types: [EndpointType.REGIONAL],
             },
@@ -50,19 +68,19 @@ export class ApiStack extends Stack {
             disableExecuteApiEndpoint: true,
             domainName: {
                 domainName: 'api.igorcruz.space',
-                certificate: Certificate.fromCertificateArn(this, 'notifierCertificate', certificate.stringValue),
+                certificate: Certificate.fromCertificateArn(this, 'notifierCertificate', certificate),
                 endpointType: EndpointType.REGIONAL,
                 securityPolicy: SecurityPolicy.TLS_1_2,
             },
         });
+    }
 
-        this.notifierResource = this.notifierApi.root.addResource('notifications');
-
-        this.notificationsPostRequestModel = new Model(this, 'notificationsPostRequestModel', {
+    private createNotificationsPostRequestModel() {
+        return new Model(this, 'NotificationsPostRequestModel', {
             restApi: this.notifierApi,
             contentType: 'application/json',
-            modelName: 'notificationsPostRequestModel',
-            description: 'Model for notifications POST request',
+            modelName: 'NotificationsPostRequestModel',
+            description: 'Model for notifications post request',
             schema: {
                 type: JsonSchemaType.OBJECT,
                 properties: {
@@ -92,8 +110,10 @@ export class ApiStack extends Stack {
                 required: ['notifications'],
             },
         });
+    }
 
-        this.notificationsPostRequestValidator = new RequestValidator(this, 'notificationsPostRequestValidator', {
+    private createNotificationsPostRequestValidator() {
+        return new RequestValidator(this, 'notificationsPostRequestValidator', {
             restApi: this.notifierApi,
             requestValidatorName: 'notificationsPostRequestValidator',
             validateRequestBody: true,

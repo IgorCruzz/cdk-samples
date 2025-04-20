@@ -8,7 +8,11 @@ export class DynamoStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props);
 
-        this.notifierTable = new TableV2(this, 'notifierTable', {
+        this.notifierTable = this.createNotifierTable();
+    }
+
+    private createNotifierTable() {
+        return new TableV2(this, 'notifierTable', {
             tableName: 'notifierTable',
             partitionKey: { name: 'PK', type: AttributeType.STRING },
             sortKey: { name: 'SK', type: AttributeType.STRING },
