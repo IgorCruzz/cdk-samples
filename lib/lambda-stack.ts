@@ -30,6 +30,7 @@ export class LambdaStack extends Stack {
 
     private createValidationFunction(props: LambdaStackProps) {
         const { notifierSNSTopic } = props.snsStack;
+
         const { notifierResource, notificationsPostRequestModel, notificationsPostRequestValidator } = props.apiStack;
 
         const notifierValidationFunction = new NodejsFunction(this, 'notifierValidationFunction', {
@@ -54,9 +55,9 @@ export class LambdaStack extends Stack {
             logRetention: RetentionDays.ONE_WEEK,
         });
 
-        notifierSNSTopic.grantPublish(this.notifierValidationFunction);
+        notifierSNSTopic.grantPublish(notifierValidationFunction);
 
-        notifierResource.addMethod('POST', new LambdaIntegration(this.notifierValidationFunction), {
+        notifierResource.addMethod('POST', new LambdaIntegration(notifierValidationFunction), {
             requestModels: {
                 'application/json': notificationsPostRequestModel,
             },
