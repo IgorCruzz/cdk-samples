@@ -8,10 +8,10 @@ export class SNSStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props);
 
-        this.notifierSNSTopic = this.createSNSTopic();
+        this.notifierSNSTopic = this.createNotifierSNSTopic();
     }
 
-    private createSNSTopic() {
+    private createNotifierSNSTopic() {
         return new Topic(this, 'notifierSNS', {
             displayName: 'Notifier SNS Topic',
             topicName: 'notifierTopic',

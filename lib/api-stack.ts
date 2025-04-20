@@ -23,31 +23,23 @@ export class ApiStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props);
 
-        const certificate = this.getCertificateArn();
+        const { notifierApi, notifierResource, notificationsPostRequestModel, notificationsPostRequestValidator } =
+            this.createNotifierApi();
 
-        this.notifierApi = this.createNotifierApi({
-            certificate,
-        });
-
-        this.notifierResource = this.notifierApi.root.addResource('notifications');
-
-        this.notificationsPostRequestModel = this.createNotificationsPostRequestModel();
-
-        this.notificationsPostRequestValidator = this.createNotificationsPostRequestValidator();
+        this.notifierApi = notifierApi;
+        this.notifierResource = notifierResource;
+        this.notificationsPostRequestModel = notificationsPostRequestModel;
+        this.notificationsPostRequestValidator = notificationsPostRequestValidator;
     }
 
-    private getCertificateArn() {
-        const parameter = StringParameter.fromStringParameterName(
+    private createNotifierApi() {
+        const certificate = StringParameter.fromStringParameterName(
             this,
             'notifierCertificateParameter',
             '/certs/notifier-api',
         );
 
-        return parameter.stringValue;
-    }
-
-    private createNotifierApi({ certificate }: { certificate: string }) {
-        return new RestApi(this, 'notifierApi', {
+        const notifierApi = new RestApi(this, 'notifierApi', {
             restApiName: 'Notifier API',
             description: 'API for sending notifications',
             endpointConfiguration: {
@@ -68,16 +60,16 @@ export class ApiStack extends Stack {
             disableExecuteApiEndpoint: true,
             domainName: {
                 domainName: 'api.igorcruz.space',
-                certificate: Certificate.fromCertificateArn(this, 'notifierCertificate', certificate),
+                certificate: Certificate.fromCertificateArn(this, 'notifierCertificate', certificate.stringValue),
                 endpointType: EndpointType.REGIONAL,
                 securityPolicy: SecurityPolicy.TLS_1_2,
             },
         });
-    }
 
-    private createNotificationsPostRequestModel() {
-        return new Model(this, 'NotificationsPostRequestModel', {
-            restApi: this.notifierApi,
+        const notifierResource = notifierApi.root.addResource('notifications');
+
+        const notificationsPostRequestModel = new Model(this, 'NotificationsPostRequestModel', {
+            restApi: notifierApi,
             contentType: 'application/json',
             modelName: 'NotificationsPostRequestModel',
             description: 'Model for notifications post request',
@@ -110,13 +102,18 @@ export class ApiStack extends Stack {
                 required: ['notifications'],
             },
         });
-    }
 
-    private createNotificationsPostRequestValidator() {
-        return new RequestValidator(this, 'notificationsPostRequestValidator', {
-            restApi: this.notifierApi,
+        const notificationsPostRequestValidator = new RequestValidator(this, 'notificationsPostRequestValidator', {
+            restApi: notifierApi,
             requestValidatorName: 'notificationsPostRequestValidator',
             validateRequestBody: true,
         });
+
+        return {
+            notifierApi,
+            notifierResource,
+            notificationsPostRequestModel,
+            notificationsPostRequestValidator,
+        };
     }
 }
