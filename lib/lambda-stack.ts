@@ -130,7 +130,7 @@ export class LambdaStack extends Stack {
             timeout: Duration.seconds(30),
             functionName: 'notiferDlqFunction',
             description: 'A Lambda function to process notifications from DLQ',
-            entry: 'lambda/notify-process-dlq',
+            entry: 'lambda/notify-process-dlq.ts',
             handler: 'handler',
             bundling: {
                 minify: true,
