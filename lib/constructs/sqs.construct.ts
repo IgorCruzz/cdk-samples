@@ -1,12 +1,12 @@
-import { Duration, Stack, StackProps } from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { IQueue, Queue } from 'aws-cdk-lib/aws-sqs';
 import { PolicyStatement, ServicePrincipal, Effect } from 'aws-cdk-lib/aws-iam';
 import { ITopic, Subscription, SubscriptionFilter, SubscriptionProtocol } from 'aws-cdk-lib/aws-sns';
-import { SNSStack } from './sns-stack';
+import { SNSConstruct } from './sns.construct';
 
-interface SQSStackProps extends StackProps {
-    snsStack: SNSStack;
+interface SQSStackProps {
+    snsConstruct: SNSConstruct;
 }
 
 interface QueueProps {
@@ -17,17 +17,17 @@ interface QueueProps {
     priority: 'LOW' | 'MEDIUM' | 'HIGH';
 }
 
-export class SQSStack extends Stack {
+export class SQSConstruct extends Construct {
     public readonly notifierHighPriorityQueue: IQueue;
     public readonly notifierMediumPriorityQueue: IQueue;
     public readonly notifierLowPriorityQueue: IQueue;
     public readonly notifierDLQ: IQueue;
 
     constructor(scope: Construct, id: string, public readonly props: SQSStackProps) {
-        super(scope, id, props);
+        super(scope, id);
 
         const {
-            snsStack: { notifierSNSTopic },
+            snsConstruct: { notifierSNSTopic },
         } = props;
 
         this.notifierDLQ = this.createNotifierDLQ();

@@ -1,25 +1,25 @@
-import { Duration, Stack, StackProps } from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Architecture, LoggingFormat, Runtime, Tracing } from 'aws-cdk-lib/aws-lambda';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
-import { ApiStack } from './api-stack';
-import { SNSStack } from './sns-stack';
-import { DynamoStack } from './dynamo-stack';
-import { SQSStack } from './sqs-stack';
+import { ApiConstruct } from './api.construct';
+import { SNSConstruct } from './sns.construct';
+import { DynamoConstruct } from './dynamo.construct';
+import { SQSConstruct } from './sqs.construct';
 
-interface LambdaStackProps extends StackProps {
-    sqsStack: SQSStack;
-    databaseStack: DynamoStack;
-    snsStack: SNSStack;
-    apiStack: ApiStack;
+interface LambdaStackProps {
+    sqsConstruct: SQSConstruct;
+    dynamoConstruct: DynamoConstruct;
+    snsConstruct: SNSConstruct;
+    apiConstruct: ApiConstruct;
 }
 
-export class LambdaStack extends Stack {
+export class LambdaConstruct extends Construct {
     constructor(scope: Construct, id: string, props: LambdaStackProps) {
-        super(scope, id, props);
+        super(scope, id);
 
         this.createValidationFunction(props);
         this.createProcessFunction(props);
@@ -27,9 +27,10 @@ export class LambdaStack extends Stack {
     }
 
     private createValidationFunction(props: LambdaStackProps) {
-        const { notifierSNSTopic } = props.snsStack;
+        const { notifierSNSTopic } = props.snsConstruct;
 
-        const { notifierResource, notificationsPostRequestModel, notificationsPostRequestValidator } = props.apiStack;
+        const { notifierResource, notificationsPostRequestModel, notificationsPostRequestValidator } =
+            props.apiConstruct;
 
         const notifierValidationFunction = new NodejsFunction(this, 'notifierValidationFunction', {
             memorySize: 256,
@@ -66,8 +67,8 @@ export class LambdaStack extends Stack {
     }
 
     private createProcessFunction(props: LambdaStackProps) {
-        const { notifierTable } = props.databaseStack;
-        const { notifierHighPriorityQueue, notifierMediumPriorityQueue, notifierLowPriorityQueue } = props.sqsStack;
+        const { notifierTable } = props.dynamoConstruct;
+        const { notifierHighPriorityQueue, notifierMediumPriorityQueue, notifierLowPriorityQueue } = props.sqsConstruct;
 
         const notiferProcessFunction = new NodejsFunction(this, 'notifierProcessFunction', {
             memorySize: 256,
@@ -121,7 +122,7 @@ export class LambdaStack extends Stack {
     }
 
     private createDlqFunction(props: LambdaStackProps) {
-        const { notifierDLQ } = props.sqsStack;
+        const { notifierDLQ } = props.sqsConstruct;
 
         const notiferDlqFunction = new NodejsFunction(this, 'notiferDlqFunction', {
             memorySize: 256,

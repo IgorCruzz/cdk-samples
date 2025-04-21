@@ -1,4 +1,3 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import {
     RestApi,
@@ -14,14 +13,14 @@ import {
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
-export class ApiStack extends Stack {
+export class ApiConstruct extends Construct {
     public readonly notifierApi: RestApi;
     public readonly notifierResource: Resource;
     public readonly notificationsPostRequestModel: Model;
     public readonly notificationsPostRequestValidator: RequestValidator;
 
-    constructor(scope: Construct, id: string, props: StackProps) {
-        super(scope, id, props);
+    constructor(scope: Construct, id: string) {
+        super(scope, id);
 
         const { notifierApi, notifierResource, notificationsPostRequestModel, notificationsPostRequestValidator } =
             this.createNotifierApi();

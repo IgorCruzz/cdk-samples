@@ -1,12 +1,12 @@
-import { RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
+import { RemovalPolicy } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { TableV2, Billing, AttributeType, ProjectionType } from 'aws-cdk-lib/aws-dynamodb';
 
-export class DynamoStack extends Stack {
+export class DynamoConstruct extends Construct {
     public readonly notifierTable: TableV2;
 
-    constructor(scope: Construct, id: string, props: StackProps) {
-        super(scope, id, props);
+    constructor(scope: Construct, id: string) {
+        super(scope, id);
 
         this.notifierTable = this.createNotifierTable();
     }

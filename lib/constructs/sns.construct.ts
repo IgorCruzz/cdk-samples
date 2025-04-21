@@ -1,12 +1,11 @@
-import { StackProps, Stack } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Topic, TracingConfig, ITopic } from 'aws-cdk-lib/aws-sns';
 
-export class SNSStack extends Stack {
+export class SNSConstruct extends Construct {
     public readonly notifierSNSTopic: ITopic;
 
-    constructor(scope: Construct, id: string, props: StackProps) {
-        super(scope, id, props);
+    constructor(scope: Construct, id: string) {
+        super(scope, id);
 
         this.notifierSNSTopic = this.createNotifierSNSTopic();
     }
