@@ -18,14 +18,12 @@ interface LambdaStackProps extends StackProps {
 }
 
 export class LambdaStack extends Stack {
-    public readonly notifierValidationFunction: NodejsFunction;
-    public readonly notiferProcessFunction: NodejsFunction;
-
     constructor(scope: Construct, id: string, props: LambdaStackProps) {
         super(scope, id, props);
 
-        this.notifierValidationFunction = this.createValidationFunction(props);
-        this.notiferProcessFunction = this.createProcessFunction(props);
+        this.createValidationFunction(props);
+        this.createProcessFunction(props);
+        this.createDlqFunction(props);
     }
 
     private createValidationFunction(props: LambdaStackProps) {
@@ -120,5 +118,37 @@ export class LambdaStack extends Stack {
         notifierTable.grantWriteData(notiferProcessFunction);
 
         return notiferProcessFunction;
+    }
+
+    private createDlqFunction(props: LambdaStackProps) {
+        const { notifierDLQ } = props.sqsStack;
+
+        const notiferDlqFunction = new NodejsFunction(this, 'notiferDlqFunction', {
+            memorySize: 256,
+            architecture: Architecture.X86_64,
+            runtime: Runtime.NODEJS_20_X,
+            timeout: Duration.seconds(30),
+            functionName: 'notiferDlqFunction',
+            description: 'A Lambda function to process notifications from DLQ',
+            entry: 'lambda/notify-process-dlq',
+            handler: 'handler',
+            bundling: {
+                minify: true,
+                sourceMap: true,
+                target: 'es2020',
+            },
+            loggingFormat: LoggingFormat.JSON,
+            tracing: Tracing.ACTIVE,
+            logRetention: RetentionDays.ONE_WEEK,
+        });
+
+        notiferDlqFunction.addEventSource(
+            new SqsEventSource(notifierDLQ, {
+                batchSize: 10,
+                reportBatchItemFailures: true,
+            }),
+        );
+
+        notifierDLQ.grantConsumeMessages(notiferDlqFunction);
     }
 }

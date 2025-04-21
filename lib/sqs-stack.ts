@@ -21,6 +21,7 @@ export class SQSStack extends Stack {
     public readonly notifierHighPriorityQueue: Queue;
     public readonly notifierMediumPriorityQueue: Queue;
     public readonly notifierLowPriorityQueue: Queue;
+    public readonly notifierDLQ: Queue;
 
     constructor(scope: Construct, id: string, public readonly props: SQSStackProps) {
         super(scope, id, props);
@@ -29,7 +30,12 @@ export class SQSStack extends Stack {
             snsStack: { notifierSNSTopic },
         } = props;
 
-        const deadLetterQueue = this.createNotifierDLQ();
+        this.notifierDLQ = this.createNotifierDLQ();
+
+        const deadLetterQueue = {
+            maxReceiveCount: 5,
+            queue: this.notifierDLQ,
+        };
 
         this.notifierHighPriorityQueue = this.createNotifierPriorityQueue({
             deadLetterQueue,
@@ -63,10 +69,7 @@ export class SQSStack extends Stack {
             visibilityTimeout: Duration.seconds(30),
         });
 
-        return {
-            maxReceiveCount: 5,
-            queue: notifierDLQ,
-        };
+        return notifierDLQ;
     }
 
     private createNotifierPriorityQueue({
