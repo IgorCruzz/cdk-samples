@@ -145,7 +145,6 @@ export class LambdaStack extends Stack {
         notiferDlqFunction.addEventSource(
             new SqsEventSource(notifierDLQ, {
                 batchSize: 10,
-                reportBatchItemFailures: true,
             }),
         );
 

@@ -1,6 +1,6 @@
 import { Duration, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { Queue } from 'aws-cdk-lib/aws-sqs';
+import { IQueue, Queue } from 'aws-cdk-lib/aws-sqs';
 import { PolicyStatement, ServicePrincipal, Effect } from 'aws-cdk-lib/aws-iam';
 import { ITopic, Subscription, SubscriptionFilter, SubscriptionProtocol } from 'aws-cdk-lib/aws-sns';
 import { SNSStack } from './sns-stack';
@@ -10,7 +10,7 @@ interface SQSStackProps extends StackProps {
 }
 
 interface QueueProps {
-    deadLetterQueue: { maxReceiveCount: number; queue: Queue };
+    deadLetterQueue: { maxReceiveCount: number; queue: IQueue };
     notifierSNSTopic: ITopic;
     queueName: string;
     subscriptionName: string;
@@ -18,10 +18,10 @@ interface QueueProps {
 }
 
 export class SQSStack extends Stack {
-    public readonly notifierHighPriorityQueue: Queue;
-    public readonly notifierMediumPriorityQueue: Queue;
-    public readonly notifierLowPriorityQueue: Queue;
-    public readonly notifierDLQ: Queue;
+    public readonly notifierHighPriorityQueue: IQueue;
+    public readonly notifierMediumPriorityQueue: IQueue;
+    public readonly notifierLowPriorityQueue: IQueue;
+    public readonly notifierDLQ: IQueue;
 
     constructor(scope: Construct, id: string, public readonly props: SQSStackProps) {
         super(scope, id, props);
