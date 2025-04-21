@@ -6,8 +6,7 @@ export const handler = async (event: SQSEvent): Promise<SQSBatchResponse> => {
 
     for (const record of event.Records) {
         try {
-            const body = JSON.parse(record.body);
-            const message = JSON.parse(body.Message);
+            const message = JSON.parse(record.body);
 
             console.log('Mensagem recebida:', message);
 
