@@ -1,3 +1,3 @@
-export { validation } from '../services/notifier-validation.service';
-export { process } from '../services/notify-process-dlq.service';
-export { process } from '../services/notifier-process.service';
+export { notifierValidationService } from '../services/notifier-validation.service';
+export { notifierProcessDLQService } from '../services/notifier-process-dlq.service';
+export { notifierProcessService } from '../services/notifier-process.service';
