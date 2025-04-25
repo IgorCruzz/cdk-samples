@@ -6,7 +6,7 @@ export const notifierValidationController = async (event: APIGatewayProxyEvent):
     try {
         const body: { notifications: NotifyType[] } = JSON.parse(event.body || '');
 
-        const service = await notifierValidationService.validation({ notifications: body.notifications });
+        const service = await notifierValidationService({ notifications: body.notifications });
 
         return {
             statusCode: service.statusCode,

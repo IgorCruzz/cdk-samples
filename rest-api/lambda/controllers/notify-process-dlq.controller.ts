@@ -6,7 +6,7 @@ export const notifierProcessDLQController = async (event: SQSEvent): Promise<voi
         try {
             const body = JSON.parse(record.body);
 
-            await notifierProcessDLQService.process(body);
+            await notifierProcessDLQService(body);
         } catch (error) {
             console.error(error);
         }
