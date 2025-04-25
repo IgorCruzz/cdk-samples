@@ -9,7 +9,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "lint": "eslint '*.ts' --quiet --fix"
+    "lint": "eslint '*.ts' --quiet --fix",
+    "test:watch": "npm test -- --watch -c jest.config.js"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.149",
