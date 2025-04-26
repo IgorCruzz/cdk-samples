@@ -1,14 +1,14 @@
-import { SQSRecord } from 'aws-lambda';
-import { putItem } from '../shared';
+import { NotifyType } from '../types';
+import { notifierTable } from '../repositories';
 
-export const notifierProcessService = async (record: SQSRecord): Promise<void> => {
-    const message = JSON.parse(record.body);
+export const notifierProcessService = async ({ notification }: { notification: NotifyType }): Promise<void> => {
+    const { message, priority, title, userId } = notification;
 
-    await putItem({
-        message: message.message,
-        priority: message.priority,
-        userId: message.userId,
-        title: message.title,
+    await notifierTable.putItem({
+        message,
+        priority,
+        userId,
+        title,
     });
 
     console.log('Notificação salva com sucesso!!!');
