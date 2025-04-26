@@ -1,11 +1,11 @@
-import { SQSEvent, SQSBatchResponse } from 'aws-lambda';
+import { SQSBatchResponse, SQSRecord } from 'aws-lambda';
 import { notifierTable } from '../repositories';
 import { NotifyType } from '../types';
 
-export const notifierProcessService = async (event: SQSEvent): Promise<SQSBatchResponse> => {
+export const notifierProcessService = async ({ records }: { records: SQSRecord[] }): Promise<SQSBatchResponse> => {
     const batchItemFailures = [];
 
-    for (const record of event.Records) {
+    for (const record of records) {
         try {
             const notification: NotifyType = JSON.parse(record.body);
 
