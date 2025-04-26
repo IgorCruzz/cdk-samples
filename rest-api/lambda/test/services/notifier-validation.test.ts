@@ -1,22 +1,36 @@
-import { ISnsAdapter } from '../../adapters';
-import { NotifierValidationService } from '../../services';
+import { notifierValidationService } from '../../services';
+import * as foo from '../../shared/sns';
 
-let notifierValidationService: NotifierValidationService;
-let snsAdapterStub: ISnsAdapter;
+jest.mock('../../shared/sns');
 
-class SnsAdapterStub implements ISnsAdapter {
-    publishMessage = async () => {
-        Promise.resolve();
-    };
-}
-
-describe('NotifierProcessService', () => {
-    beforeAll(() => {
-        snsAdapterStub = new SnsAdapterStub();
-        notifierValidationService = new NotifierValidationService(snsAdapterStub);
-    });
-
+describe('notifierValidationService', () => {
     it('should be defined', async () => {
         expect(notifierValidationService).toBeDefined();
+    });
+
+    it('should be able to call publishMessage', async () => {
+        const publishMessage = jest.spyOn(foo, 'publishMessage');
+
+        await notifierValidationService({
+            notifications: [
+                {
+                    priority: 'HIGH',
+                    userId: '28360287-9c42-4f14-971b-6e657bf030b5',
+                    title: 'title',
+                    message: 'message',
+                },
+            ],
+        });
+
+        expect(publishMessage).toHaveBeenCalledWith({
+            notifications: [
+                {
+                    priority: 'HIGH',
+                    userId: '28360287-9c42-4f14-971b-6e657bf030b5',
+                    title: 'title',
+                    message: 'message',
+                },
+            ],
+        });
     });
 });
