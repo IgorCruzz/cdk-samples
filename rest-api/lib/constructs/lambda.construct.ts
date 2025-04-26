@@ -39,8 +39,8 @@ export class LambdaConstruct extends Construct {
             timeout: Duration.seconds(30),
             functionName: 'notifierValidationFunction',
             description: 'A Lambda function to validate notifications',
-            entry: 'lambda/notifier-validation.ts',
-            handler: 'handler',
+            entry: 'lambda/handlers/index.ts',
+            handler: 'notifierValidationHandler',
             environment: {
                 SNS_TOPIC_ARN: notifierSNSTopic.topicArn,
             },
@@ -77,8 +77,8 @@ export class LambdaConstruct extends Construct {
             timeout: Duration.seconds(30),
             functionName: 'notiferProcessFunction',
             description: 'A Lambda function to process notifications',
-            entry: 'lambda/notifier-process.ts',
-            handler: 'handler',
+            entry: 'lambda/handlers/index.ts',
+            handler: 'notifierProcessHandler',
             environment: {
                 DYNAMODB_TABLE_NAME: notifierTable.tableName,
             },
@@ -131,8 +131,8 @@ export class LambdaConstruct extends Construct {
             timeout: Duration.seconds(30),
             functionName: 'notiferDlqFunction',
             description: 'A Lambda function to process notifications from DLQ',
-            entry: 'lambda/notify-process-dlq.ts',
-            handler: 'handler',
+            entry: 'lambda/handlers/index.ts',
+            handler: 'notifierProcessDLQHandler',
             bundling: {
                 minify: true,
                 sourceMap: true,
