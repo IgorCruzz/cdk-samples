@@ -9,6 +9,7 @@ import { ApiConstruct } from './api.construct';
 import { SNSConstruct } from './sns.construct';
 import { DynamoConstruct } from './dynamo.construct';
 import { SQSConstruct } from './sqs.construct';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
 interface LambdaStackProps {
     sqsConstruct: SQSConstruct;
@@ -39,7 +40,7 @@ export class LambdaConstruct extends Construct {
             timeout: Duration.seconds(30),
             functionName: 'notifierSendHandler',
             description: 'A Lambda function to send notifications',
-            entry: 'lambda/handlers/index.ts',
+            entry: 'lambda/handlers.ts',
             handler: 'notifierSendHandler',
             environment: {
                 SNS_TOPIC_ARN: notifierSNSTopic.topicArn,
@@ -70,6 +71,22 @@ export class LambdaConstruct extends Construct {
         const { notifierTable } = props.dynamoConstruct;
         const { notifierHighPriorityQueue, notifierMediumPriorityQueue, notifierLowPriorityQueue } = props.sqsConstruct;
 
+        const ACCOUNT_SID = StringParameter.fromStringParameterName(this, 'accountSidParameter', '/twilio/accountSid');
+
+        const AUTH_TOKEN = StringParameter.fromStringParameterName(this, 'authTokenParameter', '/twilio/authToken');
+
+        const SENDER_PHONE = StringParameter.fromStringParameterName(
+            this,
+            'senderPhoneParameter',
+            '/twilio/senderPhone',
+        );
+
+        const RECEIVER_PHONE = StringParameter.fromStringParameterName(
+            this,
+            'notifierReceiverPhoneParameter',
+            '/twilio/mynumber',
+        );
+
         const notiferProcessFunction = new NodejsFunction(this, 'notifierProcessFunction', {
             memorySize: 256,
             architecture: Architecture.X86_64,
@@ -77,10 +94,14 @@ export class LambdaConstruct extends Construct {
             timeout: Duration.seconds(30),
             functionName: 'notiferProcessFunction',
             description: 'A Lambda function to process notifications',
-            entry: 'lambda/handlers/index.ts',
+            entry: 'lambda/handlers.ts',
             handler: 'notifierProcessHandler',
             environment: {
                 DYNAMODB_TABLE_NAME: notifierTable.tableName,
+                TWILIO_ACCOUNT_SID: ACCOUNT_SID.stringValue,
+                TWILIO_AUTH_TOKEN: AUTH_TOKEN.stringValue,
+                TWILIO_SENDER_PHONE: SENDER_PHONE.stringValue,
+                TWILIO_RECEIVER_PHONE: RECEIVER_PHONE.stringValue,
             },
             bundling: {
                 minify: true,
@@ -131,7 +152,7 @@ export class LambdaConstruct extends Construct {
             timeout: Duration.seconds(30),
             functionName: 'notiferDlqFunction',
             description: 'A Lambda function to process notifications from DLQ',
-            entry: 'lambda/handlers/index.ts',
+            entry: 'lambda/handlers.ts',
             handler: 'notifierProcessDLQHandler',
             bundling: {
                 minify: true,
