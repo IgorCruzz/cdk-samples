@@ -28,4 +28,46 @@ describe('notifierSendController', () => {
 
         await notifierSendController({ notifications });
     });
+
+    it('should return 200 on success', async () => {
+        const notifications: NotifyType[] = [
+            {
+                message: 'message',
+                priority: 'HIGH',
+                title: 'title',
+                userId: 'userId',
+            },
+        ];
+
+        const controller = await notifierSendController({ notifications });
+
+        expect(controller).toEqual({
+            statusCode: 200,
+            body: JSON.stringify({
+                message: 'success',
+            }),
+        });
+    });
+
+    it('should return 500 on error', async () => {
+        const notifications: NotifyType[] = [
+            {
+                message: 'message',
+                priority: 'HIGH',
+                title: 'title',
+                userId: 'userId',
+            },
+        ];
+
+        jest.spyOn(service, 'notifierSendService').mockRejectedValue(new Error('error'));
+
+        const controller = await notifierSendController({ notifications });
+
+        expect(controller).toEqual({
+            statusCode: 500,
+            body: JSON.stringify({
+                message: 'Internal Server Error',
+            }),
+        });
+    });
 });
