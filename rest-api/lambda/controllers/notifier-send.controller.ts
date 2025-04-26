@@ -1,12 +1,12 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { NotifyType } from '../types';
-import { notifierValidationService } from '../services';
+import { notifierSendService } from '../services';
 
-export const notifierValidationController = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const notifierSendController = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
         const body: { notifications: NotifyType[] } = JSON.parse(event.body || '');
 
-        const service = await notifierValidationService({ notifications: body.notifications });
+        const service = await notifierSendService({ notifications: body.notifications });
 
         return {
             statusCode: service.statusCode,

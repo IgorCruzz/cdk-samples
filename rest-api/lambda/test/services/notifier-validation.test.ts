@@ -1,17 +1,17 @@
-import { notifierValidationService } from '../../services';
+import { notifierSendService } from '../../services';
 import * as foo from '../../shared/sns';
 
 jest.mock('../../shared/sns');
 
-describe('notifierValidationService', () => {
+describe('notifierSendService', () => {
     it('should be defined', async () => {
-        expect(notifierValidationService).toBeDefined();
+        expect(notifierSendService).toBeDefined();
     });
 
     it('should be able to call publishMessage', async () => {
         const publishMessage = jest.spyOn(foo, 'publishMessage');
 
-        await notifierValidationService({
+        await notifierSendService({
             notifications: [
                 {
                     priority: 'HIGH',

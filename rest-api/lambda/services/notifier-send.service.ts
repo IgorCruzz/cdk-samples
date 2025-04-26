@@ -2,7 +2,7 @@ import { APIGatewayProxyResult } from 'aws-lambda';
 import { NotifyType } from '../types';
 import { publishMessage } from '../shared';
 
-export const notifierValidationService = async ({
+export const notifierSendService = async ({
     notifications,
 }: {
     notifications: NotifyType[];

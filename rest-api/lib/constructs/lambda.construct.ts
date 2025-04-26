@@ -21,26 +21,26 @@ export class LambdaConstruct extends Construct {
     constructor(scope: Construct, id: string, props: LambdaStackProps) {
         super(scope, id);
 
-        this.createValidationFunction(props);
+        this.createSendFunction(props);
         this.createProcessFunction(props);
         this.createDlqFunction(props);
     }
 
-    private createValidationFunction(props: LambdaStackProps) {
+    private createSendFunction(props: LambdaStackProps) {
         const { notifierSNSTopic } = props.snsConstruct;
 
         const { notifierResource, notificationsPostRequestModel, notificationsPostRequestValidator } =
             props.apiConstruct;
 
-        const notifierValidationFunction = new NodejsFunction(this, 'notifierValidationFunction', {
+        const notifierSendHandler = new NodejsFunction(this, 'notifierSendHandler', {
             memorySize: 256,
             architecture: Architecture.X86_64,
             runtime: Runtime.NODEJS_20_X,
             timeout: Duration.seconds(30),
-            functionName: 'notifierValidationFunction',
-            description: 'A Lambda function to validate notifications',
+            functionName: 'notifierSendHandler',
+            description: 'A Lambda function to send notifications',
             entry: 'lambda/handlers/index.ts',
-            handler: 'notifierValidationHandler',
+            handler: 'notifierSendHandler',
             environment: {
                 SNS_TOPIC_ARN: notifierSNSTopic.topicArn,
             },
@@ -54,16 +54,16 @@ export class LambdaConstruct extends Construct {
             logRetention: RetentionDays.ONE_WEEK,
         });
 
-        notifierSNSTopic.grantPublish(notifierValidationFunction);
+        notifierSNSTopic.grantPublish(notifierSendHandler);
 
-        notifierResource.addMethod('POST', new LambdaIntegration(notifierValidationFunction), {
+        notifierResource.addMethod('POST', new LambdaIntegration(notifierSendHandler), {
             requestModels: {
                 'application/json': notificationsPostRequestModel,
             },
             requestValidator: notificationsPostRequestValidator,
         });
 
-        return notifierValidationFunction;
+        return notifierSendHandler;
     }
 
     private createProcessFunction(props: LambdaStackProps) {
