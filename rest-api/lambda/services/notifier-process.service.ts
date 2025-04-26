@@ -1,5 +1,5 @@
 import { SQSRecord } from 'aws-lambda';
-import { putItem } from '../shared/notifier';
+import { putItem } from '../shared';
 
 export const notifierProcessService = async (record: SQSRecord): Promise<void> => {
     const message = JSON.parse(record.body);
