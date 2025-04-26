@@ -2,13 +2,11 @@ import { notifierProcessService } from '../../services';
 import { notifierTable } from '../../repositories';
 import { NotifyType } from '../../types';
 
-jest.mock('../../repositories', () => ({
-    notifierTable: {
-        putItem: jest.fn(),
-    },
-}));
-
 describe('notifierProcessService', () => {
+    beforeAll(() => {
+        jest.spyOn(notifierTable, 'putItem').mockResolvedValue();
+    });
+
     it('should be defined', async () => {
         expect(notifierProcessService).toBeDefined();
     });
