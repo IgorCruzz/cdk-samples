@@ -1,6 +1,7 @@
 import { SQSBatchResponse, SQSRecord } from 'aws-lambda';
 import { notifierTable } from '../repositories';
 import { NotifyType } from '../types';
+import { sendWhatsAppMessage } from '../shared';
 
 export const notifierProcessService = async ({ records }: { records: SQSRecord[] }): Promise<SQSBatchResponse> => {
     const batchItemFailures = [];
@@ -16,6 +17,10 @@ export const notifierProcessService = async ({ records }: { records: SQSRecord[]
                 priority,
                 userId,
                 title,
+            });
+
+            await sendWhatsAppMessage({
+                message,
             });
         } catch (error) {
             console.error('Erro ao processar a mensagem:', error);
