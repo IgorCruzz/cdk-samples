@@ -28,6 +28,26 @@ describe('notifierSendService', () => {
         expect(publishMessage).toHaveBeenCalledWith({ notifications });
     });
 
+    it('should return a 200 status code and success message', async () => {
+        const notifications: NotifyType[] = [
+            {
+                priority: 'HIGH',
+                userId: '28360287-9c42-4f14-971b-6e657bf030b5',
+                title: 'title',
+                message: 'message',
+            },
+        ];
+
+        const service = await notifierSendService({ notifications });
+
+        expect(service).toEqual({
+            statusCode: 200,
+            body: JSON.stringify({
+                message: 'Notifications sent successfully',
+            }),
+        });
+    });
+
     it('should throw an error if publishMessage fails', async () => {
         const notifications: NotifyType[] = [
             {
