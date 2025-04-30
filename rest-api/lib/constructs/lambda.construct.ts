@@ -7,13 +7,11 @@ import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
 import { ApiConstruct } from './api.construct';
 import { SNSConstruct } from './sns.construct';
-import { DynamoConstruct } from './dynamo.construct';
 import { SQSConstruct } from './sqs.construct';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
 interface LambdaStackProps {
     sqsConstruct: SQSConstruct;
-    dynamoConstruct: DynamoConstruct;
     snsConstruct: SNSConstruct;
     apiConstruct: ApiConstruct;
 }
@@ -68,7 +66,6 @@ export class LambdaConstruct extends Construct {
     }
 
     private createProcessFunction(props: LambdaStackProps) {
-        const { notifierTable } = props.dynamoConstruct;
         const { notifierEmailQueue, notifierSMSQueue, notifierWhatsappQueue } = props.sqsConstruct;
 
         const ACCOUNT_SID = StringParameter.fromStringParameterName(this, 'accountSidParameter', '/twilio/accountSid');
@@ -97,7 +94,6 @@ export class LambdaConstruct extends Construct {
             entry: 'lambda/handlers.ts',
             handler: 'notifierProcessHandler',
             environment: {
-                DYNAMODB_TABLE_NAME: notifierTable.tableName,
                 TWILIO_ACCOUNT_SID: ACCOUNT_SID.stringValue,
                 TWILIO_AUTH_TOKEN: AUTH_TOKEN.stringValue,
                 TWILIO_SENDER_PHONE: SENDER_PHONE.stringValue,
@@ -137,7 +133,6 @@ export class LambdaConstruct extends Construct {
         notifierEmailQueue.grantConsumeMessages(notiferProcessFunction);
         notifierSMSQueue.grantConsumeMessages(notiferProcessFunction);
         notifierWhatsappQueue.grantConsumeMessages(notiferProcessFunction);
-        notifierTable.grantWriteData(notiferProcessFunction);
 
         return notiferProcessFunction;
     }
