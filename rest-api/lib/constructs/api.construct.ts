@@ -82,19 +82,18 @@ export class ApiConstruct extends Construct {
                         items: {
                             type: JsonSchemaType.OBJECT,
                             properties: {
-                                priority: {
+                                service: {
                                     type: JsonSchemaType.STRING,
-                                    enum: ['HIGH', 'MEDIUM', 'LOW'],
+                                    enum: ['EMAIL', 'SMS', 'WHATSAPP'],
                                 },
                                 title: { type: JsonSchemaType.STRING, minLength: 1, maxLength: 100 },
-                                userId: { type: JsonSchemaType.STRING, format: 'uuid' },
                                 message: {
                                     type: JsonSchemaType.STRING,
                                     minLength: 1,
                                     maxLength: 500,
                                 },
                             },
-                            required: ['priority', 'message', 'title', 'userId'],
+                            required: ['service', 'message', 'title'],
                         },
                     },
                 },
