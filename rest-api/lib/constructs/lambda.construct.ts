@@ -69,7 +69,7 @@ export class LambdaConstruct extends Construct {
 
     private createProcessFunction(props: LambdaStackProps) {
         const { notifierTable } = props.dynamoConstruct;
-        const { notifierHighPriorityQueue, notifierMediumPriorityQueue, notifierLowPriorityQueue } = props.sqsConstruct;
+        const { notifierEmailQueue, notifierSMSQueue, notifierWhatsappQueue } = props.sqsConstruct;
 
         const ACCOUNT_SID = StringParameter.fromStringParameterName(this, 'accountSidParameter', '/twilio/accountSid');
 
@@ -114,29 +114,29 @@ export class LambdaConstruct extends Construct {
         });
 
         notiferProcessFunction.addEventSource(
-            new SqsEventSource(notifierHighPriorityQueue, {
+            new SqsEventSource(notifierEmailQueue, {
                 batchSize: 10,
                 reportBatchItemFailures: true,
             }),
         );
 
         notiferProcessFunction.addEventSource(
-            new SqsEventSource(notifierMediumPriorityQueue, {
+            new SqsEventSource(notifierSMSQueue, {
                 batchSize: 10,
                 reportBatchItemFailures: true,
             }),
         );
 
         notiferProcessFunction.addEventSource(
-            new SqsEventSource(notifierLowPriorityQueue, {
+            new SqsEventSource(notifierWhatsappQueue, {
                 batchSize: 10,
                 reportBatchItemFailures: true,
             }),
         );
 
-        notifierHighPriorityQueue.grantConsumeMessages(notiferProcessFunction);
-        notifierMediumPriorityQueue.grantConsumeMessages(notiferProcessFunction);
-        notifierLowPriorityQueue.grantConsumeMessages(notiferProcessFunction);
+        notifierEmailQueue.grantConsumeMessages(notiferProcessFunction);
+        notifierSMSQueue.grantConsumeMessages(notiferProcessFunction);
+        notifierWhatsappQueue.grantConsumeMessages(notiferProcessFunction);
         notifierTable.grantWriteData(notiferProcessFunction);
 
         return notiferProcessFunction;

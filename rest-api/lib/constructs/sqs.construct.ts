@@ -14,13 +14,13 @@ interface QueueProps {
     notifierSNSTopic: ITopic;
     queueName: string;
     subscriptionName: string;
-    priority: 'LOW' | 'MEDIUM' | 'HIGH';
+    service: 'EMAIL' | 'SMS' | 'WHATSAPP';
 }
 
 export class SQSConstruct extends Construct {
-    public readonly notifierHighPriorityQueue: IQueue;
-    public readonly notifierMediumPriorityQueue: IQueue;
-    public readonly notifierLowPriorityQueue: IQueue;
+    public readonly notifierSMSQueue: IQueue;
+    public readonly notifierEmailQueue: IQueue;
+    public readonly notifierWhatsappQueue: IQueue;
     public readonly notifierDLQ: IQueue;
 
     constructor(scope: Construct, id: string, public readonly props: SQSStackProps) {
@@ -37,28 +37,28 @@ export class SQSConstruct extends Construct {
             queue: this.notifierDLQ,
         };
 
-        this.notifierHighPriorityQueue = this.createNotifierPriorityQueue({
+        this.notifierEmailQueue = this.createNotifierQueue({
             deadLetterQueue,
             notifierSNSTopic,
-            priority: 'HIGH',
-            queueName: 'notifierHighPriorityQueue',
-            subscriptionName: 'highPrioritySubscription',
+            service: 'EMAIL',
+            queueName: 'notifierEmailQueue',
+            subscriptionName: 'emailQueueSubscription',
         });
 
-        this.notifierMediumPriorityQueue = this.createNotifierPriorityQueue({
+        this.notifierSMSQueue = this.createNotifierQueue({
             deadLetterQueue,
             notifierSNSTopic,
-            priority: 'MEDIUM',
-            queueName: 'notifierMediumPriorityQueue',
-            subscriptionName: 'mediumPrioritySubscription',
+            service: 'SMS',
+            queueName: 'notifierSMSQueue',
+            subscriptionName: 'smsQueueSubscription',
         });
 
-        this.notifierLowPriorityQueue = this.createNotifierPriorityQueue({
+        this.notifierWhatsappQueue = this.createNotifierQueue({
             deadLetterQueue,
             notifierSNSTopic,
-            priority: 'LOW',
-            queueName: 'notifierLowPriorityQueue',
-            subscriptionName: 'lowPrioritySubscription',
+            service: 'WHATSAPP',
+            queueName: 'notifierWhatsappQueue',
+            subscriptionName: 'whatsappQueueSubscription',
         });
     }
 
@@ -72,24 +72,24 @@ export class SQSConstruct extends Construct {
         return notifierDLQ;
     }
 
-    private createNotifierPriorityQueue({
+    private createNotifierQueue({
         deadLetterQueue,
         notifierSNSTopic,
         queueName,
         subscriptionName,
-        priority,
+        service,
     }: QueueProps) {
-        const notifierPriorityQueue = new Queue(this, queueName, {
+        const notifierQueue = new Queue(this, queueName, {
             queueName,
             visibilityTimeout: Duration.seconds(30),
             retentionPeriod: Duration.days(1),
             deadLetterQueue,
         });
 
-        notifierPriorityQueue.addToResourcePolicy(
+        notifierQueue.addToResourcePolicy(
             new PolicyStatement({
                 actions: ['SQS:SendMessage'],
-                resources: [notifierPriorityQueue.queueArn],
+                resources: [notifierQueue.queueArn],
                 principals: [new ServicePrincipal('sns.amazonaws.com')],
                 effect: Effect.ALLOW,
                 conditions: {
@@ -102,16 +102,16 @@ export class SQSConstruct extends Construct {
 
         new Subscription(this, subscriptionName, {
             topic: notifierSNSTopic,
-            endpoint: notifierPriorityQueue.queueArn,
+            endpoint: notifierQueue.queueArn,
             protocol: SubscriptionProtocol.SQS,
             rawMessageDelivery: true,
             filterPolicy: {
                 priority: SubscriptionFilter.stringFilter({
-                    allowlist: [priority],
+                    allowlist: [service],
                 }),
             },
         });
 
-        return notifierPriorityQueue;
+        return notifierQueue;
     }
 }
