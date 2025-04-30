@@ -10,12 +10,11 @@ export const notifierProcessService = async ({ records }: { records: SQSRecord[]
         try {
             const notification: NotifyType = JSON.parse(record.body);
 
-            const { message, priority, title, userId } = notification;
+            const { message, service, title } = notification;
 
             await notifierTable.putItem({
                 message,
-                priority,
-                userId,
+                service,
                 title,
             });
 

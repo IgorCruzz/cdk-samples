@@ -14,8 +14,7 @@ describe('notifierSendService', () => {
     it('should be able to call publishMessage', async () => {
         const notifications: NotifyType[] = [
             {
-                priority: 'HIGH',
-                userId: '28360287-9c42-4f14-971b-6e657bf030b5',
+                service: 'WHATSAPP',
                 title: 'title',
                 message: 'message',
             },
@@ -31,8 +30,7 @@ describe('notifierSendService', () => {
     it('should return a 200 status code and success message', async () => {
         const notifications: NotifyType[] = [
             {
-                priority: 'HIGH',
-                userId: '28360287-9c42-4f14-971b-6e657bf030b5',
+                service: 'WHATSAPP',
                 title: 'title',
                 message: 'message',
             },
@@ -51,8 +49,7 @@ describe('notifierSendService', () => {
     it('should throw an error if publishMessage fails', async () => {
         const notifications: NotifyType[] = [
             {
-                priority: 'HIGH',
-                userId: '28360287-9c42-4f14-971b-6e657bf030b5',
+                service: 'WHATSAPP',
                 title: 'title',
                 message: 'message',
             },

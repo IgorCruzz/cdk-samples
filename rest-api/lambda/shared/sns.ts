@@ -9,15 +9,14 @@ export const publishMessage = async ({ notifications }: { notifications: NotifyT
         PublishBatchRequestEntries: notifications.map((item) => ({
             Id: randomUUID(),
             Message: JSON.stringify({
-                userId: item.userId,
                 message: item.message,
-                priority: item.priority,
+                service: item.service,
                 title: item.title,
             }),
             MessageAttributes: {
                 priority: {
                     DataType: 'String',
-                    StringValue: item.priority,
+                    StringValue: item.service,
                 },
             },
         })),

@@ -12,15 +12,11 @@ export const putItem = async (message: NotifyType) => {
     const params: PutCommandInput = {
         TableName: process.env.DYNAMODB_TABLE_NAME,
         Item: {
-            PK: `USER#${message.userId}`,
+            PK: `USER#`,
             SK: `NOTIFICATION#${PK}`,
-            UserId: message.userId,
             Message: message.message,
-            Priority: message.priority,
             Title: message.title,
             Timestamp: new Date().toISOString(),
-            GSI1PK: message.priority,
-            GSI1SK: `USER#${message.userId}`,
         },
     };
 
