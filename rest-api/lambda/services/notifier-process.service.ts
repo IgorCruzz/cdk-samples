@@ -1,6 +1,6 @@
 import { SQSBatchResponse, SQSRecord } from 'aws-lambda';
 import { NotifyType } from '../types';
-import { sendWhatsAppMessage } from '../shared';
+import { sendWhatsAppMessage, sendMail } from '../shared';
 
 export const notifierProcessService = async ({ records }: { records: SQSRecord[] }): Promise<SQSBatchResponse> => {
     const batchItemFailures = [];
@@ -13,6 +13,12 @@ export const notifierProcessService = async ({ records }: { records: SQSRecord[]
 
             if (service === 'WHATSAPP') {
                 await sendWhatsAppMessage({
+                    message,
+                });
+            }
+
+            if (service === 'EMAIL') {
+                await sendMail({
                     message,
                 });
             }
