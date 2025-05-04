@@ -91,6 +91,7 @@ describe('notifierProcessService', () => {
 
         expect(sendMail).toHaveBeenCalled();
         expect(sendMail).toHaveBeenCalledWith({
+            subject: 'title',
             message: 'message',
         });
     });
