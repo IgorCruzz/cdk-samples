@@ -1,12 +1,28 @@
-import { notifierProcessService } from '../../services';
+import { NotifierProcessService, NotifierProcessServiceInterface } from '../../services';
 import { SQSRecord } from 'aws-lambda';
-import * as twilio from '../../shared/twilio';
-import * as ses from '../../shared/ses';
+import { SesAdapterInterface, TwilioAdapterInterface } from '../../shared';
 
-describe('notifierProcessService', () => {
-    beforeEach(() => {
-        jest.spyOn(twilio, 'sendWhatsAppMessage').mockImplementation();
-        jest.spyOn(ses, 'sendMail').mockImplementation();
+class TwilioAdapterStub implements TwilioAdapterInterface {
+    sendWhatsAppMessage = async () => {
+        return Promise.resolve();
+    };
+}
+
+class SesAdapterStub implements SesAdapterInterface {
+    sendMail = async () => {
+        return Promise.resolve();
+    };
+}
+
+let twilioAdapterStub: TwilioAdapterInterface;
+let notifierProcessService: NotifierProcessServiceInterface;
+let sesAdapterStub: SesAdapterInterface;
+
+describe('NotifierProcessService', () => {
+    beforeAll(() => {
+        twilioAdapterStub = new TwilioAdapterStub();
+        sesAdapterStub = new SesAdapterStub();
+        notifierProcessService = new NotifierProcessService(twilioAdapterStub, sesAdapterStub);
     });
 
     it('should be defined', async () => {
@@ -44,13 +60,13 @@ describe('notifierProcessService', () => {
             },
         ];
 
-        const sendWhatsAppMessage = jest.spyOn(twilio, 'sendWhatsAppMessage');
+        const sendWhatsAppMessage = jest.spyOn(twilioAdapterStub, 'sendWhatsAppMessage');
 
-        await notifierProcessService({ records });
+        await notifierProcessService.process({ records });
 
         expect(sendWhatsAppMessage).toHaveBeenCalled();
         expect(sendWhatsAppMessage).toHaveBeenCalledWith({
-            message: 'message',
+            notification: { message: 'message', service: 'WHATSAPP', title: 'title' },
         });
     });
 
@@ -85,14 +101,13 @@ describe('notifierProcessService', () => {
             },
         ];
 
-        const sendMail = jest.spyOn(ses, 'sendMail');
+        const sendMail = jest.spyOn(sesAdapterStub, 'sendMail');
 
-        await notifierProcessService({ records });
+        await notifierProcessService.process({ records });
 
         expect(sendMail).toHaveBeenCalled();
         expect(sendMail).toHaveBeenCalledWith({
-            subject: 'title',
-            message: 'message',
+            notification: { message: 'message', service: 'EMAIL', title: 'title' },
         });
     });
 
@@ -127,7 +142,7 @@ describe('notifierProcessService', () => {
             },
         ];
 
-        const service = await notifierProcessService({ records });
+        const service = await notifierProcessService.process({ records });
 
         expect(service).toEqual({
             batchItemFailures: [],
@@ -135,7 +150,7 @@ describe('notifierProcessService', () => {
     });
 
     it('should return batchItemFailures when there is an error processing a record', async () => {
-        jest.spyOn(twilio, 'sendWhatsAppMessage').mockRejectedValue(new Error('Error processing item'));
+        jest.spyOn(twilioAdapterStub, 'sendWhatsAppMessage').mockRejectedValue(new Error('Error processing item'));
 
         const records: SQSRecord[] = [
             {
@@ -167,7 +182,7 @@ describe('notifierProcessService', () => {
             },
         ];
 
-        const service = await notifierProcessService({ records });
+        const service = await notifierProcessService.process({ records });
 
         expect(service).toEqual({
             batchItemFailures: [

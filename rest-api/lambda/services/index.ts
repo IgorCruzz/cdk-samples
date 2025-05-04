@@ -1,3 +1,6 @@
-export { notifierSendService } from '../services/notifier-send.service';
-export { notifierProcessDLQService } from '../services/notifier-process-dlq.service';
-export { notifierProcessService } from '../services/notifier-process.service';
+export { NotifierSendService, NotifierSendServiceInterface } from '../services/notifier-send.service';
+export {
+    NotifierProcessDLQService,
+    NotifierProcessDLQServiceInterface,
+} from '../services/notifier-process-dlq.service';
+export { NotifierProcessService, NotifierProcessServiceInterface } from '../services/notifier-process.service';

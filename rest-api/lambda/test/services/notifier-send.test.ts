@@ -1,10 +1,20 @@
-import { notifierSendService } from '../../services';
-import * as sns from '../../shared/sns';
+import { NotifierSendService, NotifierSendServiceInterface } from '../../services';
 import { NotifyType } from '../../types';
+import { SNSSAdapterInterface } from '../../shared';
+
+class SNSSAdapterStub implements SNSSAdapterInterface {
+    publishMessage = async () => {
+        return Promise.resolve();
+    };
+}
+
+let notifierSendService: NotifierSendServiceInterface;
+let snsAdapterStub: SNSSAdapterInterface;
 
 describe('notifierSendService', () => {
     beforeAll(() => {
-        jest.spyOn(sns, 'publishMessage').mockResolvedValue();
+        snsAdapterStub = new SNSSAdapterStub();
+        notifierSendService = new NotifierSendService(snsAdapterStub);
     });
 
     it('should be defined', async () => {
@@ -20,9 +30,9 @@ describe('notifierSendService', () => {
             },
         ];
 
-        const publishMessage = jest.spyOn(sns, 'publishMessage');
+        const publishMessage = jest.spyOn(snsAdapterStub, 'publishMessage');
 
-        await notifierSendService({ notifications });
+        await notifierSendService.send({ notifications });
 
         expect(publishMessage).toHaveBeenCalledWith({ notifications });
     });
@@ -36,7 +46,7 @@ describe('notifierSendService', () => {
             },
         ];
 
-        const service = await notifierSendService({ notifications });
+        const service = await notifierSendService.send({ notifications });
 
         expect(service).toEqual({
             statusCode: 200,
@@ -55,9 +65,9 @@ describe('notifierSendService', () => {
             },
         ];
 
-        jest.spyOn(sns, 'publishMessage').mockRejectedValue(new Error('Error sending notification'));
+        jest.spyOn(snsAdapterStub, 'publishMessage').mockRejectedValue(new Error('Error sending notification'));
 
-        const service = await notifierSendService({ notifications });
+        const service = await notifierSendService.send({ notifications });
 
         expect(service).toEqual({
             statusCode: 500,

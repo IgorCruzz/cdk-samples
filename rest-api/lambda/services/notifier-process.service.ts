@@ -1,35 +1,44 @@
 import { SQSBatchResponse, SQSRecord } from 'aws-lambda';
 import { NotifyType } from '../types';
-import { sendWhatsAppMessage, sendMail } from '../shared';
+import { TwilioAdapterInterface, SesAdapterInterface } from '../shared';
 
-export const notifierProcessService = async ({ records }: { records: SQSRecord[] }): Promise<SQSBatchResponse> => {
-    const batchItemFailures = [];
+export interface NotifierProcessServiceInterface {
+    process: (args: { records: SQSRecord[] }) => Promise<SQSBatchResponse>;
+}
 
-    for (const record of records) {
-        try {
-            const notification: NotifyType = JSON.parse(record.body);
+export class NotifierProcessService implements NotifierProcessServiceInterface {
+    constructor(
+        private readonly twilioAdapter: TwilioAdapterInterface,
+        private readonly sesAdapter: SesAdapterInterface,
+    ) {}
 
-            const { message, service, title } = notification;
+    process = async ({ records }: { records: SQSRecord[] }): Promise<SQSBatchResponse> => {
+        const serviceSender: {
+            [key: string]: (args: { notification: NotifyType }) => Promise<void>;
+        } = {
+            EMAIL: this.sesAdapter.sendMail,
+            WHATSAPP: this.twilioAdapter.sendWhatsAppMessage,
+        };
 
-            if (service === 'WHATSAPP') {
-                await sendWhatsAppMessage({
-                    message,
+        const batchItemFailures = [];
+
+        for (const record of records) {
+            try {
+                const notification: NotifyType = JSON.parse(record.body);
+
+                const { service } = notification;
+
+                await serviceSender[service]({
+                    notification,
+                });
+            } catch (error) {
+                console.error('Erro ao processar a mensagem:', error);
+                batchItemFailures.push({
+                    itemIdentifier: record.messageId,
                 });
             }
-
-            if (service === 'EMAIL') {
-                await sendMail({
-                    subject: title,
-                    message,
-                });
-            }
-        } catch (error) {
-            console.error('Erro ao processar a mensagem:', error);
-            batchItemFailures.push({
-                itemIdentifier: record.messageId,
-            });
         }
-    }
 
-    return { batchItemFailures };
-};
+        return { batchItemFailures };
+    };
+}

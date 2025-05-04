@@ -1,3 +1,3 @@
-export { publishMessage } from './sns';
-export { sendWhatsAppMessage } from './twilio';
-export { sendMail } from './ses';
+export { SNSSAdapter, SNSSAdapterInterface } from './sns';
+export { TwilioAdapter, TwilioAdapterInterface } from './twilio';
+export { SesAdapter, SesAdapterInterface } from './ses';
