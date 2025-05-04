@@ -3,10 +3,12 @@ import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 const client = new SESClient({});
 
 export const sendMail = async ({ message, subject }: { message: string; subject: string }) => {
+    const TO_ADDRESS = process.env.SES_IDENTITY;
+
     const result = await client.send(
         new SendEmailCommand({
             Destination: {
-                ToAddresses: ['igorcruz.dev@gmail.com'],
+                ToAddresses: TO_ADDRESS ? [TO_ADDRESS] : [],
             },
             Message: {
                 Subject: { Data: subject },
@@ -14,7 +16,7 @@ export const sendMail = async ({ message, subject }: { message: string; subject:
                     Text: { Data: message },
                 },
             },
-            Source: 'igorcruz.dev@gmail.com',
+            Source: process.env.SES_IDENTITY,
         }),
     );
 

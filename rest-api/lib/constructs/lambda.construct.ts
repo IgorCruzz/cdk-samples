@@ -85,6 +85,12 @@ export class LambdaConstruct extends Construct {
             '/twilio/mynumber',
         );
 
+        const SES_IDENTITY = StringParameter.fromStringParameterName(
+            this,
+            'emailIdentityParameter',
+            '/ses/emailIdentity',
+        );
+
         const notiferProcessFunction = new NodejsFunction(this, 'notifierProcessFunction', {
             memorySize: 256,
             architecture: Architecture.X86_64,
@@ -99,6 +105,7 @@ export class LambdaConstruct extends Construct {
                 TWILIO_AUTH_TOKEN: AUTH_TOKEN.stringValue,
                 TWILIO_SENDER_PHONE: SENDER_PHONE.stringValue,
                 TWILIO_RECEIVER_PHONE: RECEIVER_PHONE.stringValue,
+                SES_IDENTITY: SES_IDENTITY.stringValue,
             },
             bundling: {
                 minify: true,
