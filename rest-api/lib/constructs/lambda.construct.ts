@@ -9,6 +9,7 @@ import { ApiConstruct } from './api.construct';
 import { SNSConstruct } from './sns.construct';
 import { SQSConstruct } from './sqs.construct';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
 interface LambdaStackProps {
     sqsConstruct: SQSConstruct;
@@ -108,6 +109,14 @@ export class LambdaConstruct extends Construct {
             tracing: Tracing.ACTIVE,
             logRetention: RetentionDays.ONE_WEEK,
         });
+
+        notiferProcessFunction.addToRolePolicy(
+            new PolicyStatement({
+                actions: ['ses:SendEmail', 'ses:SendRawEmail'],
+                resources: ['arn:aws:ses:us-east-1:652824104144:identity/igorcruz.dev@gmail.com'],
+                effect: Effect.ALLOW,
+            }),
+        );
 
         notiferProcessFunction.addEventSource(
             new SqsEventSource(notifierEmailQueue, {
