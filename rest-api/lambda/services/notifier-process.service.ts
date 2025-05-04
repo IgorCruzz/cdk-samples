@@ -9,7 +9,7 @@ export const notifierProcessService = async ({ records }: { records: SQSRecord[]
         try {
             const notification: NotifyType = JSON.parse(record.body);
 
-            const { message, service } = notification;
+            const { message, service, title } = notification;
 
             if (service === 'WHATSAPP') {
                 await sendWhatsAppMessage({
@@ -19,6 +19,7 @@ export const notifierProcessService = async ({ records }: { records: SQSRecord[]
 
             if (service === 'EMAIL') {
                 await sendMail({
+                    subject: title,
                     message,
                 });
             }
