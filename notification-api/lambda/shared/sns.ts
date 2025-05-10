@@ -26,7 +26,7 @@ export class SNSSAdapter implements SNSSAdapterInterface {
     publishMessage = async (params: { data: unknown; attributes?: { dataType: string; stringValue: string }[] }) => {
         const publishCommandInput: PublishCommandInput = {
             Message: JSON.stringify(params.data),
-            TopicArn: process.env.SNS_TOPIC_ARN,
+            TopicArn: process.env.SNS_DLQ_TOPIC_ARN,
             MessageAttributes: params.attributes?.reduce((acc, { dataType, stringValue }) => {
                 acc[dataType] = {
                     DataType: dataType,
