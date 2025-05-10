@@ -1,29 +1,34 @@
-import { PublishBatchCommand, PublishBatchCommandInput, SNSClient } from '@aws-sdk/client-sns';
-import { NotifyType } from '../types';
+import { MessageAttributeValue, PublishBatchCommand, PublishBatchCommandInput, SNSClient } from '@aws-sdk/client-sns';
 import { randomUUID } from 'node:crypto';
 
 const snsClient = new SNSClient({});
 
 export interface SNSSAdapterInterface {
-    publishMessage: (params: { notifications: NotifyType[] }) => Promise<void>;
+    publishBatchMessage: (params: {
+        data: unknown[];
+        attributes?: { dataType: string; stringValue: string }[];
+    }) => Promise<void>;
 }
 
 export class SNSSAdapter implements SNSSAdapterInterface {
-    publishMessage = async ({ notifications }: { notifications: NotifyType[] }) => {
+    publishBatchMessage = async ({
+        data,
+        attributes,
+    }: {
+        data: unknown[];
+        attributes?: { dataType: string; stringValue: string }[];
+    }) => {
         const publishBatchCommandInput: PublishBatchCommandInput = {
-            PublishBatchRequestEntries: notifications.map((item) => ({
+            PublishBatchRequestEntries: data.map((item) => ({
                 Id: randomUUID(),
-                Message: JSON.stringify({
-                    message: item.message,
-                    service: item.service,
-                    title: item.title,
-                }),
-                MessageAttributes: {
-                    priority: {
-                        DataType: 'String',
-                        StringValue: item.service,
-                    },
-                },
+                Message: JSON.stringify(item),
+                MessageAttributes: attributes?.reduce((acc, { dataType, stringValue }) => {
+                    acc[dataType] = {
+                        DataType: dataType,
+                        StringValue: stringValue,
+                    };
+                    return acc;
+                }, {} as Record<string, MessageAttributeValue>),
             })),
             TopicArn: process.env.SNS_TOPIC_ARN,
         };

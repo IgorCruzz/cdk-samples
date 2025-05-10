@@ -3,7 +3,7 @@ import { NotifyType } from '../../types';
 import { SNSSAdapterInterface } from '../../shared';
 
 class SNSSAdapterStub implements SNSSAdapterInterface {
-    publishMessage = async () => {
+    publishBatchMessage = async () => {
         return Promise.resolve();
     };
 }
@@ -21,7 +21,7 @@ describe('notifierSendService', () => {
         expect(notifierSendService).toBeDefined();
     });
 
-    it('should be able to call publishMessage', async () => {
+    it('should be able to call publishBatchMessage', async () => {
         const notifications: NotifyType[] = [
             {
                 service: 'WHATSAPP',
@@ -30,11 +30,14 @@ describe('notifierSendService', () => {
             },
         ];
 
-        const publishMessage = jest.spyOn(snsAdapterStub, 'publishMessage');
+        const publishBatchMessage = jest.spyOn(snsAdapterStub, 'publishBatchMessage');
 
         await notifierSendService.send({ notifications });
 
-        expect(publishMessage).toHaveBeenCalledWith({ notifications });
+        expect(publishBatchMessage).toHaveBeenCalledWith({
+            data: notifications,
+            attributes: [{ stringValue: 'service', dataType: 'String' }],
+        });
     });
 
     it('should return a 200 status code and success message', async () => {
@@ -56,7 +59,7 @@ describe('notifierSendService', () => {
         });
     });
 
-    it('should throw an error if publishMessage fails', async () => {
+    it('should throw an error if publishBatchMessage fails', async () => {
         const notifications: NotifyType[] = [
             {
                 service: 'WHATSAPP',
@@ -65,7 +68,7 @@ describe('notifierSendService', () => {
             },
         ];
 
-        jest.spyOn(snsAdapterStub, 'publishMessage').mockRejectedValue(new Error('Error sending notification'));
+        jest.spyOn(snsAdapterStub, 'publishBatchMessage').mockRejectedValue(new Error('Error sending notification'));
 
         const service = await notifierSendService.send({ notifications });
 

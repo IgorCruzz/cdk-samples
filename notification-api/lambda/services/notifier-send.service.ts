@@ -11,7 +11,15 @@ export class NotifierSendService implements NotifierSendServiceInterface {
 
     async send({ notifications }: { notifications: NotifyType[] }): Promise<APIGatewayProxyResult> {
         try {
-            await this.snsAdapter.publishMessage({ notifications });
+            await this.snsAdapter.publishBatchMessage({
+                data: notifications,
+                attributes: [
+                    {
+                        dataType: 'String',
+                        stringValue: 'service',
+                    },
+                ],
+            });
 
             return {
                 statusCode: 200,
