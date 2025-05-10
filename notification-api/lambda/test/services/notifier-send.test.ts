@@ -1,12 +1,7 @@
 import { NotifierSendService, NotifierSendServiceInterface } from '../../services';
 import { NotifyType } from '../../types';
 import { SNSSAdapterInterface } from '../../shared';
-
-class SNSSAdapterStub implements SNSSAdapterInterface {
-    publishBatchMessage = async () => {
-        return Promise.resolve();
-    };
-}
+import { SNSSAdapterStub } from '../stub/shared';
 
 let notifierSendService: NotifierSendServiceInterface;
 let snsAdapterStub: SNSSAdapterInterface;
