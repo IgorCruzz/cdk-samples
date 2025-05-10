@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { Topic, TracingConfig, ITopic } from 'aws-cdk-lib/aws-sns';
+import { Topic, TracingConfig, ITopic, Subscription, SubscriptionProtocol } from 'aws-cdk-lib/aws-sns';
 
 export class SNSConstruct extends Construct {
     public readonly notifierSNSTopic: ITopic;
@@ -8,6 +8,7 @@ export class SNSConstruct extends Construct {
         super(scope, id);
 
         this.notifierSNSTopic = this.createNotifierSNSTopic();
+        this.crateAlertSNSTopic();
     }
 
     private createNotifierSNSTopic() {
@@ -16,5 +17,22 @@ export class SNSConstruct extends Construct {
             topicName: 'notifierTopic',
             tracingConfig: TracingConfig.ACTIVE,
         });
+    }
+
+    private crateAlertSNSTopic() {
+        const topic = new Topic(this, 'alertSNS', {
+            displayName: 'Alert SNS Topic',
+            topicName: 'alertTopic',
+            tracingConfig: TracingConfig.ACTIVE,
+        });
+
+        new Subscription(this, 'alertTopicSubscription', {
+            topic: topic,
+            endpoint: process.env.TWILIO_SENDER_PHONE as string,
+            protocol: SubscriptionProtocol.SMS,
+            rawMessageDelivery: true,
+        });
+
+        return;
     }
 }
