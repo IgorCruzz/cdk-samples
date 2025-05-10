@@ -1,1 +1,1 @@
-(../diagrams/rest-api.jpg)
+<img src="https://github.com/IgorCruzz/cdk-samples/blob/main/diagrams/rest-api.jpg" alt="-" />
