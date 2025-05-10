@@ -30,7 +30,6 @@ export class SNSConstruct extends Construct {
             topic: topic,
             endpoint: process.env.TWILIO_SENDER_PHONE as string,
             protocol: SubscriptionProtocol.SMS,
-            rawMessageDelivery: true,
         });
 
         return;
