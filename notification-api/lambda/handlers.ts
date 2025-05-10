@@ -13,9 +13,11 @@ export const notifierProcessHandler = async (event: SQSEvent) => {
 };
 
 export const notifierProcessDLQHandler = async (event: SQSEvent) => {
+    const { Records } = event;
+
     const notifierProcessDLQService = new NotifierProcessDLQService();
 
-    return await notifierProcessDLQService.process(event);
+    return await notifierProcessDLQService.process({ records: Records });
 };
 
 export const notifierSendHandler = async (event: APIGatewayProxyEvent) => {

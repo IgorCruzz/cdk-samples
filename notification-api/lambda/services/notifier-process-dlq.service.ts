@@ -1,12 +1,12 @@
-import { SQSEvent } from 'aws-lambda';
+import { SQSRecord } from 'aws-lambda';
 
 export interface NotifierProcessDLQServiceInterface {
-    process(event: SQSEvent): Promise<void>;
+    process({ records }: { records: SQSRecord[] }): Promise<void>;
 }
 
 export class NotifierProcessDLQService implements NotifierProcessDLQServiceInterface {
-    process = async (event: SQSEvent): Promise<void> => {
-        for (const record of event.Records) {
+    process = async ({ records }: { records: SQSRecord[] }): Promise<void> => {
+        for (const record of records) {
             try {
                 const body = JSON.parse(record.body);
 
