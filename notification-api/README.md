@@ -1,4 +1,6 @@
+# 📣 Notificações Serverless (Email & WhatsApp)
 
+Este projeto é uma aplicação **serverless** para envio de **notificações em tempo real** via **Email (Amazon SES)** e **WhatsApp (Twilio)**. Ele utiliza uma arquitetura totalmente escalável e gerenciada com serviços da AWS, como **API Gateway**, **Lambda**, **SNS**, **SQS** e **SES**.
 
 ## 🛠️ Arquitetura
 
