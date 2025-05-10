@@ -1,4 +1,4 @@
-import { NotifierProcessDLQService, NotifierProcessDLQServiceInterface } from '../services';
+import { NotifierProcessDLQService, NotifierProcessDLQServiceInterface } from '../../services';
 
 let notifierProcessDLQService: NotifierProcessDLQServiceInterface;
 
