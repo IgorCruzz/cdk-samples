@@ -10,3 +10,7 @@ Este repositório contém exemplos práticos de aplicações utilizando o **AWS 
 ## Estrutura
 
 Cada pasta representa um exemplo independente, com foco em diferentes serviços ou padrões de arquitetura com o CDK.
+
+
+
+- [Notification API](./notification-api) – Envio de notificações por Email (SES) e WhatsApp (Twilio) com arquitetura serverless.
