@@ -45,14 +45,6 @@ export class SQSConstruct extends Construct {
             subscriptionName: 'emailQueueSubscription',
         });
 
-        this.notifierSMSQueue = this.createNotifierQueue({
-            deadLetterQueue,
-            notifierSNSTopic,
-            service: 'SMS',
-            queueName: 'notifierSMSQueue',
-            subscriptionName: 'smsQueueSubscription',
-        });
-
         this.notifierWhatsappQueue = this.createNotifierQueue({
             deadLetterQueue,
             notifierSNSTopic,
