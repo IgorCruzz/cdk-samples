@@ -48,6 +48,7 @@ export class LambdaConstruct extends Construct {
                 minify: true,
                 sourceMap: true,
                 target: 'es2020',
+                externalModules: ['@aws-sdk/*'],
             },
             loggingFormat: LoggingFormat.JSON,
             tracing: Tracing.ACTIVE,

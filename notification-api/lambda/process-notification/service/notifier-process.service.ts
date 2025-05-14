@@ -1,6 +1,7 @@
 import { SQSBatchResponse, SQSRecord } from 'aws-lambda';
 import { NotifyType } from '../../shared/types';
-import { TwilioAdapterInterface, SesAdapterInterface } from '../../shared';
+import { TwilioAdapterInterface } from '../../shared/adapters/twilio';
+import { SesAdapterInterface } from '../../shared/adapters/ses';
 
 export interface NotifierProcessServiceInterface {
     process: (args: { records: SQSRecord[] }) => Promise<SQSBatchResponse>;

@@ -1,5 +1,5 @@
 import { SQSRecord } from 'aws-lambda';
-import { SNSSAdapterInterface } from '../../shared';
+import { SNSSAdapterInterface } from '../../shared/adapters/sns';
 
 export interface NotifierProcessDLQServiceInterface {
     process({ records }: { records: SQSRecord[] }): Promise<void>;

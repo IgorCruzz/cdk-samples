@@ -1,6 +1,6 @@
 import { SQSEvent } from 'aws-lambda';
 import { NotifierProcessDLQService } from './service/process-dlq.service';
-import { SNSSAdapter } from '../shared';
+import { SNSSAdapter } from '../shared/adapters/sns';
 
 export const notifierProcessDLQHandler = async (event: SQSEvent) => {
     const { Records } = event;

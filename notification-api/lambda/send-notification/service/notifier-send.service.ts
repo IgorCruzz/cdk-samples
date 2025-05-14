@@ -1,6 +1,6 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
 import { NotifyType } from '../../shared/types';
-import { SNSSAdapterInterface } from '../../shared';
+import { SNSSAdapterInterface } from '../../shared/adapters/sns';
 
 export interface NotifierSendServiceInterface {
     send: (params: { notifications: NotifyType[] }) => Promise<APIGatewayProxyResult>;
