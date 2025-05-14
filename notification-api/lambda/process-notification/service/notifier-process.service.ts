@@ -26,13 +26,11 @@ export class NotifierProcessService implements NotifierProcessServiceInterface {
             try {
                 const notification: NotifyType = JSON.parse(record.body);
 
-                throw new Error('Simulando erro para teste de falha de processamento');
+                const { service } = notification;
 
-                // const { service } = notification;
-
-                // await serviceSender[service]({
-                //     notification,
-                // });
+                await serviceSender[service]({
+                    notification,
+                });
             } catch (error) {
                 console.error('Erro ao processar a mensagem:', error);
                 batchItemFailures.push({
