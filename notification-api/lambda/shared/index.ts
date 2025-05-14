@@ -1,3 +1,3 @@
-export { SNSSAdapter, SNSSAdapterInterface } from './sns';
-export { TwilioAdapter, TwilioAdapterInterface } from './twilio';
-export { SesAdapter, SesAdapterInterface } from './ses';
+export { SesAdapter, SesAdapterInterface } from './adapters/ses';
+export { TwilioAdapter, TwilioAdapterInterface } from './adapters/twilio';
+export { SNSSAdapter, SNSSAdapterInterface } from './adapters/sns';
