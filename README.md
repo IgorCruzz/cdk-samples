@@ -14,3 +14,4 @@ Cada pasta representa um exemplo independente, com foco em diferentes serviços 
 
 
 - [Notification API](./notification-api) – Envio de notificações por Email (SES) e WhatsApp (Twilio) com arquitetura serverless.
+- [Static WebSite](./s3-cloudfront) – Hospedagem de site estático com S3 e distribuição global via CloudFront.
