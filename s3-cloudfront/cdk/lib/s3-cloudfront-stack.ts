@@ -17,11 +17,15 @@ export class S3CloudfrontStack extends Stack {
         '/certs/notifier-api',
     );
 
-    this.createWebSite({ certificate: certificate.stringValue,  domainNames: ['web.igorcruz.space'] }); 
+    this.createWebSite({ 
+      bucketName: 'igorcruz-web',
+      certificate: certificate.stringValue,  
+      domainNames: ['web.igorcruz.space'] }); 
   }
 
-  createWebSite = ({  certificate, domainNames }: {  certificate: string, domainNames: string[]}) => {
+  createWebSite = ({  certificate, domainNames, bucketName }: { bucketName: string; certificate: string, domainNames: string[]}) => {
      const bucket = new Bucket(this, 'BucketExample', { 
+      bucketName,
       blockPublicAccess: {
         blockPublicAcls: false,
         ignorePublicAcls: false,
@@ -38,7 +42,8 @@ export class S3CloudfrontStack extends Stack {
     defaultBehavior: {
       origin: new S3StaticWebsiteOrigin(bucket),     
       compress: true,
-      allowedMethods: AllowedMethods.ALLOW_GET_HEAD,              
+      allowedMethods: AllowedMethods.ALLOW_GET_HEAD,  
+                  
     },       
     defaultRootObject: 'index.html',
     certificate: Certificate.fromCertificateArn(this, 'notifierCertificate', certificate),
@@ -46,6 +51,7 @@ export class S3CloudfrontStack extends Stack {
     enableIpv6: true, 
     httpVersion: HttpVersion.HTTP2,
     domainNames, 
+
   }) 
 
   return new CfnOutput(this, 'BucketWebsiteURL', {
