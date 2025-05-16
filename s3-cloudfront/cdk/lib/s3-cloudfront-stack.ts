@@ -1,6 +1,6 @@
 import { RemovalPolicy, Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
 import { Bucket } from 'aws-cdk-lib/aws-s3'; 
-import { AllowedMethods, Distribution, HttpVersion, PriceClass } from 'aws-cdk-lib/aws-cloudfront';
+import { AllowedMethods, Distribution, HttpVersion, PriceClass, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
 import { Construct } from 'constructs';
 import { S3StaticWebsiteOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
@@ -40,7 +40,8 @@ export class S3CloudfrontStack extends Stack {
     const distribution = new Distribution(this, 'CloudfrontDistribution', {
     enabled: true,
     defaultBehavior: {
-      origin: new S3StaticWebsiteOrigin(bucket),     
+      origin: new S3StaticWebsiteOrigin(bucket),   
+      viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,  
       compress: true,
       allowedMethods: AllowedMethods.ALLOW_GET_HEAD,  
                   
