@@ -1,1 +1,1 @@
-export { NotifyType } from './notifier.type';
+export { NotifyType } from "./notifier.type";

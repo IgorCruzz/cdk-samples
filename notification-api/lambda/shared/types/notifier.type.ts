@@ -1,5 +1,5 @@
 export type NotifyType = {
-    message: string;
-    service: 'EMAIL' | 'SMS' | 'WHATSAPP';
-    title: string;
+  message: string;
+  service: "EMAIL" | "SMS" | "WHATSAPP";
+  title: string;
 };

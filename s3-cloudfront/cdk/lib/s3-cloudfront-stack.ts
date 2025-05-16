@@ -20,7 +20,8 @@ export class S3CloudfrontStack extends Stack {
     this.createWebSite({ 
       bucketName: 'igorcruz-web',
       certificate: certificate.stringValue,  
-      domainNames: ['web.igorcruz.space'] }); 
+      domainNames: ['web.igorcruz.space'] 
+    });   
   }
 
   createWebSite = ({  certificate, domainNames, bucketName }: { bucketName: string; certificate: string, domainNames: string[]}) => {
