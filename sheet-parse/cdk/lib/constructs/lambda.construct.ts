@@ -22,18 +22,18 @@ export class LambdaConstruct extends Construct {
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id);
 
-    this.createSendFunction(props);
+    this.createGenerateUrlFunction(props);
   }
 
-  private createSendFunction(props: LambdaStackProps) {
+  private createGenerateUrlFunction(props: LambdaStackProps) {
     const { sheetParseResource } = props.apiConstruct;
     const { bucket } = props.s3Construct;
 
-    const GeneratePreSignedUrlHandler = new NodejsFunction(
+    const generatePreSignedUrlFunction = new NodejsFunction(
       this,
       "GeneratePreSignedUrl",
       {
-        memorySize: 256,
+        memorySize: 128,
         architecture: Architecture.X86_64,
         runtime: Runtime.NODEJS_20_X,
         timeout: Duration.seconds(30),
@@ -43,7 +43,7 @@ export class LambdaConstruct extends Construct {
           __dirname,
           "../../../lambda/generate-presigned-url/handler.ts"
         ),
-        handler: "GeneratePreSignedUrlHandler",
+        handler: "generatePreSignedUrlHandler",
         bundling: {
           minify: true,
           sourceMap: true,
@@ -57,12 +57,12 @@ export class LambdaConstruct extends Construct {
 
     sheetParseResource.addMethod(
       "POST",
-      new LambdaIntegration(GeneratePreSignedUrlHandler),
+      new LambdaIntegration(generatePreSignedUrlFunction),
       {}
     );
 
-    bucket.grantPut(GeneratePreSignedUrlHandler);
+    bucket.grantPut(generatePreSignedUrlFunction);
 
-    return GeneratePreSignedUrlHandler;
+    return generatePreSignedUrlFunction;
   }
 }
