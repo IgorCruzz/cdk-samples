@@ -71,7 +71,7 @@ export class ApiConstruct extends Construct {
         domainName: "generate.igorcruz.space",
         certificate: Certificate.fromCertificateArn(
           this,
-          "sheetParseCertificate",
+          "notifierCertificate",
           certificate.stringValue
         ),
         endpointType: EndpointType.REGIONAL,
