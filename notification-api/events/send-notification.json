@@ -1,0 +1,3 @@
+{
+  "body": "{\r\n  \"notifications\": [\r\n    {\r\n      \"service\": \"EMAIL\",\r\n      \"title\": \"Boas-vindas\",\r\n      \"message\": \"Olá! Seja bem-vindo ao nosso serviço.\"\r\n    },\r\n    {\r\n      \"service\": \"WHATSAPP\",\r\n      \"title\": \"Alerta de segurança\",\r\n      \"message\": \"Detectamos uma tentativa de login suspeita na sua conta.\"\r\n    }\r\n  ]\r\n}\r\n"
+}
