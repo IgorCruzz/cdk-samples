@@ -1,4 +1,4 @@
-import { Duration } from "aws-cdk-lib";
+import { aws_s3_notifications, Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import {
@@ -12,6 +12,7 @@ import { LambdaIntegration } from "aws-cdk-lib/aws-apigateway";
 import { join } from "node:path";
 import { ApiConstruct } from "./api.construct";
 import { S3Construct } from "./s3.construct";
+import { EventType } from "aws-cdk-lib/aws-s3";
 
 interface LambdaStackProps {
   apiConstruct: ApiConstruct;
@@ -23,6 +24,7 @@ export class LambdaConstruct extends Construct {
     super(scope, id);
 
     this.createGenerateUrlFunction(props);
+    this.createExtractDataFunction(props);
   }
 
   private createGenerateUrlFunction(props: LambdaStackProps) {
@@ -64,5 +66,39 @@ export class LambdaConstruct extends Construct {
     bucket.grantPut(generatePreSignedUrlFunction);
 
     return generatePreSignedUrlFunction;
+  }
+
+  private createExtractDataFunction(props: LambdaStackProps) {
+    const { bucket } = props.s3Construct;
+
+    const extractDataFunction = new NodejsFunction(
+      this,
+      "ExtractDataFunction",
+      {
+        memorySize: 128,
+        architecture: Architecture.X86_64,
+        runtime: Runtime.NODEJS_20_X,
+        timeout: Duration.seconds(30),
+        functionName: "ExtractDataFunction",
+        description: "A Lambda function to send notifications",
+        entry: join(__dirname, "../../../lambda/extract-data/handler.ts"),
+        handler: "extractDataHandler",
+        bundling: {
+          minify: true,
+          sourceMap: true,
+          target: "es2020",
+        },
+        loggingFormat: LoggingFormat.JSON,
+        tracing: Tracing.ACTIVE,
+        logRetention: RetentionDays.ONE_WEEK,
+      }
+    );
+
+    bucket.addEventNotification(
+      EventType.OBJECT_CREATED,
+      new aws_s3_notifications.LambdaDestination(extractDataFunction)
+    );
+
+    return extractDataFunction;
   }
 }
