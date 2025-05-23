@@ -1,5 +1,5 @@
 import { APIGatewayProxyResult } from "aws-lambda";
-import { S3AdapterInterface } from "../../shared/adapters/s3";
+import { S3Interface } from "../../shared/s3";
 
 export interface GeneratePresignedUrlServiceInterface {
   generate: () => Promise<APIGatewayProxyResult>;
@@ -8,11 +8,13 @@ export interface GeneratePresignedUrlServiceInterface {
 export class GeneratePresignedUrlService
   implements GeneratePresignedUrlServiceInterface
 {
-  constructor(private readonly s3Adapter: S3AdapterInterface) {}
+  constructor(private readonly s3: S3Interface) {}
 
   async generate(): Promise<APIGatewayProxyResult> {
     try {
-      const preSignedUrl = await this.s3Adapter.createPresignedUrl();
+      const preSignedUrl = await this.s3.createPresignedUrl({
+        bucket: "sheet-parse-bucket",
+      });
 
       return {
         statusCode: 200,
