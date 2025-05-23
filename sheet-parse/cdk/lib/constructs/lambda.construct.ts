@@ -12,11 +12,13 @@ import { LambdaIntegration } from "aws-cdk-lib/aws-apigateway";
 import { join } from "node:path";
 import { ApiConstruct } from "./api.construct";
 import { S3Construct } from "./s3.construct";
+import { DynamoDBConstruct } from "./dynamo.construct";
 import { EventType } from "aws-cdk-lib/aws-s3";
 
 interface LambdaStackProps {
   apiConstruct: ApiConstruct;
   s3Construct: S3Construct;
+  dynamoDBConstruct: DynamoDBConstruct;
 }
 
 export class LambdaConstruct extends Construct {
@@ -70,6 +72,7 @@ export class LambdaConstruct extends Construct {
 
   private createExtractDataFunction(props: LambdaStackProps) {
     const { bucket } = props.s3Construct;
+    const { table } = props.dynamoDBConstruct;
 
     const extractDataFunction = new NodejsFunction(
       this,
@@ -98,6 +101,8 @@ export class LambdaConstruct extends Construct {
       EventType.OBJECT_CREATED,
       new aws_s3_notifications.LambdaDestination(extractDataFunction)
     );
+
+    table.grantReadWriteData(extractDataFunction);
 
     return extractDataFunction;
   }
