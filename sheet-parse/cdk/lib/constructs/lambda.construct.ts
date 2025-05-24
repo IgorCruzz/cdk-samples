@@ -91,6 +91,9 @@ export class LambdaConstruct extends Construct {
           sourceMap: true,
           target: "es2020",
         },
+        environment: {
+          TABLE_NAME: "SheetParseTable",
+        },
         loggingFormat: LoggingFormat.JSON,
         tracing: Tracing.ACTIVE,
         logRetention: RetentionDays.ONE_WEEK,
