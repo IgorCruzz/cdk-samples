@@ -1,15 +1,10 @@
-import { APIGatewayProxyEvent } from "aws-lambda";
-import { GeneratePresignedUrlService } from "./service/generate-presigned-url";
-import { S3Adapter } from "../shared/adapters/s3";
+import { GeneratePresignedUrlService } from "./generate-presigned-url.service";
+import { S3 } from "../shared/s3";
 
-export const generatePreSignedUrlHandler = async (
-  event: APIGatewayProxyEvent
-) => {
-  const s3Adapter = new S3Adapter();
+export const generatePreSignedUrlHandler = async () => {
+  const s3 = new S3();
 
-  const generatePresignedUrlService = new GeneratePresignedUrlService(
-    s3Adapter
-  );
+  const generatePresignedUrlService = new GeneratePresignedUrlService(s3);
 
   return await generatePresignedUrlService.generate();
 };
