@@ -16,6 +16,8 @@ export class ExtractDataService {
     });
 
     const chunk = [];
+    let success = 0;
+    let failure = 0;
 
     for await (const customer of stream.pipe(
       parse({
@@ -24,28 +26,39 @@ export class ExtractDataService {
         trim: true,
       })
     )) {
-      chunk.push({
-        firstName: customer["First Name"],
-        lastName: customer["Last Name"],
-        company: customer["Company"],
-        city: customer["City"],
-        country: customer["Country"],
-        phone1: customer["Phone 1"],
-        phone2: customer["Phone 2"],
-        email: customer["Email"],
-        website: customer["Website"],
-      });
+      try {
+        chunk.push({
+          firstName: customer["First Name"],
+          lastName: customer["Last Name"],
+          company: customer["Company"],
+          city: customer["City"],
+          country: customer["Country"],
+          phone1: customer["Phone 1"],
+          phone2: customer["Phone 2"],
+          email: customer["Email"],
+          website: customer["Website"],
+        });
 
-      if (chunk.length === 20) {
-        await this.table.putItem({ data: chunk });
-        chunk.length = 0;
+        if (chunk.length === 20) {
+          await this.table.putItem({ data: chunk });
+          success += chunk.length;
+          chunk.length = 0;
+        }
+      } catch (error) {
+        failure += 1;
       }
     }
 
     if (chunk.length > 0) {
       await this.table.putItem({ data: chunk });
+      success += chunk.length;
       chunk.length = 0;
     }
+
+    console.log({
+      SUCESS: success,
+      FAILURE: failure,
+    });
 
     return;
   };
