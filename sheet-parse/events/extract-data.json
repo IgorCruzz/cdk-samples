@@ -12,7 +12,7 @@
                   "arn": "arn:aws:s3:::sheet-parse-bucket"
               },
               "object": {
-                  "key": "sheet-parse/683d3f33-2a20-4a54-ab80-88b7368f055f.csv",
+                  "key": "5278deba-b7b1-417d-a080-c50de3f57b5c.csv",
                   "size": 46175,
                   "eTag": "3e3e64d2ebc55265982c067f3ae9568c",
                   "sequencer": "00682936F83F44F1D7"
