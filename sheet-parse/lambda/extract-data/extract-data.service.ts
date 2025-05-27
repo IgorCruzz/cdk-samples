@@ -49,7 +49,7 @@ export class ExtractDataService {
       }
     }
 
-    if (chunk.length > 0) {
+    if (chunk.length) {
       await this.table.putItem({ data: chunk });
       success += chunk.length;
       chunk.length = 0;
