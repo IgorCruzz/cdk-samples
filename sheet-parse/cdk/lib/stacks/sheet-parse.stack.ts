@@ -1,4 +1,4 @@
-import { Stack, StackProps } from "aws-cdk-lib";
+import { Stack, StackProps, Tags } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import {
   ApiConstruct,
@@ -16,10 +16,34 @@ export class SheetParseStack extends Stack {
 
     const dynamoDBConstruct = new DynamoDBConstruct(this, "dynamoConstrut");
 
-    new LambdaConstruct(this, "lambdaConstruct", {
+    const lambdaConstruct = new LambdaConstruct(this, "lambdaConstruct", {
       apiConstruct,
       s3Construct,
       dynamoDBConstruct,
     });
+
+    Tags.of(apiConstruct.sheetParseApi).add("Project", "sheet-parse");
+    Tags.of(apiConstruct.sheetParseApi).add("Name", "sheet-parse-api");
+
+    Tags.of(s3Construct.bucket).add("Project", "sheet-parse");
+    Tags.of(s3Construct.bucket).add("Name", "sheet-parse-bucket");
+
+    Tags.of(dynamoDBConstruct.table).add("Project", "sheet-parse");
+    Tags.of(dynamoDBConstruct.table).add("Name", "sheet-parse-table");
+
+    Tags.of(lambdaConstruct.generatePreSignedUrlFunction).add(
+      "Project",
+      "sheet-parse"
+    );
+    Tags.of(lambdaConstruct.generatePreSignedUrlFunction).add(
+      "Name",
+      "generate-pre-signed-url-function"
+    );
+
+    Tags.of(lambdaConstruct.extractDataFunction).add("Project", "sheet-parse");
+    Tags.of(lambdaConstruct.extractDataFunction).add(
+      "Name",
+      "extract-data-function"
+    );
   }
 }

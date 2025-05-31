@@ -22,11 +22,14 @@ interface LambdaStackProps {
 }
 
 export class LambdaConstruct extends Construct {
+  public readonly generatePreSignedUrlFunction: NodejsFunction;
+  public readonly extractDataFunction: NodejsFunction;
+
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id);
 
-    this.createGenerateUrlFunction(props);
-    this.createExtractDataFunction(props);
+    this.generatePreSignedUrlFunction = this.createGenerateUrlFunction(props);
+    this.extractDataFunction = this.createExtractDataFunction(props);
   }
 
   private createGenerateUrlFunction(props: LambdaStackProps) {

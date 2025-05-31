@@ -24,12 +24,16 @@ interface LambdaStackProps {
 }
 
 export class LambdaConstruct extends Construct {
+  public readonly sendFunction: NodejsFunction;
+  public readonly processFunction: NodejsFunction;
+  public readonly dlqFunction: NodejsFunction;
+
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id);
 
-    this.createSendFunction(props);
-    this.createProcessFunction(props);
-    this.createDlqFunction(props);
+    this.sendFunction = this.createSendFunction(props);
+    this.processFunction = this.createProcessFunction(props);
+    this.dlqFunction = this.createDlqFunction(props);
   }
   private createSendFunction(props: LambdaStackProps) {
     const { notifierSNSTopic } = props.snsConstruct;
@@ -218,5 +222,7 @@ export class LambdaConstruct extends Construct {
     alertSNSTopic.grantPublish(notiferDlqFunction);
 
     notifierDLQ.grantConsumeMessages(notiferDlqFunction);
+
+    return notiferDlqFunction;
   }
 }
