@@ -10,7 +10,6 @@ import {
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { SqsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 import { LambdaIntegration } from "aws-cdk-lib/aws-apigateway";
-import { ApiConstruct } from "./api.construct";
 import { SNSConstruct } from "./sns.construct";
 import { SQSConstruct } from "./sqs.construct";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
@@ -20,7 +19,6 @@ import { join } from "node:path";
 interface LambdaStackProps {
   sqsConstruct: SQSConstruct;
   snsConstruct: SNSConstruct;
-  apiConstruct: ApiConstruct;
 }
 
 export class LambdaConstruct extends Construct {
