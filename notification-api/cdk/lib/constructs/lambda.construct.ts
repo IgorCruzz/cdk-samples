@@ -44,7 +44,6 @@ export class LambdaConstruct extends Construct {
         architecture: Architecture.X86_64,
         runtime: Runtime.NODEJS_20_X,
         timeout: Duration.seconds(30),
-        functionName: "notifierSendFunction",
         description: "A Lambda function to send notifications",
         entry: join(__dirname, "../../../lambda/send-notification/handler.ts"),
         handler: "notifierSendHandler",
@@ -120,7 +119,6 @@ export class LambdaConstruct extends Construct {
         architecture: Architecture.X86_64,
         runtime: Runtime.NODEJS_20_X,
         timeout: Duration.seconds(30),
-        functionName: "notiferProcessFunction",
         description: "A Lambda function to process notifications",
         entry: join(
           __dirname,
@@ -182,7 +180,6 @@ export class LambdaConstruct extends Construct {
       architecture: Architecture.X86_64,
       runtime: Runtime.NODEJS_20_X,
       timeout: Duration.seconds(30),
-      functionName: "notiferDlqFunction",
       description: "A Lambda function to process notifications from DLQ",
       entry: join(__dirname, "../../../lambda/process-dlq/handler.ts"),
       handler: "notifierProcessDLQHandler",
