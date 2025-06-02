@@ -9,11 +9,11 @@ import {
 } from "aws-cdk-lib/aws-lambda";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { SqsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
-import { LambdaIntegration } from "aws-cdk-lib/aws-apigateway";
 import { SNSConstruct } from "./sns.construct";
 import { SQSConstruct } from "./sqs.construct";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
+
 import { join } from "node:path";
 
 interface LambdaStackProps {
@@ -36,24 +36,18 @@ export class LambdaConstruct extends Construct {
   private createSendFunction(props: LambdaStackProps) {
     const { notifierSNSTopic } = props.snsConstruct;
 
-    const {
-      notifierResource,
-      notificationsPostRequestModel,
-      notificationsPostRequestValidator,
-    } = props.apiConstruct;
-
-    const notifierSendHandler = new NodejsFunction(
+    const notifierSendFunction = new NodejsFunction(
       this,
-      "notifierSendHandler",
+      "notifierSendFunction",
       {
         memorySize: 256,
         architecture: Architecture.X86_64,
         runtime: Runtime.NODEJS_20_X,
         timeout: Duration.seconds(30),
-        functionName: "notifierSendHandler",
+        functionName: "notifierSendFunction",
         description: "A Lambda function to send notifications",
         entry: join(__dirname, "../../../lambda/send-notification/handler.ts"),
-        handler: "notifierSendHandler",
+        handler: "notifierSendFunction",
         environment: {
           SNS_TOPIC_ARN: notifierSNSTopic.topicArn,
         },
@@ -69,20 +63,14 @@ export class LambdaConstruct extends Construct {
       }
     );
 
-    notifierSNSTopic.grantPublish(notifierSendHandler);
+    notifierSNSTopic.grantPublish(notifierSendFunction);
 
-    notifierResource.addMethod(
-      "POST",
-      new LambdaIntegration(notifierSendHandler),
-      {
-        requestModels: {
-          "application/json": notificationsPostRequestModel,
-        },
-        requestValidator: notificationsPostRequestValidator,
-      }
-    );
+    new StringParameter(this, "notifierSendFunction", {
+      parameterName: "/lambda/notifierSendFunction",
+      stringValue: notifierSendFunction.functionArn,
+    });
 
-    return notifierSendHandler;
+    return notifierSendFunction;
   }
 
   private createProcessFunction(props: LambdaStackProps) {
