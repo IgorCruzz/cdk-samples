@@ -1,1 +1,1 @@
-export { NotifierStack } from './notifier.stack';
+export { NotifierStack } from "./notifier.stack";
