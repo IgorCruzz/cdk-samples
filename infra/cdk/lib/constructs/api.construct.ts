@@ -34,7 +34,6 @@ export class ApiConstruct extends Construct {
     );
 
     const xyzApi = new RestApi(this, "xyzApi", {
-      restApiName: "XYZ API",
       endpointConfiguration: {
         types: [EndpointType.REGIONAL],
       },
@@ -74,7 +73,6 @@ export class ApiConstruct extends Construct {
     const model = new Model(this, "NotificationsPostRequestModel", {
       restApi: this.xyzApi,
       contentType: "application/json",
-      modelName: "NotificationsPostRequestModel",
       description: "Model for notifications post request",
       schema: {
         type: JsonSchemaType.OBJECT,
@@ -114,7 +112,6 @@ export class ApiConstruct extends Construct {
       "notificationsPostRequestValidator",
       {
         restApi: this.xyzApi,
-        requestValidatorName: "notificationsPostRequestValidator",
         validateRequestBody: true,
       }
     );
