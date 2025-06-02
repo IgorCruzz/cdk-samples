@@ -13,7 +13,6 @@ export class DynamoDBConstruct extends Construct {
 
   createTable() {
     return new Table(this, "SheetParseTable", {
-      tableName: "SheetParseTable",
       partitionKey: {
         name: "PK",
         type: AttributeType.STRING,
