@@ -47,7 +47,7 @@ export class LambdaConstruct extends Construct {
         functionName: "notifierSendFunction",
         description: "A Lambda function to send notifications",
         entry: join(__dirname, "../../../lambda/send-notification/handler.ts"),
-        handler: "notifierSendFunction",
+        handler: "notifierSendHandler",
         environment: {
           SNS_TOPIC_ARN: notifierSNSTopic.topicArn,
         },
@@ -65,7 +65,7 @@ export class LambdaConstruct extends Construct {
 
     notifierSNSTopic.grantPublish(notifierSendFunction);
 
-    new StringParameter(this, "notifierSendFunction", {
+    new StringParameter(this, "notifierSendFunctionParameter", {
       parameterName: "/lambda/notifierSendFunction",
       stringValue: notifierSendFunction.functionArn,
     });
