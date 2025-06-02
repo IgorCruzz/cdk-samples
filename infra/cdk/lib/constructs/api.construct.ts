@@ -7,7 +7,6 @@ import {
   MethodLoggingLevel,
   Cors,
   SecurityPolicy,
-  AccessLogFormat,
   JsonSchemaType,
   LambdaIntegration,
 } from "aws-cdk-lib/aws-apigateway";
