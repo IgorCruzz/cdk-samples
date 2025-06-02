@@ -65,7 +65,6 @@ export class SQSConstruct extends Construct {
 
   private createNotifierDLQ() {
     const notifierDLQ = new Queue(this, "notifierDLQ", {
-      queueName: "notifierDLQ",
       retentionPeriod: Duration.days(1),
       visibilityTimeout: Duration.seconds(30),
     });
