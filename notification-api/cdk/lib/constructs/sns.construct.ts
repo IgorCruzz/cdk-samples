@@ -22,7 +22,6 @@ export class SNSConstruct extends Construct {
   private createNotifierSNSTopic() {
     return new Topic(this, "notifierSNS", {
       displayName: "Notifier SNS Topic",
-      topicName: "notifierTopic",
       tracingConfig: TracingConfig.ACTIVE,
     });
   }
@@ -30,7 +29,6 @@ export class SNSConstruct extends Construct {
   private crateAlertSNSTopic() {
     const topic = new Topic(this, "alertSNS", {
       displayName: "Alert SNS Topic",
-      topicName: "alertTopic",
       tracingConfig: TracingConfig.ACTIVE,
     });
 
