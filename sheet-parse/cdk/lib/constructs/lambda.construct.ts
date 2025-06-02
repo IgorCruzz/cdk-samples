@@ -41,7 +41,6 @@ export class LambdaConstruct extends Construct {
         architecture: Architecture.X86_64,
         runtime: Runtime.NODEJS_20_X,
         timeout: Duration.seconds(30),
-        functionName: "GeneratePreSignedUrl",
         description: "A Lambda function to send notifications",
         entry: join(
           __dirname,
@@ -81,7 +80,6 @@ export class LambdaConstruct extends Construct {
         architecture: Architecture.X86_64,
         runtime: Runtime.NODEJS_20_X,
         timeout: Duration.seconds(30),
-        functionName: "ExtractDataFunction",
         description: "A Lambda function to send notifications",
         entry: join(__dirname, "../../../lambda/extract-data/handler.ts"),
         handler: "extractDataHandler",
