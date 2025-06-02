@@ -1,15 +1,25 @@
-# Welcome to your CDK TypeScript project
+# 📊 Sheet Parse – Extração Serverless de Arquivos CSV
 
-You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`SheetParseStack`)
-which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
+Esta aplicação **serverless** permite o **upload, processamento e extração automática de dados** de arquivos **CSV** enviados para o **Amazon S3**. Utiliza uma arquitetura totalmente escalável e gerenciada com serviços da **AWS**, como **API Gateway**, **Lambda**, **S3** e **DynamoDB**.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## 🛠️ Arquitetura
 
-## Useful commands
+<p align="center">
+  <img src="https://github.com/IgorCruzz/cdk-samples/blob/main/diagrams/sheet-parse.jpg" alt="Arquitetura Sheet Parse" />
+</p>
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+## 🚀 Principais Funcionalidades
+
+- ☁️ Geração de **URL pré-assinada** para upload seguro no S3  
+- 📤 Upload de arquivos **CSV** diretamente para o bucket S3  
+- ⚙️ Processamento automático via **Lambda** acionada por evento do S3  
+- 📑 Extração de dados e armazenamento no **DynamoDB** por demanda 
+- 🧹 Remoção automática do arquivo após o processamento  
+
+## 📦 Tecnologias & Serviços
+
+- **Amazon API Gateway** – Endpoint público para gerar a URL de upload  
+- **Amazon S3** – Armazenamento dos arquivos CSV enviados  
+- **AWS Lambda** – Funções serverless para processamento dos arquivos  
+- **Amazon DynamoDB** – Banco NoSQL para persistência dos dados   
+- **AWS CDK** – Infraestrutura como código (IaC)
