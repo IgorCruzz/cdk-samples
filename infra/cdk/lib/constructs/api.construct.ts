@@ -46,7 +46,6 @@ export class ApiConstruct extends Construct {
         metricsEnabled: true,
         tracingEnabled: true,
         dataTraceEnabled: true,
-        accessLogFormat: AccessLogFormat.jsonWithStandardFields(),
         stageName: "prod",
       },
       defaultCorsPreflightOptions: {
@@ -142,6 +141,20 @@ export class ApiConstruct extends Construct {
   }
 
   private createSheetParseResource() {
-    this.xyzApi.root.addResource("generate");
+    const resource = this.xyzApi.root.addResource("generate");
+
+    const fnArn = StringParameter.fromStringParameterName(
+      this,
+      "notifierSendFunctionParameter",
+      "/lambda/notifierSendFunction"
+    );
+
+    const fn = Function.fromFunctionArn(
+      this,
+      "notifierSendFunction",
+      fnArn.stringValue
+    );
+
+    resource.addMethod("POST", new LambdaIntegration(fn), {});
   }
 }
