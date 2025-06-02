@@ -13,6 +13,7 @@ import {
 } from "aws-cdk-lib/aws-apigateway";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
+import { Function } from "aws-cdk-lib/aws-lambda";
 
 export class ApiConstruct extends Construct {
   public readonly xyzApi: RestApi;
@@ -120,7 +121,19 @@ export class ApiConstruct extends Construct {
       }
     );
 
-    resource.addMethod("POST", new LambdaIntegration(notifierSendHandler), {
+    const notifierSendFunctionArn = StringParameter.fromStringParameterName(
+      this,
+      "notifierSendFunctionParameter",
+      "/lambda/notifierSendFunction"
+    );
+
+    const notifierSendFunction = Function.fromFunctionArn(
+      this,
+      "notifierSendFunction",
+      notifierSendFunctionArn.stringValue
+    );
+
+    resource.addMethod("POST", new LambdaIntegration(notifierSendFunction), {
       requestModels: {
         "application/json": model,
       },
