@@ -10,13 +10,11 @@ import {
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { LambdaIntegration } from "aws-cdk-lib/aws-apigateway";
 import { join } from "node:path";
-import { ApiConstruct } from "./api.construct";
 import { S3Construct } from "./s3.construct";
 import { DynamoDBConstruct } from "./dynamo.construct";
 import { EventType } from "aws-cdk-lib/aws-s3";
 
 interface LambdaStackProps {
-  apiConstruct: ApiConstruct;
   s3Construct: S3Construct;
   dynamoDBConstruct: DynamoDBConstruct;
 }
@@ -33,7 +31,7 @@ export class LambdaConstruct extends Construct {
   }
 
   private createGenerateUrlFunction(props: LambdaStackProps) {
-    const { sheetParseResource } = props.apiConstruct;
+    // const { sheetParseResource } = props.apiConstruct;
     const { bucket } = props.s3Construct;
 
     const generatePreSignedUrlFunction = new NodejsFunction(
@@ -62,11 +60,11 @@ export class LambdaConstruct extends Construct {
       }
     );
 
-    sheetParseResource.addMethod(
-      "POST",
-      new LambdaIntegration(generatePreSignedUrlFunction),
-      {}
-    );
+    // sheetParseResource.addMethod(
+    //   "POST",
+    //   new LambdaIntegration(generatePreSignedUrlFunction),
+    //   {}
+    // );
 
     bucket.grantPut(generatePreSignedUrlFunction);
 
