@@ -12,7 +12,6 @@ O objetivo é demonstrar como modelar e provisionar infraestrutura na AWS usando
 Cada pasta representa um exemplo independente, com foco em diferentes serviços ou padrões de arquitetura com o CDK.
 
 - [Notification API](./notification-api) – Envio de notificações por Email (SES) e WhatsApp (Twilio) com arquitetura serverless.
-- [Static WebSite](./s3-cloudfront) – Hospedagem de site estático com S3 e distribuição global via CloudFront.
 
 ## Como Utilizar os Exemplos
 
