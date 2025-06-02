@@ -145,13 +145,13 @@ export class ApiConstruct extends Construct {
 
     const fnArn = StringParameter.fromStringParameterName(
       this,
-      "notifierSendFunctionParameter",
-      "/lambda/notifierSendFunction"
+      "generatePreSignedUrlFunctionParameter",
+      "/lambda/generatePreSignedUrlFunction"
     );
 
     const fn = Function.fromFunctionArn(
       this,
-      "notifierSendFunction",
+      "generatePreSignedUrlFunction",
       fnArn.stringValue
     );
 
