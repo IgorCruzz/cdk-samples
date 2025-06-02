@@ -13,7 +13,6 @@ export class S3Construct extends Construct {
 
   createS3Bucket() {
     return new Bucket(this, "SheetParseBucket", {
-      bucketName: "sheet-parse-bucket",
       removalPolicy: RemovalPolicy.RETAIN,
       publicReadAccess: false,
     });
