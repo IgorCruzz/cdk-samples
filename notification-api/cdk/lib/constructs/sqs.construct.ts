@@ -81,7 +81,6 @@ export class SQSConstruct extends Construct {
     service,
   }: QueueProps) {
     const notifierQueue = new Queue(this, queueName, {
-      queueName,
       visibilityTimeout: Duration.seconds(30),
       retentionPeriod: Duration.days(1),
       deadLetterQueue,
