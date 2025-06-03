@@ -10,30 +10,32 @@ import {
   JsonSchemaType,
   LambdaIntegration,
 } from "aws-cdk-lib/aws-apigateway";
-import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
+import { ACMConstruct } from "./acm.construct";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { Function } from "aws-cdk-lib/aws-lambda";
 import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
 
+type ApiConstructProps = {
+  acm: ACMConstruct;
+};
+
 export class ApiConstruct extends Construct {
   public readonly xyzApi: RestApi;
 
-  constructor(scope: Construct, id: string) {
+  constructor(
+    scope: Construct,
+    id: string,
+    private readonly props: ApiConstructProps
+  ) {
     super(scope, id);
 
     this.xyzApi = this.createXyzApi();
 
-    this.createNotificationResource();
+    // this.createNotificationResource();
     this.createSheetParseResource();
   }
 
   private createXyzApi() {
-    const certificate = StringParameter.fromStringParameterName(
-      this,
-      "notifierCertificateParameter",
-      "/certs/notifier-api"
-    );
-
     const xyzApi = new RestApi(this, "xyzApi", {
       endpointConfiguration: {
         types: [EndpointType.REGIONAL],
@@ -55,11 +57,7 @@ export class ApiConstruct extends Construct {
       disableExecuteApiEndpoint: true,
       domainName: {
         domainName: "api.igorcruz.space",
-        certificate: Certificate.fromCertificateArn(
-          this,
-          "notifierCertificate",
-          certificate.stringValue
-        ),
+        certificate: this.props.acm.certificate,
         endpointType: EndpointType.REGIONAL,
         securityPolicy: SecurityPolicy.TLS_1_2,
       },
