@@ -31,7 +31,7 @@ export class ApiConstruct extends Construct {
 
     this.xyzApi = this.createXyzApi();
 
-    // this.createNotificationResource();
+    this.createNotificationResource();
     this.createSheetParseResource();
   }
 
