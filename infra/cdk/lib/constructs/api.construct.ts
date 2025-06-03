@@ -13,6 +13,7 @@ import {
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { Function } from "aws-cdk-lib/aws-lambda";
+import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
 
 export class ApiConstruct extends Construct {
   public readonly xyzApi: RestApi;
@@ -122,13 +123,14 @@ export class ApiConstruct extends Construct {
       "/lambda/notifierSendFunction"
     );
 
-    const notifierSendFunction = Function.fromFunctionArn(
-      this,
-      "notifierSendFunction",
-      notifierSendFunctionArn.stringValue
-    );
+    const fn = Function.fromFunctionAttributes(this, "notifierSendFunction", {
+      functionArn: notifierSendFunctionArn.stringValue,
+      sameEnvironment: true,
+    });
 
-    resource.addMethod("POST", new LambdaIntegration(notifierSendFunction), {
+    fn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
+
+    resource.addMethod("POST", new LambdaIntegration(fn), {
       requestModels: {
         "application/json": model,
       },
@@ -145,11 +147,16 @@ export class ApiConstruct extends Construct {
       "/lambda/generatePreSignedUrlFunction"
     );
 
-    const fn = Function.fromFunctionArn(
+    const fn = Function.fromFunctionAttributes(
       this,
       "generatePreSignedUrlFunction",
-      fnArn.stringValue
+      {
+        functionArn: fnArn.stringValue,
+        sameEnvironment: true,
+      }
     );
+
+    fn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
 
     resource.addMethod("POST", new LambdaIntegration(fn), {});
   }
