@@ -142,7 +142,8 @@ export class LambdaConstruct extends Construct {
         target: "es2020",
       },
       environment: {
-        TABLE_NAME: "SheetParseTable",
+        TABLE_NAME: table.tableName,
+        BUCKET_NAME: bucket.bucketName,
       },
       loggingFormat: LoggingFormat.JSON,
       tracing: Tracing.ACTIVE,
