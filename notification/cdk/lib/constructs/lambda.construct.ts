@@ -15,6 +15,13 @@ import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 
 import { join } from "node:path";
+import {
+  JsonSchemaType,
+  LambdaIntegration,
+  Model,
+  RequestValidator,
+  RestApi,
+} from "aws-cdk-lib/aws-apigateway";
 
 interface LambdaStackProps {
   sqsConstruct: SQSConstruct;
@@ -64,9 +71,76 @@ export class LambdaConstruct extends Construct {
 
     notifierSNSTopic.grantPublish(fn);
 
-    new StringParameter(this, "notifierSendFunctionParameter", {
-      parameterName: "/lambda/notifierSendFunction",
-      stringValue: fn.functionArn,
+    const restApiId = StringParameter.fromStringParameterName(
+      this,
+      "apiIdParameter",
+      "/apigateway/xyzApiId"
+    );
+
+    const rootResourceId = StringParameter.fromStringParameterName(
+      this,
+      "apiIdParameter",
+      "/apigateway/xyzApiResourceId"
+    );
+
+    const api = RestApi.fromRestApiAttributes(this, "xyzApi", {
+      restApiId: restApiId.stringValue,
+      rootResourceId: rootResourceId.stringValue,
+    });
+
+    const resource = api.root.addResource("notifications");
+
+    const model = new Model(this, "NotificationsPostRequestModel", {
+      restApi: api,
+      contentType: "application/json",
+      description: "Model for notifications post request",
+      schema: {
+        type: JsonSchemaType.OBJECT,
+        properties: {
+          notifications: {
+            type: JsonSchemaType.ARRAY,
+            minItems: 1,
+            maxItems: 15,
+            items: {
+              type: JsonSchemaType.OBJECT,
+              properties: {
+                service: {
+                  type: JsonSchemaType.STRING,
+                  enum: ["EMAIL", "WHATSAPP"],
+                },
+                title: {
+                  type: JsonSchemaType.STRING,
+                  minLength: 1,
+                  maxLength: 100,
+                },
+                message: {
+                  type: JsonSchemaType.STRING,
+                  minLength: 1,
+                  maxLength: 500,
+                },
+              },
+              required: ["service", "message", "title"],
+            },
+          },
+        },
+        required: ["notifications"],
+      },
+    });
+
+    const validator = new RequestValidator(
+      this,
+      "notificationsPostRequestValidator",
+      {
+        restApi: api,
+        validateRequestBody: true,
+      }
+    );
+
+    resource.addMethod("POST", new LambdaIntegration(fn), {
+      requestModels: {
+        "application/json": model,
+      },
+      requestValidator: validator,
     });
 
     return fn;
