@@ -40,40 +40,36 @@ export class LambdaConstruct extends Construct {
   private createSendFunction() {
     const { notifierSNSTopic } = this.props.snsConstruct;
 
-    const notifierSendFunction = new NodejsFunction(
-      this,
-      "notifierSendFunction",
-      {
-        memorySize: 256,
-        architecture: Architecture.X86_64,
-        runtime: Runtime.NODEJS_20_X,
-        timeout: Duration.seconds(30),
-        description: "A Lambda function to send notifications",
-        entry: join(__dirname, "../../../lambda/send-notification/handler.ts"),
-        handler: "notifierSendHandler",
-        environment: {
-          SNS_TOPIC_ARN: notifierSNSTopic.topicArn,
-        },
-        bundling: {
-          minify: true,
-          sourceMap: true,
-          target: "es2020",
-          externalModules: ["@aws-sdk/*"],
-        },
-        loggingFormat: LoggingFormat.JSON,
-        tracing: Tracing.ACTIVE,
-        logRetention: RetentionDays.ONE_WEEK,
-      }
-    );
+    const fn = new NodejsFunction(this, "notifierSendFunction", {
+      memorySize: 256,
+      architecture: Architecture.X86_64,
+      runtime: Runtime.NODEJS_20_X,
+      timeout: Duration.seconds(30),
+      description: "A Lambda function to send notifications",
+      entry: join(__dirname, "../../../lambda/send-notification/handler.ts"),
+      handler: "notifierSendHandler",
+      environment: {
+        SNS_TOPIC_ARN: notifierSNSTopic.topicArn,
+      },
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: "es2020",
+        externalModules: ["@aws-sdk/*"],
+      },
+      loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
+      logRetention: RetentionDays.ONE_WEEK,
+    });
 
-    notifierSNSTopic.grantPublish(notifierSendFunction);
+    notifierSNSTopic.grantPublish(fn);
 
     new StringParameter(this, "notifierSendFunctionParameter", {
       parameterName: "/lambda/notifierSendFunction",
-      stringValue: notifierSendFunction.functionArn,
+      stringValue: fn.functionArn,
     });
 
-    return notifierSendFunction;
+    return fn;
   }
 
   private createProcessFunction() {
@@ -116,39 +112,32 @@ export class LambdaConstruct extends Construct {
       "/ses/arnIdentity"
     );
 
-    const notiferProcessFunction = new NodejsFunction(
-      this,
-      "notifierProcessFunction",
-      {
-        memorySize: 256,
-        architecture: Architecture.X86_64,
-        runtime: Runtime.NODEJS_20_X,
-        timeout: Duration.seconds(30),
-        description: "A Lambda function to process notifications",
-        entry: join(
-          __dirname,
-          "../../../lambda/process-notification/handler.ts"
-        ),
-        handler: "notifierProcessHandler",
-        environment: {
-          TWILIO_ACCOUNT_SID: ACCOUNT_SID.stringValue,
-          TWILIO_AUTH_TOKEN: AUTH_TOKEN.stringValue,
-          TWILIO_SENDER_PHONE: SENDER_PHONE.stringValue,
-          TWILIO_RECEIVER_PHONE: RECEIVER_PHONE.stringValue,
-          SES_IDENTITY: SES_IDENTITY.stringValue,
-        },
-        bundling: {
-          minify: true,
-          sourceMap: true,
-          target: "es2020",
-        },
-        loggingFormat: LoggingFormat.JSON,
-        tracing: Tracing.ACTIVE,
-        logRetention: RetentionDays.ONE_WEEK,
-      }
-    );
+    const fn = new NodejsFunction(this, "notifierProcessFunction", {
+      memorySize: 256,
+      architecture: Architecture.X86_64,
+      runtime: Runtime.NODEJS_20_X,
+      timeout: Duration.seconds(30),
+      description: "A Lambda function to process notifications",
+      entry: join(__dirname, "../../../lambda/process-notification/handler.ts"),
+      handler: "notifierProcessHandler",
+      environment: {
+        TWILIO_ACCOUNT_SID: ACCOUNT_SID.stringValue,
+        TWILIO_AUTH_TOKEN: AUTH_TOKEN.stringValue,
+        TWILIO_SENDER_PHONE: SENDER_PHONE.stringValue,
+        TWILIO_RECEIVER_PHONE: RECEIVER_PHONE.stringValue,
+        SES_IDENTITY: SES_IDENTITY.stringValue,
+      },
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: "es2020",
+      },
+      loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
+      logRetention: RetentionDays.ONE_WEEK,
+    });
 
-    notiferProcessFunction.addToRolePolicy(
+    fn.addToRolePolicy(
       new PolicyStatement({
         actions: ["ses:SendEmail", "ses:SendRawEmail"],
         resources: [SES_ARN_IDENTITY.stringValue],
@@ -156,31 +145,31 @@ export class LambdaConstruct extends Construct {
       })
     );
 
-    notiferProcessFunction.addEventSource(
+    fn.addEventSource(
       new SqsEventSource(notifierEmailQueue, {
         batchSize: 10,
         reportBatchItemFailures: true,
       })
     );
 
-    notiferProcessFunction.addEventSource(
+    fn.addEventSource(
       new SqsEventSource(notifierWhatsappQueue, {
         batchSize: 10,
         reportBatchItemFailures: true,
       })
     );
 
-    notifierEmailQueue.grantConsumeMessages(notiferProcessFunction);
-    notifierWhatsappQueue.grantConsumeMessages(notiferProcessFunction);
+    notifierEmailQueue.grantConsumeMessages(fn);
+    notifierWhatsappQueue.grantConsumeMessages(fn);
 
-    return notiferProcessFunction;
+    return fn;
   }
 
   private createDlqFunction() {
     const { notifierDLQ } = this.props.sqsConstruct;
     const { alertSNSTopic } = this.props.snsConstruct;
 
-    const notiferDlqFunction = new NodejsFunction(this, "notiferDlqFunction", {
+    const fn = new NodejsFunction(this, "notiferDlqFunction", {
       memorySize: 256,
       architecture: Architecture.X86_64,
       runtime: Runtime.NODEJS_20_X,
@@ -201,16 +190,16 @@ export class LambdaConstruct extends Construct {
       },
     });
 
-    notiferDlqFunction.addEventSource(
+    fn.addEventSource(
       new SqsEventSource(notifierDLQ, {
         batchSize: 10,
       })
     );
 
-    alertSNSTopic.grantPublish(notiferDlqFunction);
+    alertSNSTopic.grantPublish(fn);
 
-    notifierDLQ.grantConsumeMessages(notiferDlqFunction);
+    notifierDLQ.grantConsumeMessages(fn);
 
-    return notiferDlqFunction;
+    return fn;
   }
 }
