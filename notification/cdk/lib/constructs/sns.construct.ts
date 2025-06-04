@@ -39,7 +39,7 @@ export class SNSConstruct extends Construct {
     );
 
     new Subscription(this, "alertTopicSubscription", {
-      topic: topic,
+      topic,
       endpoint: SNS_SUB_NUMBER.stringValue,
       protocol: SubscriptionProtocol.SMS,
     });
