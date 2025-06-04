@@ -26,15 +26,19 @@ export class LambdaConstruct extends Construct {
   public readonly processFunction: NodejsFunction;
   public readonly dlqFunction: NodejsFunction;
 
-  constructor(scope: Construct, id: string, props: LambdaStackProps) {
+  constructor(
+    scope: Construct,
+    id: string,
+    private readonly props: LambdaStackProps
+  ) {
     super(scope, id);
 
-    this.sendFunction = this.createSendFunction(props);
-    this.processFunction = this.createProcessFunction(props);
-    this.dlqFunction = this.createDlqFunction(props);
+    this.sendFunction = this.createSendFunction();
+    this.processFunction = this.createProcessFunction();
+    this.dlqFunction = this.createDlqFunction();
   }
-  private createSendFunction(props: LambdaStackProps) {
-    const { notifierSNSTopic } = props.snsConstruct;
+  private createSendFunction() {
+    const { notifierSNSTopic } = this.props.snsConstruct;
 
     const notifierSendFunction = new NodejsFunction(
       this,
@@ -72,8 +76,9 @@ export class LambdaConstruct extends Construct {
     return notifierSendFunction;
   }
 
-  private createProcessFunction(props: LambdaStackProps) {
-    const { notifierEmailQueue, notifierWhatsappQueue } = props.sqsConstruct;
+  private createProcessFunction() {
+    const { notifierEmailQueue, notifierWhatsappQueue } =
+      this.props.sqsConstruct;
 
     const ACCOUNT_SID = StringParameter.fromStringParameterName(
       this,
@@ -171,9 +176,9 @@ export class LambdaConstruct extends Construct {
     return notiferProcessFunction;
   }
 
-  private createDlqFunction(props: LambdaStackProps) {
-    const { notifierDLQ } = props.sqsConstruct;
-    const { alertSNSTopic } = props.snsConstruct;
+  private createDlqFunction() {
+    const { notifierDLQ } = this.props.sqsConstruct;
+    const { alertSNSTopic } = this.props.snsConstruct;
 
     const notiferDlqFunction = new NodejsFunction(this, "notiferDlqFunction", {
       memorySize: 256,
