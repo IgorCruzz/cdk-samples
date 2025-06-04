@@ -79,7 +79,7 @@ export class LambdaConstruct extends Construct {
 
     const rootResourceId = StringParameter.fromStringParameterName(
       this,
-      "apiIdParameter",
+      "apiResourceIdParameter",
       "/apigateway/xyzApiResourceId"
     );
 
