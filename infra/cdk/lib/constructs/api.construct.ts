@@ -66,7 +66,7 @@ export class ApiConstruct extends Construct {
     });
 
     new RecordSet(this, "ApiRecordSet", {
-      recordType: RecordType.AAAA,
+      recordType: RecordType.A,
       target: RecordTarget.fromAlias(new ApiGatewayDomain(xyzApi.domainName!)),
       zone: this.props.route53.hostedZone,
       ttl: Duration.seconds(300),
