@@ -13,7 +13,7 @@ export class GeneratePresignedUrlService
   async generate(): Promise<APIGatewayProxyResult> {
     try {
       const preSignedUrl = await this.s3.createPresignedUrl({
-        bucket: "sheet-parse-bucket",
+        bucket: process.env.BUCKET_NAME as string,
       });
 
       return {
