@@ -14,6 +14,7 @@ export class InfraStack extends Stack {
     });
     new ApiConstruct(this, "XyzApi", {
       acm,
+      route53,
     });
   }
 }
