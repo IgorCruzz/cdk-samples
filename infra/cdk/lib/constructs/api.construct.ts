@@ -77,6 +77,13 @@ export class ApiConstruct extends Construct {
       recordName: "api",
     });
 
+    const apiArn = xyzApi.arnForExecuteApi();
+
+    new StringParameter(this, "apiArnParameter", {
+      parameterName: "/apigateway/xyzApi",
+      stringValue: apiArn,
+    });
+
     return xyzApi;
   }
 
