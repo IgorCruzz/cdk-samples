@@ -13,7 +13,12 @@ import { S3Construct } from "./s3.construct";
 import { DynamoDBConstruct } from "./dynamo.construct";
 import { EventType } from "aws-cdk-lib/aws-s3";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import { LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
+import {
+  LambdaIntegration,
+  MockIntegration,
+  PassthroughBehavior,
+  RestApi,
+} from "aws-cdk-lib/aws-apigateway";
 
 interface LambdaStackProps {
   s3Construct: S3Construct;
@@ -81,6 +86,40 @@ export class LambdaConstruct extends Construct {
     const resource = api.root.addResource("generate");
 
     resource.addMethod("POST", new LambdaIntegration(fn), {});
+
+    resource.addMethod(
+      "OPTIONS",
+      new MockIntegration({
+        integrationResponses: [
+          {
+            statusCode: "200",
+            responseParameters: {
+              "method.response.header.Access-Control-Allow-Headers":
+                "'Content-Type,X-Amz-Date,Authorization'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'",
+              "method.response.header.Access-Control-Allow-Methods":
+                "'OPTIONS,POST'",
+            },
+          },
+        ],
+        passthroughBehavior: PassthroughBehavior.NEVER,
+        requestTemplates: {
+          "application/json": '{"statusCode": 200}',
+        },
+      }),
+      {
+        methodResponses: [
+          {
+            statusCode: "200",
+            responseParameters: {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+            },
+          },
+        ],
+      }
+    );
 
     return fn;
   }
