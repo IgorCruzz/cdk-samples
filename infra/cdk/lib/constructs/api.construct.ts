@@ -17,6 +17,7 @@ import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import { Route53Construct } from "./route53.construct";
 import { RecordSet, RecordTarget, RecordType } from "aws-cdk-lib/aws-route53";
 import { Duration } from "aws-cdk-lib";
+import { ApiGatewayDomain } from "aws-cdk-lib/aws-route53-targets";
 
 type ApiConstructProps = {
   acm: ACMConstruct;
@@ -67,11 +68,9 @@ export class ApiConstruct extends Construct {
       },
     });
 
-    const url = xyzApi.url.split("//")[1];
-
     new RecordSet(this, "ApiRecordSet", {
-      recordType: RecordType.CNAME,
-      target: RecordTarget.fromValues(url),
+      recordType: RecordType.AAAA,
+      target: RecordTarget.fromAlias(new ApiGatewayDomain(xyzApi.domainName!)),
       zone: this.props.route53.hostedZone,
       ttl: Duration.seconds(300),
       recordName: "api",
