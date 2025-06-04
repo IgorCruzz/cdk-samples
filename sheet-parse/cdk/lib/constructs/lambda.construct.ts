@@ -23,15 +23,19 @@ export class LambdaConstruct extends Construct {
   public readonly generatePreSignedUrlFunction: NodejsFunction;
   public readonly extractDataFunction: NodejsFunction;
 
-  constructor(scope: Construct, id: string, props: LambdaStackProps) {
+  constructor(
+    scope: Construct,
+    id: string,
+    private readonly props: LambdaStackProps
+  ) {
     super(scope, id);
 
-    this.generatePreSignedUrlFunction = this.createGenerateUrlFunction(props);
-    this.extractDataFunction = this.createExtractDataFunction(props);
+    this.generatePreSignedUrlFunction = this.createGenerateUrlFunction();
+    this.extractDataFunction = this.createExtractDataFunction();
   }
 
-  private createGenerateUrlFunction(props: LambdaStackProps) {
-    const { bucket } = props.s3Construct;
+  private createGenerateUrlFunction() {
+    const { bucket } = this.props.s3Construct;
 
     const generatePreSignedUrlFunction = new NodejsFunction(
       this,
@@ -68,9 +72,9 @@ export class LambdaConstruct extends Construct {
     return generatePreSignedUrlFunction;
   }
 
-  private createExtractDataFunction(props: LambdaStackProps) {
-    const { bucket } = props.s3Construct;
-    const { table } = props.dynamoDBConstruct;
+  private createExtractDataFunction() {
+    const { bucket } = this.props.s3Construct;
+    const { table } = this.props.dynamoDBConstruct;
 
     const extractDataFunction = new NodejsFunction(
       this,
