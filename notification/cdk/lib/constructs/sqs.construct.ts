@@ -3,7 +3,6 @@ import { Construct } from "constructs";
 import { IQueue, Queue } from "aws-cdk-lib/aws-sqs";
 import { PolicyStatement, ServicePrincipal, Effect } from "aws-cdk-lib/aws-iam";
 import {
-  ITopic,
   Subscription,
   SubscriptionFilter,
   SubscriptionProtocol,
@@ -14,81 +13,55 @@ interface SQSStackProps {
   snsConstruct: SNSConstruct;
 }
 
-interface QueueProps {
-  deadLetterQueue: { maxReceiveCount: number; queue: IQueue };
-  notifierSNSTopic: ITopic;
-  queueName: string;
-  subscriptionName: string;
-  service: "EMAIL" | "WHATSAPP";
-}
-
 export class SQSConstruct extends Construct {
   public readonly notifierSMSQueue: IQueue;
   public readonly notifierEmailQueue: IQueue;
   public readonly notifierWhatsappQueue: IQueue;
   public readonly notifierDLQ: IQueue;
 
+  private deadLetterQueue: { maxReceiveCount: number; queue: IQueue };
+
   constructor(
     scope: Construct,
     id: string,
-    public readonly props: SQSStackProps
+    private readonly props: SQSStackProps
   ) {
     super(scope, id);
 
-    const {
-      snsConstruct: { notifierSNSTopic },
-    } = props;
-
     this.notifierDLQ = this.createNotifierDLQ();
 
-    const deadLetterQueue = {
-      maxReceiveCount: 5,
-      queue: this.notifierDLQ,
-    };
+    this.notifierEmailQueue = this.createNotifierEmailQueue();
 
-    this.notifierEmailQueue = this.createNotifierQueue({
-      deadLetterQueue,
-      notifierSNSTopic,
-      service: "EMAIL",
-      queueName: "notifierEmailQueue",
-      subscriptionName: "emailQueueSubscription",
-    });
-
-    this.notifierWhatsappQueue = this.createNotifierQueue({
-      deadLetterQueue,
-      notifierSNSTopic,
-      service: "WHATSAPP",
-      queueName: "notifierWhatsappQueue",
-      subscriptionName: "whatsappQueueSubscription",
-    });
+    this.notifierWhatsappQueue = this.createNotifierWhatsappQueue();
   }
 
   private createNotifierDLQ() {
-    const notifierDLQ = new Queue(this, "notifierDLQ", {
+    const queue = new Queue(this, "notifierDLQ", {
       retentionPeriod: Duration.days(1),
       visibilityTimeout: Duration.seconds(30),
     });
 
-    return notifierDLQ;
+    this.deadLetterQueue = {
+      maxReceiveCount: 5,
+      queue,
+    };
+
+    return queue;
   }
 
-  private createNotifierQueue({
-    deadLetterQueue,
-    notifierSNSTopic,
-    queueName,
-    subscriptionName,
-    service,
-  }: QueueProps) {
-    const notifierQueue = new Queue(this, queueName, {
+  private createNotifierEmailQueue() {
+    const { notifierSNSTopic } = this.props.snsConstruct;
+
+    const queue = new Queue(this, "notifierEmailQueue", {
       visibilityTimeout: Duration.seconds(30),
       retentionPeriod: Duration.days(1),
-      deadLetterQueue,
+      deadLetterQueue: this.deadLetterQueue,
     });
 
-    notifierQueue.addToResourcePolicy(
+    queue.addToResourcePolicy(
       new PolicyStatement({
         actions: ["SQS:SendMessage"],
-        resources: [notifierQueue.queueArn],
+        resources: [queue.queueArn],
         principals: [new ServicePrincipal("sns.amazonaws.com")],
         effect: Effect.ALLOW,
         conditions: {
@@ -99,18 +72,56 @@ export class SQSConstruct extends Construct {
       })
     );
 
-    new Subscription(this, subscriptionName, {
+    new Subscription(this, "emailQueueSubscription", {
       topic: notifierSNSTopic,
-      endpoint: notifierQueue.queueArn,
+      endpoint: queue.queueArn,
       protocol: SubscriptionProtocol.SQS,
       rawMessageDelivery: true,
       filterPolicy: {
         service: SubscriptionFilter.stringFilter({
-          allowlist: [service],
+          allowlist: ["EMAIL"],
         }),
       },
     });
 
-    return notifierQueue;
+    return queue;
+  }
+
+  private createNotifierWhatsappQueue() {
+    const { notifierSNSTopic } = this.props.snsConstruct;
+
+    const queue = new Queue(this, "notifierWhatsappQueue", {
+      visibilityTimeout: Duration.seconds(30),
+      retentionPeriod: Duration.days(1),
+      deadLetterQueue: this.deadLetterQueue,
+    });
+
+    queue.addToResourcePolicy(
+      new PolicyStatement({
+        actions: ["SQS:SendMessage"],
+        resources: [queue.queueArn],
+        principals: [new ServicePrincipal("sns.amazonaws.com")],
+        effect: Effect.ALLOW,
+        conditions: {
+          ArnEquals: {
+            "aws:SourceArn": notifierSNSTopic.topicArn,
+          },
+        },
+      })
+    );
+
+    new Subscription(this, "whatsappQueueSubscription", {
+      topic: notifierSNSTopic,
+      endpoint: queue.queueArn,
+      protocol: SubscriptionProtocol.SQS,
+      rawMessageDelivery: true,
+      filterPolicy: {
+        service: SubscriptionFilter.stringFilter({
+          allowlist: ["WHATSAPP"],
+        }),
+      },
+    });
+
+    return queue;
   }
 }
