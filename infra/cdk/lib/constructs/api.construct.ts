@@ -35,9 +35,6 @@ export class ApiConstruct extends Construct {
     super(scope, id);
 
     this.xyzApi = this.createXyzApi();
-
-    this.createNotificationResource();
-    this.createSheetParseResource();
   }
 
   private createXyzApi() {
@@ -76,106 +73,16 @@ export class ApiConstruct extends Construct {
       recordName: "api",
     });
 
-    const apiArn = xyzApi.arnForExecuteApi();
+    new StringParameter(this, "apiIdParameter", {
+      parameterName: "/apigateway/xyzApiId",
+      stringValue: xyzApi.restApiId,
+    });
 
-    new StringParameter(this, "apiArnParameter", {
-      parameterName: "/apigateway/xyzApi",
-      stringValue: apiArn,
+    new StringParameter(this, "apiResourceIdParameter", {
+      parameterName: "/apigateway/xyzApiResourceId",
+      stringValue: xyzApi.root.resourceId,
     });
 
     return xyzApi;
-  }
-
-  private createNotificationResource() {
-    const resource = this.xyzApi.root.addResource("notifications");
-
-    const model = new Model(this, "NotificationsPostRequestModel", {
-      restApi: this.xyzApi,
-      contentType: "application/json",
-      description: "Model for notifications post request",
-      schema: {
-        type: JsonSchemaType.OBJECT,
-        properties: {
-          notifications: {
-            type: JsonSchemaType.ARRAY,
-            minItems: 1,
-            maxItems: 15,
-            items: {
-              type: JsonSchemaType.OBJECT,
-              properties: {
-                service: {
-                  type: JsonSchemaType.STRING,
-                  enum: ["EMAIL", "WHATSAPP"],
-                },
-                title: {
-                  type: JsonSchemaType.STRING,
-                  minLength: 1,
-                  maxLength: 100,
-                },
-                message: {
-                  type: JsonSchemaType.STRING,
-                  minLength: 1,
-                  maxLength: 500,
-                },
-              },
-              required: ["service", "message", "title"],
-            },
-          },
-        },
-        required: ["notifications"],
-      },
-    });
-
-    const validator = new RequestValidator(
-      this,
-      "notificationsPostRequestValidator",
-      {
-        restApi: this.xyzApi,
-        validateRequestBody: true,
-      }
-    );
-
-    const notifierSendFunctionArn = StringParameter.fromStringParameterName(
-      this,
-      "notifierSendFunctionParameter",
-      "/lambda/notifierSendFunction"
-    );
-
-    const fn = Function.fromFunctionAttributes(this, "notifierSendFunction", {
-      functionArn: notifierSendFunctionArn.stringValue,
-      sameEnvironment: true,
-    });
-
-    fn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
-
-    resource.addMethod("POST", new LambdaIntegration(fn), {
-      requestModels: {
-        "application/json": model,
-      },
-      requestValidator: validator,
-    });
-  }
-
-  private createSheetParseResource() {
-    const resource = this.xyzApi.root.addResource("generate");
-
-    const fnArn = StringParameter.fromStringParameterName(
-      this,
-      "generatePreSignedUrlFunctionParameter",
-      "/lambda/generatePreSignedUrlFunction"
-    );
-
-    const fn = Function.fromFunctionAttributes(
-      this,
-      "generatePreSignedUrlFunction",
-      {
-        functionArn: fnArn.stringValue,
-        sameEnvironment: true,
-      }
-    );
-
-    fn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
-
-    resource.addMethod("POST", new LambdaIntegration(fn), {});
   }
 }
