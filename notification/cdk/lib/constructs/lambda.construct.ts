@@ -18,7 +18,9 @@ import { join } from "node:path";
 import {
   JsonSchemaType,
   LambdaIntegration,
+  MockIntegration,
   Model,
+  PassthroughBehavior,
   RequestValidator,
   RestApi,
 } from "aws-cdk-lib/aws-apigateway";
@@ -89,6 +91,40 @@ export class LambdaConstruct extends Construct {
     });
 
     const resource = api.root.addResource("notifications");
+
+    resource.addMethod(
+      "OPTIONS",
+      new MockIntegration({
+        integrationResponses: [
+          {
+            statusCode: "200",
+            responseParameters: {
+              "method.response.header.Access-Control-Allow-Headers":
+                "'Content-Type,X-Amz-Date,Authorization'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'",
+              "method.response.header.Access-Control-Allow-Methods":
+                "'OPTIONS,POST'",
+            },
+          },
+        ],
+        passthroughBehavior: PassthroughBehavior.NEVER,
+        requestTemplates: {
+          "application/json": '{"statusCode": 200}',
+        },
+      }),
+      {
+        methodResponses: [
+          {
+            statusCode: "200",
+            responseParameters: {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+            },
+          },
+        ],
+      }
+    );
 
     const model = new Model(this, "NotificationsPostRequestModel", {
       restApi: api,
