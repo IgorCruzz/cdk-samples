@@ -13,6 +13,7 @@ import { S3Construct } from "./s3.construct";
 import { DynamoDBConstruct } from "./dynamo.construct";
 import { EventType } from "aws-cdk-lib/aws-s3";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
+import { LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
 
 interface LambdaStackProps {
   s3Construct: S3Construct;
@@ -60,10 +61,26 @@ export class LambdaConstruct extends Construct {
 
     bucket.grantPut(fn);
 
-    new StringParameter(this, "generatePreSignedUrlFunctionParameter", {
-      parameterName: "/lambda/generatePreSignedUrlFunction",
-      stringValue: fn.functionArn,
+    const restApiId = StringParameter.fromStringParameterName(
+      this,
+      "apiIdParameter",
+      "/apigateway/xyzApiId"
+    );
+
+    const rootResourceId = StringParameter.fromStringParameterName(
+      this,
+      "apiIdParameter",
+      "/apigateway/xyzApiResourceId"
+    );
+
+    const api = RestApi.fromRestApiAttributes(this, "xyzApi", {
+      restApiId: restApiId.stringValue,
+      rootResourceId: rootResourceId.stringValue,
     });
+
+    const resource = api.root.addResource("generate");
+
+    resource.addMethod("POST", new LambdaIntegration(fn), {});
 
     return fn;
   }
