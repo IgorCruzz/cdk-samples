@@ -12,4 +12,4 @@ const schema = z.object({
   website: z.string().url().optional(),
 });
 
-export type Customer = z.infer<typeof schema>;
+export type CustomerType = z.infer<typeof schema>;

@@ -3,7 +3,7 @@ import {
   BatchWriteCommandInput,
   BatchWriteCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { CustomerType } from "../types/customer";
+import { CustomerType } from "../schema/customer.schema";
 import KSUID from "ksuid";
 
 const client = new DynamoDBClient({});
