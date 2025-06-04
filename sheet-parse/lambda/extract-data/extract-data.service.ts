@@ -12,7 +12,7 @@ export class ExtractDataService {
   extract = async ({ s3Record }: { s3Record: S3EventRecord }) => {
     const stream = await this.s3.getObject({
       key: s3Record.s3.object.key,
-      Bucket: "sheet-parse-bucket",
+      Bucket: process.env.BUCKET_NAME as string,
     });
 
     const chunk = [];
