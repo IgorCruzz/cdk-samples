@@ -14,9 +14,13 @@ import { ACMConstruct } from "./acm.construct";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { Function } from "aws-cdk-lib/aws-lambda";
 import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import { Route53Construct } from "./route53.construct";
+import { RecordSet, RecordTarget, RecordType } from "aws-cdk-lib/aws-route53";
+import { Duration } from "aws-cdk-lib";
 
 type ApiConstructProps = {
   acm: ACMConstruct;
+  route53: Route53Construct;
 };
 
 export class ApiConstruct extends Construct {
@@ -61,6 +65,16 @@ export class ApiConstruct extends Construct {
         endpointType: EndpointType.REGIONAL,
         securityPolicy: SecurityPolicy.TLS_1_2,
       },
+    });
+
+    const url = xyzApi.url.split("//")[1];
+
+    new RecordSet(this, "ApiRecordSet", {
+      recordType: RecordType.CNAME,
+      target: RecordTarget.fromValues(url),
+      zone: this.props.route53.hostedZone,
+      ttl: Duration.seconds(300),
+      recordName: "api",
     });
 
     return xyzApi;
