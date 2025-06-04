@@ -37,77 +37,69 @@ export class LambdaConstruct extends Construct {
   private createGenerateUrlFunction() {
     const { bucket } = this.props.s3Construct;
 
-    const generatePreSignedUrlFunction = new NodejsFunction(
-      this,
-      "GeneratePreSignedUrl",
-      {
-        memorySize: 128,
-        architecture: Architecture.X86_64,
-        runtime: Runtime.NODEJS_20_X,
-        timeout: Duration.seconds(30),
-        description: "A Lambda function to send notifications",
-        entry: join(
-          __dirname,
-          "../../../lambda/generate-presigned-url/handler.ts"
-        ),
-        handler: "generatePreSignedUrlHandler",
-        bundling: {
-          minify: true,
-          sourceMap: true,
-          target: "es2020",
-        },
-        loggingFormat: LoggingFormat.JSON,
-        tracing: Tracing.ACTIVE,
-        logRetention: RetentionDays.ONE_WEEK,
-      }
-    );
+    const fn = new NodejsFunction(this, "GeneratePreSignedUrl", {
+      memorySize: 128,
+      architecture: Architecture.X86_64,
+      runtime: Runtime.NODEJS_20_X,
+      timeout: Duration.seconds(30),
+      description: "A Lambda function to send notifications",
+      entry: join(
+        __dirname,
+        "../../../lambda/generate-presigned-url/handler.ts"
+      ),
+      handler: "generatePreSignedUrlHandler",
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: "es2020",
+      },
+      loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
+      logRetention: RetentionDays.ONE_WEEK,
+    });
 
-    bucket.grantPut(generatePreSignedUrlFunction);
+    bucket.grantPut(fn);
 
     new StringParameter(this, "generatePreSignedUrlFunctionParameter", {
       parameterName: "/lambda/generatePreSignedUrlFunction",
-      stringValue: generatePreSignedUrlFunction.functionArn,
+      stringValue: fn.functionArn,
     });
 
-    return generatePreSignedUrlFunction;
+    return fn;
   }
 
   private createExtractDataFunction() {
     const { bucket } = this.props.s3Construct;
     const { table } = this.props.dynamoDBConstruct;
 
-    const extractDataFunction = new NodejsFunction(
-      this,
-      "ExtractDataFunction",
-      {
-        memorySize: 128,
-        architecture: Architecture.X86_64,
-        runtime: Runtime.NODEJS_20_X,
-        timeout: Duration.seconds(30),
-        description: "A Lambda function to send notifications",
-        entry: join(__dirname, "../../../lambda/extract-data/handler.ts"),
-        handler: "extractDataHandler",
-        bundling: {
-          minify: true,
-          sourceMap: true,
-          target: "es2020",
-        },
-        environment: {
-          TABLE_NAME: "SheetParseTable",
-        },
-        loggingFormat: LoggingFormat.JSON,
-        tracing: Tracing.ACTIVE,
-        logRetention: RetentionDays.ONE_WEEK,
-      }
-    );
+    const fn = new NodejsFunction(this, "ExtractDataFunction", {
+      memorySize: 128,
+      architecture: Architecture.X86_64,
+      runtime: Runtime.NODEJS_20_X,
+      timeout: Duration.seconds(30),
+      description: "A Lambda function to send notifications",
+      entry: join(__dirname, "../../../lambda/extract-data/handler.ts"),
+      handler: "extractDataHandler",
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: "es2020",
+      },
+      environment: {
+        TABLE_NAME: "SheetParseTable",
+      },
+      loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
+      logRetention: RetentionDays.ONE_WEEK,
+    });
 
     bucket.addEventNotification(
       EventType.OBJECT_CREATED,
-      new aws_s3_notifications.LambdaDestination(extractDataFunction)
+      new aws_s3_notifications.LambdaDestination(fn)
     );
 
-    table.grantReadWriteData(extractDataFunction);
+    table.grantReadWriteData(fn);
 
-    return extractDataFunction;
+    return fn;
   }
 }
