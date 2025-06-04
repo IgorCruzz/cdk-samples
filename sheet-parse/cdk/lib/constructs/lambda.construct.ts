@@ -62,6 +62,9 @@ export class LambdaConstruct extends Construct {
       loggingFormat: LoggingFormat.JSON,
       tracing: Tracing.ACTIVE,
       logRetention: RetentionDays.ONE_WEEK,
+      environment: {
+        BUCKET_NAME: bucket.bucketName,
+      },
     });
 
     bucket.grantPut(fn);
