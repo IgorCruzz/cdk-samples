@@ -6,9 +6,7 @@ import {
   Cors,
   SecurityPolicy,
 } from "aws-cdk-lib/aws-apigateway";
-import { ACMConstruct } from "./acm.construct";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import { Route53Construct } from "./route53.construct";
 import {
   HostedZone,
   RecordSet,
@@ -27,12 +25,10 @@ export class ApiConstruct extends Construct {
   }
 
   private createXyzApi() {
-    const certificateArn = StringParameter.fromStringParameterAttributes(
+    const certificateArn = StringParameter.fromStringParameterName(
       this,
       "certificateArnParameter",
-      {
-        parameterName: "/route53/hosted-zone-arn",
-      }
+      "/acm/certificate-arn"
     );
 
     const certificate = Certificate.fromCertificateArn(
@@ -68,12 +64,10 @@ export class ApiConstruct extends Construct {
       },
     });
 
-    const hostedZoneArn = StringParameter.fromStringParameterAttributes(
+    const hostedZoneArn = StringParameter.fromStringParameterName(
       this,
       "hostedZoneArnParameter",
-      {
-        parameterName: "/route53/hosted-zone-arn",
-      }
+      "/route53/hosted-zone-arn"
     );
 
     const hostedZone = HostedZone.fromHostedZoneAttributes(this, "HostedZone", {
