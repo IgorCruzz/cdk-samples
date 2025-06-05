@@ -1,43 +1,46 @@
 import { Construct } from "constructs";
 import {
   RestApi,
-  RequestValidator,
-  Model,
   EndpointType,
   MethodLoggingLevel,
   Cors,
   SecurityPolicy,
-  JsonSchemaType,
-  LambdaIntegration,
 } from "aws-cdk-lib/aws-apigateway";
 import { ACMConstruct } from "./acm.construct";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import { Function } from "aws-cdk-lib/aws-lambda";
-import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import { Route53Construct } from "./route53.construct";
-import { RecordSet, RecordTarget, RecordType } from "aws-cdk-lib/aws-route53";
+import {
+  HostedZone,
+  RecordSet,
+  RecordTarget,
+  RecordType,
+} from "aws-cdk-lib/aws-route53";
 import { Duration } from "aws-cdk-lib";
 import { ApiGatewayDomain } from "aws-cdk-lib/aws-route53-targets";
-
-type ApiConstructProps = {
-  acm: ACMConstruct;
-  route53: Route53Construct;
-};
+import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 
 export class ApiConstruct extends Construct {
-  public readonly xyzApi: RestApi;
-
-  constructor(
-    scope: Construct,
-    id: string,
-    private readonly props: ApiConstructProps
-  ) {
+  constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    this.xyzApi = this.createXyzApi();
+    this.createXyzApi();
   }
 
   private createXyzApi() {
+    const certificateArn = StringParameter.fromStringParameterAttributes(
+      this,
+      "certificateArnParameter",
+      {
+        parameterName: "/route53/hosted-zone-arn",
+      }
+    );
+
+    const certificate = Certificate.fromCertificateArn(
+      this,
+      "Certificate",
+      certificateArn.stringValue
+    );
+
     const xyzApi = new RestApi(this, "xyzApi", {
       endpointConfiguration: {
         types: [EndpointType.REGIONAL],
@@ -59,16 +62,29 @@ export class ApiConstruct extends Construct {
       disableExecuteApiEndpoint: true,
       domainName: {
         domainName: "api.igorcruz.space",
-        certificate: this.props.acm.certificate,
+        certificate,
         endpointType: EndpointType.REGIONAL,
         securityPolicy: SecurityPolicy.TLS_1_2,
       },
     });
 
+    const hostedZoneArn = StringParameter.fromStringParameterAttributes(
+      this,
+      "hostedZoneArnParameter",
+      {
+        parameterName: "/route53/hosted-zone-arn",
+      }
+    );
+
+    const hostedZone = HostedZone.fromHostedZoneAttributes(this, "HostedZone", {
+      hostedZoneId: hostedZoneArn.stringValue,
+      zoneName: "igorcruz.space",
+    });
+
     new RecordSet(this, "ApiRecordSet", {
       recordType: RecordType.A,
       target: RecordTarget.fromAlias(new ApiGatewayDomain(xyzApi.domainName!)),
-      zone: this.props.route53.hostedZone,
+      zone: hostedZone,
       ttl: Duration.seconds(300),
       recordName: "api",
     });
