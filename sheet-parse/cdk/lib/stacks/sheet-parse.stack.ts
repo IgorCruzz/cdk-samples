@@ -6,11 +6,11 @@ export class SheetParseStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const s3Construct = new S3Construct(this, "s3Construct");
+    const s3Construct = new S3Construct(this, "construct-s3");
 
-    const dynamoDBConstruct = new DynamoDBConstruct(this, "dynamoConstrut");
+    const dynamoDBConstruct = new DynamoDBConstruct(this, "construct-dynamodb");
 
-    const lambdaConstruct = new LambdaConstruct(this, "lambdaConstruct", {
+    const lambdaConstruct = new LambdaConstruct(this, "construct-lambda", {
       s3Construct,
       dynamoDBConstruct,
     });
