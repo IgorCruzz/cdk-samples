@@ -43,7 +43,7 @@ export class LambdaConstruct extends Construct {
   private createGenerateUrlFunction() {
     const { bucket } = this.props.s3Construct;
 
-    const fn = new NodejsFunction(this, "GeneratePreSignedUrl", {
+    const fn = new NodejsFunction(this, "function-generate-pre-signed-url", {
       memorySize: 128,
       architecture: Architecture.X86_64,
       runtime: Runtime.NODEJS_20_X,
@@ -71,17 +71,17 @@ export class LambdaConstruct extends Construct {
 
     const restApiId = StringParameter.fromStringParameterName(
       this,
-      "apiIdParameter",
+      "parameter-xyz-api-id",
       "/apigateway/xyzApiId"
     );
 
     const rootResourceId = StringParameter.fromStringParameterName(
       this,
-      "apiResourceIdParameter",
+      "parameter-xyz-api-resource-id",
       "/apigateway/xyzApiResourceId"
     );
 
-    const api = RestApi.fromRestApiAttributes(this, "xyzApi", {
+    const api = RestApi.fromRestApiAttributes(this, "api-xyz", {
       restApiId: restApiId.stringValue,
       rootResourceId: rootResourceId.stringValue,
     });
@@ -131,7 +131,7 @@ export class LambdaConstruct extends Construct {
     const { bucket } = this.props.s3Construct;
     const { table } = this.props.dynamoDBConstruct;
 
-    const fn = new NodejsFunction(this, "ExtractDataFunction", {
+    const fn = new NodejsFunction(this, "function-extract-data", {
       memorySize: 128,
       architecture: Architecture.X86_64,
       runtime: Runtime.NODEJS_20_X,
