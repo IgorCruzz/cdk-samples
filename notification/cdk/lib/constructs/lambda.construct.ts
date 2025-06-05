@@ -189,37 +189,37 @@ export class LambdaConstruct extends Construct {
     const ACCOUNT_SID = StringParameter.fromStringParameterName(
       this,
       "parameter-account-sid",
-      "/twilio/accountSid"
+      "/twilio/account-sid"
     );
 
     const AUTH_TOKEN = StringParameter.fromStringParameterName(
       this,
       "parameter-auth-token",
-      "/twilio/authToken"
+      "/twilio/auth-token"
     );
 
     const SENDER_PHONE = StringParameter.fromStringParameterName(
       this,
       "parameter-sender-phone",
-      "/twilio/senderPhone"
+      "/twilio/sender-phone"
     );
 
     const RECEIVER_PHONE = StringParameter.fromStringParameterName(
       this,
       "parameter-my-phone",
-      "/twilio/mynumber"
+      "/twilio/my-number"
     );
 
     const SES_IDENTITY = StringParameter.fromStringParameterName(
       this,
       "parameter-ses-identity",
-      "/ses/emailIdentity"
+      "/ses/email-identity"
     );
 
     const SES_ARN_IDENTITY = StringParameter.fromStringParameterName(
       this,
       "parameter-ses-arn-identity",
-      "/ses/arnIdentity"
+      "/ses/arn-identity"
     );
 
     const fn = new NodejsFunction(this, "function-notifier-process", {
