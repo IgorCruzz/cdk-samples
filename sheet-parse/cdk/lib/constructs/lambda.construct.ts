@@ -72,13 +72,13 @@ export class LambdaConstruct extends Construct {
     const restApiId = StringParameter.fromStringParameterName(
       this,
       "parameter-xyz-api-id",
-      "/apigateway/xyzApiId"
+      "/apigateway/xyz-api-id"
     );
 
     const rootResourceId = StringParameter.fromStringParameterName(
       this,
       "parameter-xyz-api-resource-id",
-      "/apigateway/xyzApiResourceId"
+      "/apigateway/xyz-api-resource-id"
     );
 
     const api = RestApi.fromRestApiAttributes(this, "api-xyz", {
