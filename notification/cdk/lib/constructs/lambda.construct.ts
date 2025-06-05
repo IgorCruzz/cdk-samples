@@ -49,7 +49,7 @@ export class LambdaConstruct extends Construct {
   private createSendFunction() {
     const { notifierSNSTopic } = this.props.snsConstruct;
 
-    const fn = new NodejsFunction(this, "notifierSendFunction", {
+    const fn = new NodejsFunction(this, "function-notifier-send", {
       memorySize: 256,
       architecture: Architecture.X86_64,
       runtime: Runtime.NODEJS_20_X,
@@ -75,17 +75,17 @@ export class LambdaConstruct extends Construct {
 
     const restApiId = StringParameter.fromStringParameterName(
       this,
-      "apiIdParameter",
+      "parameter-xyz-api-d",
       "/apigateway/xyzApiId"
     );
 
     const rootResourceId = StringParameter.fromStringParameterName(
       this,
-      "apiResourceIdParameter",
+      "parameter-xyz-api-resource-id",
       "/apigateway/xyzApiResourceId"
     );
 
-    const api = RestApi.fromRestApiAttributes(this, "xyzApi", {
+    const api = RestApi.fromRestApiAttributes(this, "api-xyz", {
       restApiId: restApiId.stringValue,
       rootResourceId: rootResourceId.stringValue,
     });
@@ -126,7 +126,7 @@ export class LambdaConstruct extends Construct {
       }
     );
 
-    const model = new Model(this, "NotificationsPostRequestModel", {
+    const model = new Model(this, "model-notifications-post-request", {
       restApi: api,
       contentType: "application/json",
       description: "Model for notifications post request",
@@ -165,7 +165,7 @@ export class LambdaConstruct extends Construct {
 
     const validator = new RequestValidator(
       this,
-      "notificationsPostRequestValidator",
+      "notifications-Post-request-validator",
       {
         restApi: api,
         validateRequestBody: true,
@@ -188,41 +188,41 @@ export class LambdaConstruct extends Construct {
 
     const ACCOUNT_SID = StringParameter.fromStringParameterName(
       this,
-      "accountSidParameter",
+      "parameter-account-sid",
       "/twilio/accountSid"
     );
 
     const AUTH_TOKEN = StringParameter.fromStringParameterName(
       this,
-      "authTokenParameter",
+      "parameter-auth-token",
       "/twilio/authToken"
     );
 
     const SENDER_PHONE = StringParameter.fromStringParameterName(
       this,
-      "senderPhoneParameter",
+      "parameter-sender-phone",
       "/twilio/senderPhone"
     );
 
     const RECEIVER_PHONE = StringParameter.fromStringParameterName(
       this,
-      "notifierReceiverPhoneParameter",
+      "parameter-my-phone",
       "/twilio/mynumber"
     );
 
     const SES_IDENTITY = StringParameter.fromStringParameterName(
       this,
-      "emailIdentityParameter",
+      "parameter-ses-identity",
       "/ses/emailIdentity"
     );
 
     const SES_ARN_IDENTITY = StringParameter.fromStringParameterName(
       this,
-      "arnIdentityParameter",
+      "parameter-ses-arn-identity",
       "/ses/arnIdentity"
     );
 
-    const fn = new NodejsFunction(this, "notifierProcessFunction", {
+    const fn = new NodejsFunction(this, "function-notifier-process", {
       memorySize: 256,
       architecture: Architecture.X86_64,
       runtime: Runtime.NODEJS_20_X,
@@ -279,7 +279,7 @@ export class LambdaConstruct extends Construct {
     const { notifierDLQ } = this.props.sqsConstruct;
     const { alertSNSTopic } = this.props.snsConstruct;
 
-    const fn = new NodejsFunction(this, "notiferDlqFunction", {
+    const fn = new NodejsFunction(this, "function-notifer-dlq", {
       memorySize: 256,
       architecture: Architecture.X86_64,
       runtime: Runtime.NODEJS_20_X,
