@@ -15,12 +15,10 @@ export class ACMConstruct extends Construct {
   }
 
   private createCertificate = (): ICertificate => {
-    const hostedZoneArn = StringParameter.fromStringParameterAttributes(
+    const hostedZoneArn = StringParameter.fromStringParameterName(
       this,
       "hostedZoneArnParameter",
-      {
-        parameterName: "/route53/hosted-zone-arn",
-      }
+      "/route53/hosted-zone-arn"
     );
 
     const hostedZone = HostedZone.fromHostedZoneAttributes(this, "HostedZone", {
