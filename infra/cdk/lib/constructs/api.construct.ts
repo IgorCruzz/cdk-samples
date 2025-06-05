@@ -27,17 +27,17 @@ export class ApiConstruct extends Construct {
   private createXyzApi() {
     const certificateArn = StringParameter.fromStringParameterName(
       this,
-      "certificateArnParameter",
+      "parameter-certificate-arn",
       "/acm/certificate-arn"
     );
 
     const certificate = Certificate.fromCertificateArn(
       this,
-      "Certificate",
+      "certificate-arn",
       certificateArn.stringValue
     );
 
-    const xyzApi = new RestApi(this, "xyzApi", {
+    const xyzApi = new RestApi(this, "api-xyz", {
       endpointConfiguration: {
         types: [EndpointType.REGIONAL],
       },
@@ -66,16 +66,20 @@ export class ApiConstruct extends Construct {
 
     const hostedZoneArn = StringParameter.fromStringParameterName(
       this,
-      "hostedZoneArnParameter",
-      "/route53/hosted-zone-arn"
+      "parameter-hosted-zone-id",
+      "/route53/hosted-zone-id"
     );
 
-    const hostedZone = HostedZone.fromHostedZoneAttributes(this, "HostedZone", {
-      hostedZoneId: hostedZoneArn.stringValue,
-      zoneName: "igorcruz.space",
-    });
+    const hostedZone = HostedZone.fromHostedZoneAttributes(
+      this,
+      "hosted-zone",
+      {
+        hostedZoneId: hostedZoneArn.stringValue,
+        zoneName: "igorcruz.space",
+      }
+    );
 
-    new RecordSet(this, "ApiRecordSet", {
+    new RecordSet(this, "record-set-api", {
       recordType: RecordType.A,
       target: RecordTarget.fromAlias(new ApiGatewayDomain(xyzApi.domainName!)),
       zone: hostedZone,
@@ -83,12 +87,12 @@ export class ApiConstruct extends Construct {
       recordName: "api",
     });
 
-    new StringParameter(this, "apiIdParameter", {
+    new StringParameter(this, "parameter-xyz-api-id", {
       parameterName: "/apigateway/xyzApiId",
       stringValue: xyzApi.restApiId,
     });
 
-    new StringParameter(this, "apiResourceIdParameter", {
+    new StringParameter(this, "parameter-xyz-resource-id", {
       parameterName: "/apigateway/xyzApiResourceId",
       stringValue: xyzApi.root.resourceId,
     });
