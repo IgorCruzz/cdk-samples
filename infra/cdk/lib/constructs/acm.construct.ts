@@ -4,29 +4,40 @@ import {
   CertificateValidation,
   ICertificate,
 } from "aws-cdk-lib/aws-certificatemanager";
-import { Route53Construct } from "./route53.construct";
-
-interface ACMConstructProps {
-  route53: Route53Construct;
-}
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
+import { HostedZone } from "aws-cdk-lib/aws-route53";
 
 export class ACMConstruct extends Construct {
-  public readonly certificate: ICertificate;
-
-  constructor(
-    scope: Construct,
-    id: string,
-    private readonly props: ACMConstructProps
-  ) {
+  constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    this.certificate = this.createCertificate();
+    this.createCertificate();
   }
 
   private createCertificate = (): ICertificate => {
-    return new Certificate(this, "Certificate", {
-      domainName: "*.igorcruz.space",
-      validation: CertificateValidation.fromDns(this.props.route53.hostedZone),
+    const hostedZoneArn = StringParameter.fromStringParameterAttributes(
+      this,
+      "hostedZoneArnParameter",
+      {
+        parameterName: "/route53/hosted-zone-arn",
+      }
+    );
+
+    const hostedZone = HostedZone.fromHostedZoneAttributes(this, "HostedZone", {
+      hostedZoneId: hostedZoneArn.stringValue,
+      zoneName: "igorcruz.space",
     });
+
+    const certificate = new Certificate(this, "Certificate", {
+      domainName: "*.igorcruz.space",
+      validation: CertificateValidation.fromDns(hostedZone),
+    });
+
+    new StringParameter(this, "CertificateArn", {
+      parameterName: "/acm/certificate-arn",
+      stringValue: certificate.certificateArn,
+    });
+
+    return certificate;
   };
 }
