@@ -88,12 +88,12 @@ export class ApiConstruct extends Construct {
     });
 
     new StringParameter(this, "parameter-xyz-api-id", {
-      parameterName: "/apigateway/xyzApiId",
+      parameterName: "/apigateway/xyz-api-id",
       stringValue: xyzApi.restApiId,
     });
 
     new StringParameter(this, "parameter-xyz-resource-id", {
-      parameterName: "/apigateway/xyzApiResourceId",
+      parameterName: "/apigateway/xyz-api-resource-id",
       stringValue: xyzApi.root.resourceId,
     });
 
