@@ -90,41 +90,13 @@ export class LambdaConstruct extends Construct {
       rootResourceId: rootResourceId.stringValue,
     });
 
-    const resource = api.root.addResource("notifications");
-
-    resource.addMethod(
-      "OPTIONS",
-      new MockIntegration({
-        integrationResponses: [
-          {
-            statusCode: "200",
-            responseParameters: {
-              "method.response.header.Access-Control-Allow-Headers":
-                "'Content-Type,X-Amz-Date,Authorization'",
-              "method.response.header.Access-Control-Allow-Origin": "'*'",
-              "method.response.header.Access-Control-Allow-Methods":
-                "'OPTIONS,POST'",
-            },
-          },
-        ],
-        passthroughBehavior: PassthroughBehavior.NEVER,
-        requestTemplates: {
-          "application/json": '{"statusCode": 200}',
-        },
-      }),
-      {
-        methodResponses: [
-          {
-            statusCode: "200",
-            responseParameters: {
-              "method.response.header.Access-Control-Allow-Headers": true,
-              "method.response.header.Access-Control-Allow-Origin": true,
-              "method.response.header.Access-Control-Allow-Methods": true,
-            },
-          },
-        ],
-      }
-    );
+    const resource = api.root.addResource("notifications", {
+      defaultCorsPreflightOptions: {
+        allowOrigins: ["*"],
+        allowMethods: ["OPTIONS", "POST"],
+        allowHeaders: ["Content-Type"],
+      },
+    });
 
     const model = new Model(this, "model-notifications-post-request", {
       restApi: api,
