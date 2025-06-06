@@ -90,13 +90,7 @@ export class LambdaConstruct extends Construct {
       rootResourceId: rootResourceId.stringValue,
     });
 
-    const resource = api.root.addResource("notifications", {
-      defaultCorsPreflightOptions: {
-        allowOrigins: ["*"],
-        allowMethods: ["OPTIONS", "POST"],
-        allowHeaders: ["Content-Type"],
-      },
-    });
+    const resource = api.root.addResource("notifications");
 
     const model = new Model(this, "model-notifications-post-request", {
       restApi: api,
