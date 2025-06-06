@@ -69,33 +69,6 @@ export class LambdaConstruct extends Construct {
 
     bucket.grantPut(fn);
 
-    const restApiId = StringParameter.fromStringParameterName(
-      this,
-      "parameter-xyz-api-id",
-      "/apigateway/xyz-api-id"
-    );
-
-    const rootResourceId = StringParameter.fromStringParameterName(
-      this,
-      "parameter-xyz-api-resource-id",
-      "/apigateway/xyz-api-resource-id"
-    );
-
-    const api = RestApi.fromRestApiAttributes(this, "api-xyz", {
-      restApiId: restApiId.stringValue,
-      rootResourceId: rootResourceId.stringValue,
-    });
-
-    const resource = api.root.addResource("generate", {
-      defaultCorsPreflightOptions: {
-        allowOrigins: ["*"],
-        allowMethods: ["OPTIONS", "POST"],
-        allowHeaders: ["Content-Type"],
-      },
-    });
-
-    resource.addMethod("POST", new LambdaIntegration(fn), {});
-
     return fn;
   }
 
