@@ -4,4 +4,4 @@ import { NotifierStack } from "../lib/stacks";
 
 const app = new cdk.App();
 
-new NotifierStack(app, "NotifierStack");
+new NotifierStack(app, "stack-notifier");
