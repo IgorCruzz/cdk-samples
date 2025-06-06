@@ -35,7 +35,7 @@ export class SNSConstruct extends Construct {
     const SNS_SUB_NUMBER = StringParameter.fromStringParameterName(
       this,
       "snsSubNumberParameter",
-      " /sns/sub-number"
+      "/sns/sub-number"
     );
 
     new Subscription(this, "alertTopicSubscription", {
