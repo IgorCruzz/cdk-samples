@@ -8,14 +8,6 @@ import {
   LambdaIntegration,
 } from "aws-cdk-lib/aws-apigateway";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import {
-  HostedZone,
-  RecordSet,
-  RecordTarget,
-  RecordType,
-} from "aws-cdk-lib/aws-route53";
-import { Duration } from "aws-cdk-lib";
-import { ApiGatewayDomain } from "aws-cdk-lib/aws-route53-targets";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
 
@@ -73,39 +65,6 @@ export class ApiConstruct extends Construct {
         securityPolicy: SecurityPolicy.TLS_1_2,
         basePath: "sheet-parse",
       },
-    });
-
-    const hostedZoneArn = StringParameter.fromStringParameterName(
-      this,
-      "parameter-hosted-zone-id",
-      "/route53/hosted-zone-id"
-    );
-
-    const hostedZone = HostedZone.fromHostedZoneAttributes(
-      this,
-      "hosted-zone",
-      {
-        hostedZoneId: hostedZoneArn.stringValue,
-        zoneName: "igorcruz.space",
-      }
-    );
-
-    new RecordSet(this, "record-set-api", {
-      recordType: RecordType.A,
-      target: RecordTarget.fromAlias(new ApiGatewayDomain(xyzApi.domainName!)),
-      zone: hostedZone,
-      ttl: Duration.seconds(300),
-      recordName: "api",
-    });
-
-    new StringParameter(this, "parameter-xyz-api-id", {
-      parameterName: "/apigateway/xyz-api-id",
-      stringValue: xyzApi.restApiId,
-    });
-
-    new StringParameter(this, "parameter-xyz-resource-id", {
-      parameterName: "/apigateway/xyz-api-resource-id",
-      stringValue: xyzApi.root.resourceId,
     });
 
     return xyzApi;
