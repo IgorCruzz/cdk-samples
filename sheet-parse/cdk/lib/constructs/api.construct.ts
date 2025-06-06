@@ -71,6 +71,7 @@ export class ApiConstruct extends Construct {
         certificate,
         endpointType: EndpointType.REGIONAL,
         securityPolicy: SecurityPolicy.TLS_1_2,
+        basePath: "sheet-parse",
       },
     });
 
