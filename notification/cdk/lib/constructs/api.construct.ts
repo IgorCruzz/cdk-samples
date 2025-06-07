@@ -4,14 +4,11 @@ import {
   EndpointType,
   MethodLoggingLevel,
   Cors,
-  SecurityPolicy,
   LambdaIntegration,
   Model,
   JsonSchemaType,
   RequestValidator,
 } from "aws-cdk-lib/aws-apigateway";
-import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
 
 interface ApiConstructProps {
@@ -30,18 +27,6 @@ export class ApiConstruct extends Construct {
   }
 
   private sheetParseApi() {
-    const certificateArn = StringParameter.fromStringParameterName(
-      this,
-      "parameter-certificate-arn",
-      "/acm/certificate-arn"
-    );
-
-    const certificate = Certificate.fromCertificateArn(
-      this,
-      "certificate-arn",
-      certificateArn.stringValue
-    );
-
     const xyzApi = new RestApi(this, "api-xyz", {
       endpointConfiguration: {
         types: [EndpointType.REGIONAL],
@@ -61,13 +46,6 @@ export class ApiConstruct extends Construct {
         allowHeaders: ["Content-Type", "Authorization"],
       },
       disableExecuteApiEndpoint: true,
-      domainName: {
-        domainName: "api.igorcruz.space",
-        certificate,
-        endpointType: EndpointType.REGIONAL,
-        securityPolicy: SecurityPolicy.TLS_1_2,
-        basePath: "notification",
-      },
     });
     return xyzApi;
   }
