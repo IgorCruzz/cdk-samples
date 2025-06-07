@@ -2,6 +2,7 @@ import { S3EventRecord } from "aws-lambda";
 import { S3Interface } from "../shared/s3";
 import { parse } from "csv-parse";
 import { DynamoDBInterface } from "../shared/dynamodb";
+import { CustomerSchema } from "../schema/customer.schema";
 
 export class ExtractDataService {
   constructor(
@@ -28,7 +29,7 @@ export class ExtractDataService {
         })
       )) {
         try {
-          chunk.push({
+          const data = {
             firstName: customer["First Name"],
             lastName: customer["Last Name"],
             company: customer["Company"],
@@ -38,7 +39,16 @@ export class ExtractDataService {
             phone2: customer["Phone 2"],
             email: customer["Email"],
             website: customer["Website"],
-          });
+          };
+
+          const validation = CustomerSchema.safeParse(data);
+
+          if (!validation.success) {
+            failure += 1;
+            continue;
+          }
+
+          chunk.push(data);
 
           if (chunk.length === 20) {
             await this.table.putItem({ data: chunk });
