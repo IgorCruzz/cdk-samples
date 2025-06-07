@@ -25,7 +25,7 @@ export class DomainNameConstruct extends Construct {
     });
 
     new StringParameter(this, "parameter-domain-name", {
-      parameterName: "/api/domain-name",
+      parameterName: "/api/domain-name-set",
       stringValue: domain.domainName,
     });
 
