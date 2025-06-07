@@ -16,13 +16,7 @@ export class DomainNameConstruct extends Construct {
 
 
     
-    new DomainName(this, 'DomainName', {
-      domainName: 'api.example.com',
-      certificate: {
-        certificateArn: 'arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012'
-      },
-      endpointType: 'REGIONAL',
-      securityPolicy: 'TLS_1_2'
-    });
+     
+    
   }
 } 
