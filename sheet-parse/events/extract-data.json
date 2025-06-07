@@ -1,23 +1,42 @@
 {
-  "Records": [
-      {          
-          "s3": {
-              "s3SchemaVersion": "1.0",
-              "configurationId": "ZTI2NTA0ZTUtMzljMC00NWI4LThkZjEtODI4MWY5ZWQ2NGQz",
-              "bucket": {
-                  "name": "stack-sheet-parse-constructs3bucketsheetparse8f908-xx03ddtkda5f",
-                  "ownerIdentity": {
-                      "principalId": "AUTZN9J7RMGPE"
-                  },
-                  "arn": "arn:aws:s3:::stack-sheet-parse-constructs3bucketsheetparse8f908-xx03ddtkda5f"
-              },
-              "object": {
-                  "key": "eb1a15a2-12e8-4dab-93b6-b78d2c2829b7.csv",
-                  "size": 46175,
-                  "eTag": "3e3e64d2ebc55265982c067f3ae9568c",
-                  "sequencer": "00682936F83F44F1D7"
-              }
-          }
-      }
-  ]
+   
+     
+            "Records": [
+                {
+                    "eventVersion": "2.1",
+                    "eventSource": "aws:s3",
+                    "awsRegion": "us-east-1",
+                    "eventTime": "2025-06-07T17:07:53.699Z",
+                    "eventName": "ObjectCreated:Put",
+                    "userIdentity": {
+                        "principalId": "AWS:AROAZP72ZJTIF5WUVMAN3:stack-sheet-parse-constructlambdafunctiongeneratep-hEUdtrU0hG3a"
+                    },
+                    "requestParameters": {
+                        "sourceIPAddress": "201.158.21.23"
+                    },
+                    "responseElements": {
+                        "x-amz-request-id": "B8AMANHJZV2MH7JK",
+                        "x-amz-id-2": "MqAs2sEOQvJUWhR5qaMsQX5/NeOGCiReAR5ASN5hudi7TLmH9bKpDBRvCi67ZOswW3HCEReODQsN/kTAaYXPgKw6PDgZofkJ"
+                    },
+                    "s3": {
+                        "s3SchemaVersion": "1.0",
+                        "configurationId": "MDU3MGUzMjYtZTg1NS00YmI5LTk1ZDAtYzQ1ODkwZmEzZDk5",
+                        "bucket": {
+                            "name": "stack-sheet-parse-constructs3bucketsheetparse8f908-xx03ddtkda5f",
+                            "ownerIdentity": {
+                                "principalId": "AUTZN9J7RMGPE"
+                            },
+                            "arn": "arn:aws:s3:::stack-sheet-parse-constructs3bucketsheetparse8f908-xx03ddtkda5f"
+                        },
+                        "object": {
+                            "key": "eb43fbab-72c0-429c-8089-1ef9fe880291.csv",
+                            "size": 17261,
+                            "eTag": "f923c874611d6824b7535562d27629af",
+                            "sequencer": "00684471E9A0FB767D"
+                        }
+                    }
+                }
+            ]
+         
+    
 }
