@@ -120,18 +120,18 @@ export class ApiConstruct extends Construct {
     const domainName = StringParameter.fromStringParameterName(
       this,
       "parameter-domain",
-      "/api/domain-name"
+      "/api/domain-name-set"
     );
 
     const domainNameAlias = StringParameter.fromStringParameterName(
       this,
-      "parameter-domain",
+      "parameter-domain-alias",
       "/api/domain-name-alias"
     );
 
     const domainHostZoneId = StringParameter.fromStringParameterName(
       this,
-      "parameter-domain",
+      "parameter-domain-hosted-zone-id",
       "/api/domain-name-hosted-zone-id"
     );
 
