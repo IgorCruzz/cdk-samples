@@ -51,7 +51,7 @@ export class ExtractDataService {
           chunk.push(data);
 
           if (chunk.length === 20) {
-            await this.table.putItem({ data: chunk });
+            await this.table.putBatchItem({ data: chunk });
             success += chunk.length;
             chunk.length = 0;
           }
@@ -61,7 +61,7 @@ export class ExtractDataService {
       }
 
       if (chunk.length) {
-        await this.table.putItem({ data: chunk });
+        await this.table.putBatchItem({ data: chunk });
         success += chunk.length;
         chunk.length = 0;
       }
