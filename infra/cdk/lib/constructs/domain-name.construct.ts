@@ -24,6 +24,21 @@ export class DomainNameConstruct extends Construct {
       endpointType: EndpointType.REGIONAL,
     });
 
+    new StringParameter(this, "domain-name-parameter", {
+      parameterName: "/api/domain-name",
+      stringValue: domain.domainName,
+    });
+
+    new StringParameter(this, "domain-name-parameter", {
+      parameterName: "/api/domain-name-alias",
+      stringValue: domain.domainNameAliasDomainName,
+    });
+
+    new StringParameter(this, "domain-name-parameter", {
+      parameterName: "/api/domain-name-hosted-zone-id",
+      stringValue: domain.domainNameAliasHostedZoneId,
+    });
+
     const route53HostedZoneId = StringParameter.valueForStringParameter(
       this,
       "/route53/hosted-zone-id"
