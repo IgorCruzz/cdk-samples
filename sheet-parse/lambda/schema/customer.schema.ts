@@ -9,8 +9,7 @@ export const CustomerSchema = z.object({
   lastName: z
     .string()
     .min(2, "O sobrenome deve ter pelo menos 2 caracteres")
-    .max(50, "O sobrenome deve ter no máximo 50 caracteres")
-    .regex(/^[A-Za-zÀ-ÿ\s'-]+$/, "O sobrenome deve conter apenas letras"),
+    .max(50, "O sobrenome deve ter no máximo 50 caracteres"),
 
   company: z
     .string()
