@@ -8,8 +8,11 @@ import {
   Model,
   JsonSchemaType,
   RequestValidator,
+  DomainName,
+  BasePathMapping,
 } from "aws-cdk-lib/aws-apigateway";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
 interface ApiConstructProps {
   notificationFunction: IFunction;
@@ -21,13 +24,14 @@ export class ApiConstruct extends Construct {
   constructor(scope: Construct, id: string, readonly props: ApiConstructProps) {
     super(scope, id);
 
-    this.api = this.sheetParseApi();
+    this.api = this.notificationApi();
 
     this.notificationResouce();
+    this.basePathMapping();
   }
 
-  private sheetParseApi() {
-    const xyzApi = new RestApi(this, "api-xyz", {
+  private notificationApi() {
+    const xyzApi = new RestApi(this, "api-notification", {
       endpointConfiguration: {
         types: [EndpointType.REGIONAL],
       },
@@ -47,6 +51,7 @@ export class ApiConstruct extends Construct {
       },
       disableExecuteApiEndpoint: true,
     });
+
     return xyzApi;
   }
 
@@ -109,5 +114,41 @@ export class ApiConstruct extends Construct {
         requestValidator: validator,
       }
     );
+  }
+
+  private basePathMapping() {
+    const domainName = StringParameter.fromStringParameterName(
+      this,
+      "parameter-domain",
+      "/api/domain-name"
+    );
+
+    const domainNameAlias = StringParameter.fromStringParameterName(
+      this,
+      "parameter-domain",
+      "/api/domain-name-alias"
+    );
+
+    const domainHostZoneId = StringParameter.fromStringParameterName(
+      this,
+      "parameter-domain",
+      "/api/domain-name-hosted-zone-id"
+    );
+
+    const domain = DomainName.fromDomainNameAttributes(
+      this,
+      "domain-name-attributes",
+      {
+        domainName: domainName.stringValue,
+        domainNameAliasTarget: domainNameAlias.stringValue,
+        domainNameAliasHostedZoneId: domainHostZoneId.stringValue,
+      }
+    );
+
+    new BasePathMapping(this, "sheet-parse-mapping", {
+      domainName: domain,
+      restApi: this.api,
+      basePath: "notification",
+    });
   }
 }
