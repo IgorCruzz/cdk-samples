@@ -58,13 +58,6 @@ export class ApiConstruct extends Construct {
         allowHeaders: ["Content-Type", "Authorization"],
       },
       disableExecuteApiEndpoint: true,
-      domainName: {
-        domainName: "api.igorcruz.space",
-        certificate,
-        endpointType: EndpointType.REGIONAL,
-        securityPolicy: SecurityPolicy.TLS_1_2,
-        basePath: "sheet-parse",
-      },
     });
 
     return xyzApi;
