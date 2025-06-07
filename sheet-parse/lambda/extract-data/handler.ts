@@ -4,6 +4,8 @@ import { DynamoDB } from "../shared/dynamodb";
 import { ExtractDataService } from "./extract-data.service";
 
 export const extractDataHandler = async (event: S3Event) => {
+  console.log({ event });
+
   for (const record of event.Records) {
     const s3 = new S3();
     const dynamoDB = new DynamoDB();
