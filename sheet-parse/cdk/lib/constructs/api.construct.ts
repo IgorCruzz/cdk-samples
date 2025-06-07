@@ -4,11 +4,11 @@ import {
   EndpointType,
   MethodLoggingLevel,
   Cors,
-  SecurityPolicy,
   LambdaIntegration,
+  BasePathMapping,
+  DomainName,
 } from "aws-cdk-lib/aws-apigateway";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
 
 interface ApiConstructProps {
@@ -24,22 +24,11 @@ export class ApiConstruct extends Construct {
     this.api = this.sheetParseApi();
 
     this.sheetParseResouce();
+    this.basePathMapping();
   }
 
   private sheetParseApi() {
-    const certificateArn = StringParameter.fromStringParameterName(
-      this,
-      "parameter-certificate-arn",
-      "/acm/certificate-arn"
-    );
-
-    const certificate = Certificate.fromCertificateArn(
-      this,
-      "certificate-arn",
-      certificateArn.stringValue
-    );
-
-    const xyzApi = new RestApi(this, "api-xyz", {
+    const xyzApi = new RestApi(this, "api-sheet-parse", {
       endpointConfiguration: {
         types: [EndpointType.REGIONAL],
       },
@@ -71,5 +60,41 @@ export class ApiConstruct extends Construct {
       new LambdaIntegration(this.props.sheetParseFunction),
       {}
     );
+  }
+
+  private basePathMapping() {
+    const domainName = StringParameter.fromStringParameterName(
+      this,
+      "parameter-domain",
+      "/api/domain-name"
+    );
+
+    const domainNameAlias = StringParameter.fromStringParameterName(
+      this,
+      "parameter-domain",
+      "/api/domain-name-alias"
+    );
+
+    const domainHostZoneId = StringParameter.fromStringParameterName(
+      this,
+      "parameter-domain",
+      "/api/domain-name-hosted-zone-id"
+    );
+
+    const domain = DomainName.fromDomainNameAttributes(
+      this,
+      "domain-name-attributes",
+      {
+        domainName: domainName.stringValue,
+        domainNameAliasTarget: domainNameAlias.stringValue,
+        domainNameAliasHostedZoneId: domainHostZoneId.stringValue,
+      }
+    );
+
+    new BasePathMapping(this, "sheet-parse-mapping", {
+      domainName: domain,
+      restApi: this.api,
+      basePath: "sheet-parse",
+    });
   }
 }
