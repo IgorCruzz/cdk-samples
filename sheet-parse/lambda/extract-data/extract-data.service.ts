@@ -56,6 +56,11 @@ export class ExtractDataService {
         chunk.length = 0;
       }
 
+      await this.s3.removeObject({
+        Key: s3Record.s3.object.key,
+        Bucket: s3Record.s3.bucket.name,
+      });
+
       const message = `Processamento concluído com sucesso! ${success} registros inseridos, ${failure} falhas.`;
 
       const response = await fetch(
@@ -87,10 +92,6 @@ export class ExtractDataService {
           `Failed to send notification: ${response.status} ${response.statusText}`
         );
       }
-
-      console.log({ message });
-
-      return;
     } catch (error) {
       throw new Error(
         `Error processing S3 record: ${
