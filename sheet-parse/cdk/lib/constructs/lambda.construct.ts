@@ -12,13 +12,6 @@ import { join } from "node:path";
 import { S3Construct } from "./s3.construct";
 import { DynamoDBConstruct } from "./dynamo.construct";
 import { EventType } from "aws-cdk-lib/aws-s3";
-import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import {
-  LambdaIntegration,
-  MockIntegration,
-  PassthroughBehavior,
-  RestApi,
-} from "aws-cdk-lib/aws-apigateway";
 
 interface LambdaStackProps {
   s3Construct: S3Construct;
