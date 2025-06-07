@@ -88,13 +88,15 @@ export class ExtractDataService {
         );
       }
 
-      console.log(message);
+      console.log({ message });
 
       return;
     } catch (error) {
-      console.log({ error });
-
-      return;
+      throw new Error(
+        `Error processing S3 record: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
     }
   };
 }
