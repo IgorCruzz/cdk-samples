@@ -84,7 +84,6 @@ export class LambdaConstruct extends Construct {
       },
       environment: {
         TABLE_NAME: table.tableName,
-        BUCKET_NAME: bucket.bucketName,
       },
       loggingFormat: LoggingFormat.JSON,
       tracing: Tracing.ACTIVE,
@@ -95,6 +94,8 @@ export class LambdaConstruct extends Construct {
       EventType.OBJECT_CREATED,
       new aws_s3_notifications.LambdaDestination(fn)
     );
+
+    bucket.grantRead(fn);
 
     table.grantReadWriteData(fn);
 
