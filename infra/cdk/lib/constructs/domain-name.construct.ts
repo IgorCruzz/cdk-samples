@@ -24,17 +24,17 @@ export class DomainNameConstruct extends Construct {
       endpointType: EndpointType.REGIONAL,
     });
 
-    new StringParameter(this, "domain-name-parameter", {
+    new StringParameter(this, "parameter-domain-name", {
       parameterName: "/api/domain-name",
       stringValue: domain.domainName,
     });
 
-    new StringParameter(this, "domain-name-parameter", {
+    new StringParameter(this, "parameter-domain-name-alias", {
       parameterName: "/api/domain-name-alias",
       stringValue: domain.domainNameAliasDomainName,
     });
 
-    new StringParameter(this, "domain-name-parameter", {
+    new StringParameter(this, "parameter-domain-name-hosted-zone-id", {
       parameterName: "/api/domain-name-hosted-zone-id",
       stringValue: domain.domainNameAliasHostedZoneId,
     });
