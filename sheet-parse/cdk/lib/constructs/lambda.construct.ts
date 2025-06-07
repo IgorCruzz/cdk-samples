@@ -97,6 +97,8 @@ export class LambdaConstruct extends Construct {
 
     bucket.grantRead(fn);
 
+    bucket.grantDelete(fn);
+
     table.grantReadWriteData(fn);
 
     return fn;
