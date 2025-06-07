@@ -9,7 +9,7 @@
                   "ownerIdentity": {
                       "principalId": "AUTZN9J7RMGPE"
                   },
-                  "arn": "arn:aws:s3:::sheet-parse-bucket"
+                  "arn": "arn:aws:s3:::stack-sheet-parse-constructs3bucketsheetparse8f908-xx03ddtkda5f"
               },
               "object": {
                   "key": "eb1a15a2-12e8-4dab-93b6-b78d2c2829b7.csv",
