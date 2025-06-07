@@ -9,11 +9,11 @@ import KSUID from "ksuid";
 const client = new DynamoDBClient({});
 
 export interface DynamoDBInterface {
-  putItem: ({ data }: { data: CustomerType[] }) => Promise<void>;
+  putBatchItem: ({ data }: { data: CustomerType[] }) => Promise<void>;
 }
 
 export class DynamoDB implements DynamoDBInterface {
-  async putItem({ data }: { data: CustomerType[] }): Promise<void> {
+  async putBatchItem({ data }: { data: CustomerType[] }): Promise<void> {
     const customers = await Promise.all(
       data.map(async (item) => {
         const ID = (await KSUID.random()).string;
