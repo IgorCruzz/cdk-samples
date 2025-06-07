@@ -3,6 +3,8 @@ import {
   PutObjectCommand,
   GetObjectCommand,
   GetObjectCommandInput,
+  DeleteObjectCommandInput,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { randomUUID } from "crypto";
@@ -23,6 +25,13 @@ export interface S3Interface {
     key: string;
     Bucket: string;
   }) => Promise<Readable>;
+  removeObject: ({
+    Key,
+    Bucket,
+  }: {
+    Key: string;
+    Bucket: string;
+  }) => Promise<void>;
 }
 
 export class S3 implements S3Interface {
@@ -69,5 +78,16 @@ export class S3 implements S3Interface {
     }
 
     return Body as Readable;
+  };
+
+  removeObject = async ({ Key, Bucket }: { Key: string; Bucket: string }) => {
+    const params: DeleteObjectCommandInput = {
+      Bucket,
+      Key,
+    };
+
+    const command = new DeleteObjectCommand(params);
+
+    await client.send(command);
   };
 }
