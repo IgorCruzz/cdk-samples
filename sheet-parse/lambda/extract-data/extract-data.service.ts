@@ -11,10 +11,6 @@ export class ExtractDataService {
 
   extract = async ({ s3Record }: { s3Record: S3EventRecord }) => {
     try {
-      console.log({
-        s3Record,
-      });
-
       const stream = await this.s3.getObject({
         key: s3Record.s3.object.key,
         Bucket: s3Record.s3.bucket.name,
