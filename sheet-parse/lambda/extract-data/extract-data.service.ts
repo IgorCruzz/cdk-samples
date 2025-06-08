@@ -80,10 +80,8 @@ export class ExtractDataService {
 
       const message = `Process completed successfully. Processed ${success} records with ${failure} failures.`;
 
-      await this.table.putItem({
+      await this.table.updateItem({
         key: s3Record.s3.object.key,
-        size: s3Record.s3.object.size,
-        message,
         status: "COMPLETED",
       });
 
@@ -117,12 +115,8 @@ export class ExtractDataService {
         );
       }
     } catch (error) {
-      await this.table.putItem({
+      await this.table.updateItem({
         key: s3Record.s3.object.key,
-        size: s3Record.s3.object.size,
-        message: `Error processing S3 record: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
         status: "FAILED",
       });
 
