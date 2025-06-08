@@ -81,8 +81,18 @@ export class ExtractDataService {
       const message = `Process completed successfully. Processed ${success} records with ${failure} failures.`;
 
       await this.table.updateItem({
-        key: s3Record.s3.object.key,
-        status: "COMPLETED",
+        TableName: process.env.TABLE_NAME as string,
+        Key: {
+          PK: `ARCHIVE#${s3Record.s3.object.key}`,
+          SK: `METADATA#${s3Record.s3.object.key}`,
+        },
+        UpdateExpression: "SET #status = :status",
+        ExpressionAttributeNames: {
+          "#status": "status",
+        },
+        ExpressionAttributeValues: {
+          ":status": "COMPLETED",
+        },
       });
 
       const response = await fetch(
@@ -116,8 +126,18 @@ export class ExtractDataService {
       }
     } catch (error) {
       await this.table.updateItem({
-        key: s3Record.s3.object.key,
-        status: "FAILED",
+        TableName: process.env.TABLE_NAME as string,
+        Key: {
+          PK: `ARCHIVE#${s3Record.s3.object.key}`,
+          SK: `METADATA#${s3Record.s3.object.key}`,
+        },
+        UpdateExpression: "SET #status = :status",
+        ExpressionAttributeNames: {
+          "#status": "status",
+        },
+        ExpressionAttributeValues: {
+          ":status": "FAILED",
+        },
       });
 
       throw new Error(
