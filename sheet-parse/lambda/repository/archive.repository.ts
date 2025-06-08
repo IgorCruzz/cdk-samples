@@ -15,8 +15,13 @@ type ArchiveInput = {
   status: "PROCESSING" | "COMPLETED" | "FAILED";
 };
 
+type ArchiveOutput = {
+  sucess: boolean;
+  message: string;
+};
+
 export interface IArchiveRepository {
-  save: (item: ArchiveInput) => Promise<void>;
+  save: (item: ArchiveInput) => Promise<ArchiveOutput>;
   updateStatus({
     key,
     status,
@@ -24,7 +29,7 @@ export interface IArchiveRepository {
 }
 
 export class ArchiveRepository implements IArchiveRepository {
-  async save(item: ArchiveInput): Promise<void> {
+  async save(item: ArchiveInput): Promise<ArchiveOutput> {
     try {
       const { key } = item;
 
@@ -42,17 +47,30 @@ export class ArchiveRepository implements IArchiveRepository {
       const command = new PutCommand(params);
 
       await client.send(command);
+
+      return {
+        sucess: true,
+        message: `Item with PK ${key} saved successfully.`,
+      };
     } catch (error: unknown) {
       if (
         error instanceof Error &&
         error.name === "ConditionalCheckFailedException"
       ) {
         console.error("Error putting item in DynamoDB:", error.message);
-        throw new Error(
-          `Item with PK already exists: ${item.key}. Please check the data.`
-        );
+
+        return {
+          sucess: false,
+          message: `Item with PK ${item.key} already exists.`,
+        };
       }
-      throw error;
+
+      return {
+        sucess: false,
+        message: `Error putting item in DynamoDB: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      };
     }
   }
 
