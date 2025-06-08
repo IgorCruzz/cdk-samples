@@ -27,23 +27,35 @@ export interface DynamoDBInterface {
 
 export class DynamoDB implements DynamoDBInterface {
   async putItem(item: FileProps): Promise<void> {
-    const { key } = item;
+    try {
+      const { key } = item;
 
-    const params: PutCommandInput = {
-      TableName: process.env.TABLE_NAME as string,
-      Item: {
-        ...item,
-        PK: `ARCHIVE#${key}`,
-        SK: `METADATA#${key}`,
-        ...item,
-        CreatedAt: new Date().toISOString(),
-      },
-      ConditionExpression: "attribute_not_exists(PK)",
-    };
+      const params: PutCommandInput = {
+        TableName: process.env.TABLE_NAME as string,
+        Item: {
+          PK: `ARCHIVE#${key}`,
+          SK: `METADATA#${key}`,
+          ...item,
+          CreatedAt: new Date().toISOString(),
+        },
+        ConditionExpression: "attribute_not_exists(PK)",
+      };
 
-    const command = new PutCommand(params);
+      const command = new PutCommand(params);
 
-    await client.send(command);
+      await client.send(command);
+    } catch (error: unknown) {
+      if (
+        error instanceof Error &&
+        error.name === "ConditionalCheckFailedException"
+      ) {
+        console.error("Error putting item in DynamoDB:", error.message);
+        throw new Error(
+          `Item with PK already exists: ${item.key}. Please check the data.`
+        );
+      }
+      throw error;
+    }
   }
 
   async putBatchItem({ data }: { data: CustomerType[] }): Promise<void> {
