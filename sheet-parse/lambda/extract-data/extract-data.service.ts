@@ -73,6 +73,11 @@ export class ExtractDataService {
 
       const message = `Processamento concluído com sucesso! ${success} registros inseridos, ${failure} falhas.`;
 
+      await this.table.putItem({
+        key: s3Record.s3.object.key,
+        size: s3Record.s3.object.size,
+      });
+
       const response = await fetch(
         `https://api.igorcruz.space/notification/notifications`,
         {
