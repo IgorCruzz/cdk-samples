@@ -13,6 +13,7 @@ const client = new DynamoDBClient({});
 type FileProps = {
   key: string;
   size: number;
+  message: string;
 };
 
 export interface DynamoDBInterface {
