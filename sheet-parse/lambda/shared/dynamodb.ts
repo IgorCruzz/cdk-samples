@@ -22,6 +22,7 @@ type FileProps = {
 export interface DynamoDBInterface {
   putBatchItem: ({ data }: { data: CustomerType[] }) => Promise<void>;
   putItem: (item: FileProps) => Promise<void>;
+  updateItem({ status, key }: { status: string; key: string }): Promise<void>;
 }
 
 export class DynamoDB implements DynamoDBInterface {
