@@ -71,11 +71,12 @@ export class ExtractDataService {
         Bucket: s3Record.s3.bucket.name,
       });
 
-      const message = `Processamento concluído com sucesso! ${success} registros inseridos, ${failure} falhas.`;
+      const message = `Process completed successfully. Processed ${success} records with ${failure} failures.`;
 
       await this.table.putItem({
         key: s3Record.s3.object.key,
         size: s3Record.s3.object.size,
+        message,
       });
 
       const response = await fetch(
@@ -108,6 +109,14 @@ export class ExtractDataService {
         );
       }
     } catch (error) {
+      await this.table.putItem({
+        key: s3Record.s3.object.key,
+        size: s3Record.s3.object.size,
+        message: `Error processing S3 record: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      });
+
       throw new Error(
         `Error processing S3 record: ${
           error instanceof Error ? error.message : String(error)
