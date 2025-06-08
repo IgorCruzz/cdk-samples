@@ -87,6 +87,7 @@ export class DynamoDB implements DynamoDBInterface {
         PK: `ARCHIVE#${key}`,
         SK: `METADATA#${key}`,
       },
+      UpdateExpression: "SET #status = :status",
       ExpressionAttributeNames: {
         "#status": "status",
       },
