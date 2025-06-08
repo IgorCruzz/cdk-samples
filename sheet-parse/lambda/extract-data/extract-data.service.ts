@@ -1,13 +1,15 @@
 import { S3EventRecord } from "aws-lambda";
 import { S3Interface } from "../shared/s3";
 import { parse } from "csv-parse";
-import { DynamoDBInterface } from "../shared/dynamodb";
 import { CustomerSchema } from "../schema/customer.schema";
+import { IArchiveRepository } from "../repository/archive.repository";
+import { ICustomerRepository } from "../repository/customer.repository";
 
 export class ExtractDataService {
   constructor(
     private readonly s3: S3Interface,
-    private readonly table: DynamoDBInterface
+    private readonly customerRepository: ICustomerRepository,
+    private readonly archiveRepository: IArchiveRepository
   ) {}
 
   extract = async ({ s3Record }: { s3Record: S3EventRecord }) => {
@@ -21,7 +23,7 @@ export class ExtractDataService {
       let success = 0;
       let failure = 0;
 
-      await this.table.putItem({
+      await this.archiveRepository.save({
         key: s3Record.s3.object.key,
         size: s3Record.s3.object.size,
         message: `Processing file ${s3Record.s3.object.key}...`,
@@ -58,7 +60,7 @@ export class ExtractDataService {
           chunk.push(data);
 
           if (chunk.length === 20) {
-            await this.table.putBatchItem({ data: chunk });
+            await this.customerRepository.save({ data: chunk });
             success += chunk.length;
             chunk.length = 0;
           }
@@ -68,7 +70,7 @@ export class ExtractDataService {
       }
 
       if (chunk.length) {
-        await this.table.putBatchItem({ data: chunk });
+        await this.customerRepository.save({ data: chunk });
         success += chunk.length;
         chunk.length = 0;
       }
@@ -80,19 +82,9 @@ export class ExtractDataService {
 
       const message = `Process completed successfully. Processed ${success} records with ${failure} failures.`;
 
-      await this.table.updateItem({
-        TableName: process.env.TABLE_NAME as string,
-        Key: {
-          PK: `ARCHIVE#${s3Record.s3.object.key}`,
-          SK: `METADATA#${s3Record.s3.object.key}`,
-        },
-        UpdateExpression: "SET #status = :status",
-        ExpressionAttributeNames: {
-          "#status": "status",
-        },
-        ExpressionAttributeValues: {
-          ":status": "COMPLETED",
-        },
+      await this.archiveRepository.updateStatus({
+        key: s3Record.s3.object.key,
+        status: "COMPLETED",
       });
 
       const response = await fetch(
@@ -125,19 +117,9 @@ export class ExtractDataService {
         );
       }
     } catch (error) {
-      await this.table.updateItem({
-        TableName: process.env.TABLE_NAME as string,
-        Key: {
-          PK: `ARCHIVE#${s3Record.s3.object.key}`,
-          SK: `METADATA#${s3Record.s3.object.key}`,
-        },
-        UpdateExpression: "SET #status = :status",
-        ExpressionAttributeNames: {
-          "#status": "status",
-        },
-        ExpressionAttributeValues: {
-          ":status": "FAILED",
-        },
+      await this.archiveRepository.updateStatus({
+        key: s3Record.s3.object.key,
+        status: "FAILED",
       });
 
       throw new Error(
