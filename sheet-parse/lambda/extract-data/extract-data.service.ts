@@ -30,7 +30,7 @@ export class ExtractDataService {
         status: "PROCESSING",
       });
 
-      if (!archive.sucess) {
+      if (!archive.success) {
         throw new Error(archive.message);
       }
 
