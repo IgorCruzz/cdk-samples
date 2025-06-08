@@ -22,7 +22,7 @@ type ArchiveOutput = {
 
 export interface IArchiveRepository {
   save: (item: ArchiveInput) => Promise<ArchiveOutput>;
-  updateArchive({
+  updateStatus({
     key,
     status,
   }: Pick<ArchiveInput, "key" | "status">): Promise<void>;
@@ -74,7 +74,7 @@ export class ArchiveRepository implements IArchiveRepository {
     }
   }
 
-  async updateArchive({
+  async updateStatus({
     key,
     status,
   }: Pick<ArchiveInput, "key" | "status">): Promise<void> {
