@@ -4,6 +4,8 @@ import {
   BatchWriteCommand,
   PutCommandInput,
   PutCommand,
+  UpdateCommandInput,
+  UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { CustomerType } from "../schema/customer.schema";
 import KSUID from "ksuid";
@@ -14,6 +16,7 @@ type FileProps = {
   key: string;
   size: number;
   message: string;
+  status: "PROCESSING" | "COMPLETED" | "FAILED";
 };
 
 export interface DynamoDBInterface {
@@ -67,6 +70,32 @@ export class DynamoDB implements DynamoDBInterface {
     };
 
     const command = new BatchWriteCommand(params);
+
+    await client.send(command);
+  }
+
+  async updateItem({
+    status,
+    key,
+  }: {
+    status: string;
+    key: string;
+  }): Promise<void> {
+    const params: UpdateCommandInput = {
+      TableName: process.env.TABLE_NAME as string,
+      Key: {
+        PK: `ARCHIVE#${key}`,
+        SK: `METADATA#${key}`,
+      },
+      ExpressionAttributeNames: {
+        "#status": "status",
+      },
+      ExpressionAttributeValues: {
+        ":status": status,
+      },
+    };
+
+    const command = new UpdateCommand(params);
 
     await client.send(command);
   }
