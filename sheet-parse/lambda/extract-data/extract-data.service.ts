@@ -90,12 +90,12 @@ export class ExtractDataService {
             notifications: [
               {
                 service: "EMAIL",
-                title: "Processamento concluído",
+                title: "File processed",
                 message,
               },
               {
                 service: "WHATSAPP",
-                title: "Processamento concluído",
+                title: "File processed",
                 message,
               },
             ],
