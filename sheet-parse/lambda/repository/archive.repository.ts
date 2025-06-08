@@ -77,7 +77,7 @@ export class ArchiveRepository implements IArchiveRepository {
   async updateArchive({
     key,
     status,
-  }: Pick<ArchiveInput, "key" | "status" | "message">): Promise<void> {
+  }: Pick<ArchiveInput, "key" | "status">): Promise<void> {
     const params: UpdateCommandInput = {
       TableName: process.env.TABLE_NAME as string,
       Key: {
