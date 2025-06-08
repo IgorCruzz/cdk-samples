@@ -16,7 +16,7 @@ type ArchiveInput = {
 };
 
 type ArchiveOutput = {
-  sucess: boolean;
+  success: boolean;
   message: string;
 };
 
@@ -49,7 +49,7 @@ export class ArchiveRepository implements IArchiveRepository {
       await client.send(command);
 
       return {
-        sucess: true,
+        success: true,
         message: `Item with PK ${key} saved successfully.`,
       };
     } catch (error: unknown) {
@@ -60,13 +60,13 @@ export class ArchiveRepository implements IArchiveRepository {
         console.error("Error putting item in DynamoDB:", error.message);
 
         return {
-          sucess: false,
+          success: false,
           message: `Item with PK ${item.key} already exists.`,
         };
       }
 
       return {
-        sucess: false,
+        success: false,
         message: `Error putting item in DynamoDB: ${
           error instanceof Error ? error.message : String(error)
         }`,
