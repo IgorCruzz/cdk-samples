@@ -21,6 +21,13 @@ export class ExtractDataService {
       let success = 0;
       let failure = 0;
 
+      await this.table.putItem({
+        key: s3Record.s3.object.key,
+        size: s3Record.s3.object.size,
+        message: `Processing file ${s3Record.s3.object.key}...`,
+        status: "PROCESSING",
+      });
+
       for await (const customer of stream.pipe(
         parse({
           skipEmptyLines: true,
@@ -77,6 +84,7 @@ export class ExtractDataService {
         key: s3Record.s3.object.key,
         size: s3Record.s3.object.size,
         message,
+        status: "COMPLETED",
       });
 
       const response = await fetch(
@@ -115,6 +123,7 @@ export class ExtractDataService {
         message: `Error processing S3 record: ${
           error instanceof Error ? error.message : String(error)
         }`,
+        status: "FAILED",
       });
 
       throw new Error(
