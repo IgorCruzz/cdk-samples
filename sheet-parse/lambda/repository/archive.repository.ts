@@ -22,7 +22,7 @@ type ArchiveOutput = {
 
 export interface IArchiveRepository {
   save: (item: ArchiveInput) => Promise<ArchiveOutput>;
-  updateStatus({
+  updateArchive({
     key,
     status,
   }: Pick<ArchiveInput, "key" | "status">): Promise<void>;
@@ -74,22 +74,27 @@ export class ArchiveRepository implements IArchiveRepository {
     }
   }
 
-  async updateStatus({
+  async updateArchive({
     key,
     status,
-  }: Pick<ArchiveInput, "key" | "status">): Promise<void> {
+  }: Pick<ArchiveInput, "key" | "status" | "message">): Promise<void> {
     const params: UpdateCommandInput = {
       TableName: process.env.TABLE_NAME as string,
       Key: {
         PK: `ARCHIVE#${key}`,
         SK: `METADATA#${key}`,
       },
-      UpdateExpression: "SET #status = :status",
+      UpdateExpression: "SET #status = :status, #message = :message",
       ExpressionAttributeNames: {
         "#status": "status",
+        "#message": "message",
       },
       ExpressionAttributeValues: {
         ":status": status,
+        ":message":
+          status === "COMPLETED"
+            ? "Archive processing completed."
+            : "Archive processing failed.",
       },
     };
 
