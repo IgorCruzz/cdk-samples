@@ -22,7 +22,7 @@ type FileProps = {
 export interface DynamoDBInterface {
   putBatchItem: ({ data }: { data: CustomerType[] }) => Promise<void>;
   putItem: (item: FileProps) => Promise<void>;
-  updateItem({ status, key }: { status: string; key: string }): Promise<void>;
+  updateItem(params: UpdateCommandInput): Promise<void>;
 }
 
 export class DynamoDB implements DynamoDBInterface {
@@ -50,7 +50,6 @@ export class DynamoDB implements DynamoDBInterface {
     const customers = await Promise.all(
       data.map(async (item) => {
         const ID = (await KSUID.random()).string;
-
         return {
           PutRequest: {
             Item: {
@@ -75,28 +74,7 @@ export class DynamoDB implements DynamoDBInterface {
     await client.send(command);
   }
 
-  async updateItem({
-    status,
-    key,
-  }: {
-    status: string;
-    key: string;
-  }): Promise<void> {
-    const params: UpdateCommandInput = {
-      TableName: process.env.TABLE_NAME as string,
-      Key: {
-        PK: `ARCHIVE#${key}`,
-        SK: `METADATA#${key}`,
-      },
-      UpdateExpression: "SET #status = :status",
-      ExpressionAttributeNames: {
-        "#status": "status",
-      },
-      ExpressionAttributeValues: {
-        ":status": status,
-      },
-    };
-
+  async updateItem(params: UpdateCommandInput): Promise<void> {
     const command = new UpdateCommand(params);
 
     await client.send(command);
