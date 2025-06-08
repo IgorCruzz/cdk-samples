@@ -23,12 +23,16 @@ export class ExtractDataService {
       let success = 0;
       let failure = 0;
 
-      await this.archiveRepository.save({
+      const archive = await this.archiveRepository.save({
         key: s3Record.s3.object.key,
         size: s3Record.s3.object.size,
         message: `Processing file ${s3Record.s3.object.key}...`,
         status: "PROCESSING",
       });
+
+      if (!archive.sucess) {
+        throw new Error(archive.message);
+      }
 
       for await (const customer of stream.pipe(
         parse({
