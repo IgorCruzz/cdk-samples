@@ -63,7 +63,7 @@ export class ExtractDataService {
 
           chunk.push(data);
 
-          if (chunk.length === 20) {
+          if (chunk.length === 25) {
             await this.customerRepository.save({ data: chunk });
             success += chunk.length;
             chunk.length = 0;
