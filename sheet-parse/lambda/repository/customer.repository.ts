@@ -4,7 +4,6 @@ import {
   BatchWriteCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { CustomerType } from "../schema/customer.schema";
-import KSUID from "ksuid";
 
 const client = new DynamoDBClient({});
 
@@ -16,13 +15,12 @@ export class CustomerRepository implements ICustomerRepository {
   async save({ data }: { data: CustomerType[] }): Promise<void> {
     const customers = await Promise.all(
       data.map(async (item) => {
-        const ID = (await KSUID.random()).string;
         return {
           PutRequest: {
             Item: {
+              PK: `CUSTOMER#${item.cnpj}`,
+              SK: `METADATA#${item.cnpj}`,
               ...item,
-              PK: `CUSTOMER#${ID}`,
-              SK: `METADATA#${ID}`,
               CreatedAt: new Date().toISOString(),
             },
           },
