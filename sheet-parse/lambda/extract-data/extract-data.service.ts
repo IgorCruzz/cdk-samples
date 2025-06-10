@@ -68,6 +68,8 @@ export class ExtractDataService {
             chunk.length = 0;
           }
         } catch (error) {
+          console.log({ error });
+
           failure += 1;
         }
       }
