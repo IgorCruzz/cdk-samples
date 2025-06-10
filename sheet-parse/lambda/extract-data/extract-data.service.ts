@@ -1,7 +1,7 @@
 import { S3EventRecord } from "aws-lambda";
 import { S3Interface } from "../shared/s3";
 import { parse } from "csv-parse";
-import { CustomerSchema } from "../schema/customer.schema";
+import { customerSchema } from "../schema/customer.schema";
 import { IArchiveRepository } from "../repository/archive.repository";
 import { ICustomerRepository } from "../repository/customer.repository";
 
@@ -43,18 +43,17 @@ export class ExtractDataService {
       )) {
         try {
           const data = {
-            firstName: customer["First Name"],
-            lastName: customer["Last Name"],
-            company: customer["Company"],
-            city: customer["City"],
-            country: customer["Country"],
-            phone1: customer["Phone 1"],
-            phone2: customer["Phone 2"],
+            name: customer["Nome"],
+            cnpj: customer["CNPJ"],
             email: customer["Email"],
-            website: customer["Website"],
+            phone: customer["Telefone"],
+            address: customer["Endereço"],
+            city: customer["Cidade"],
+            state: customer["Estado"],
+            zipCode: customer["CEP"],
           };
 
-          const validation = CustomerSchema.safeParse(data);
+          const validation = customerSchema.safeParse(data);
 
           if (!validation.success) {
             failure += 1;
