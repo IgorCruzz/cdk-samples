@@ -23,6 +23,7 @@ export class CustomerRepository implements ICustomerRepository {
               ...item,
               CreatedAt: new Date().toISOString(),
             },
+            ConditionExpression: "attribute_not_exists(PK)",
           },
         };
       })
