@@ -87,7 +87,7 @@ export class ExtractDataService {
           failure += chunk.length;
         }
       }
-      
+
       await this.s3.removeObject({
         Key: s3Record.s3.object.key,
         Bucket: s3Record.s3.bucket.name,
