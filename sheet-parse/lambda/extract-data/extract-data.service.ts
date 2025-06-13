@@ -63,7 +63,10 @@ export class ExtractDataService {
           chunk.push(data);
 
           if (chunk.length === 25) {
-            await this.customerRepository.save({ data: chunk });
+            const a = await this.customerRepository.save({ data: chunk });
+
+            console.log({ a });
+
             success += chunk.length;
             chunk.length = 0;
           }
@@ -75,11 +78,16 @@ export class ExtractDataService {
       }
 
       if (chunk.length) {
-        await this.customerRepository.save({ data: chunk });
-        success += chunk.length;
-        chunk.length = 0;
+        try {
+          await this.customerRepository.save({ data: chunk });
+          success += chunk.length;
+          chunk.length = 0;
+        } catch (error) {
+          console.log({ error });
+          failure += chunk.length;
+        }
       }
-
+      
       await this.s3.removeObject({
         Key: s3Record.s3.object.key,
         Bucket: s3Record.s3.bucket.name,
