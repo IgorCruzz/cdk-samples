@@ -10,6 +10,9 @@ import {
   RequestValidator,
   DomainName,
   BasePathMapping,
+  UsagePlan,
+  Period,
+  ApiKey,
 } from "aws-cdk-lib/aws-apigateway";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
@@ -28,6 +31,38 @@ export class ApiConstruct extends Construct {
 
     this.notificationResouce();
     this.basePathMapping();
+    this.usagePlan();
+  }
+
+  private usagePlan() {
+    const usagePlan = new UsagePlan(this, "usagePlan", {
+      description:
+        "Permite 10 requisições por dia (aproximadamente equivalente a 10 em 10h)",
+      throttle: {
+        rateLimit: 1,
+        burstLimit: 1,
+      },
+      quota: {
+        limit: 10,
+        period: Period.DAY,
+      },
+    });
+
+    usagePlan.addApiStage({
+      stage: this.api.deploymentStage,
+    });
+
+    const apiKey = ApiKey.fromApiKeyId(
+      this,
+      "api-key",
+      StringParameter.fromStringParameterName(
+        this,
+        "parameter-api-key",
+        "/api/api-key"
+      ).stringValue
+    );
+
+    usagePlan.addApiKey(apiKey);
   }
 
   private notificationApi() {
