@@ -12,6 +12,8 @@ import { join } from "node:path";
 import { S3Construct } from "./s3.construct";
 import { DynamoDBConstruct } from "./dynamo.construct";
 import { EventType } from "aws-cdk-lib/aws-s3";
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
+import { ApiKey } from "aws-cdk-lib/aws-apigateway";
 
 interface LambdaStackProps {
   s3Construct: S3Construct;
@@ -69,6 +71,12 @@ export class LambdaConstruct extends Construct {
     const { bucket } = this.props.s3Construct;
     const { table } = this.props.dynamoDBConstruct;
 
+    const apiKey = StringParameter.fromStringParameterName(
+      this,
+      "parameter-api-key",
+      "/api/api-key-value"
+    ).stringValue;
+
     const fn = new NodejsFunction(this, "function-extract-data", {
       memorySize: 128,
       architecture: Architecture.X86_64,
@@ -85,6 +93,7 @@ export class LambdaConstruct extends Construct {
       environment: {
         TABLE_NAME: table.tableName,
         API_URL: "https://api.igorcruz.space",
+        API_KEY: apiKey,
       },
       loggingFormat: LoggingFormat.JSON,
       tracing: Tracing.ACTIVE,
