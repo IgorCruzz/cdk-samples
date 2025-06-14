@@ -56,8 +56,6 @@ export class ApiConstruct extends Construct {
   }
 
   private notificationResouce() {
-    const resource = this.api.root.addResource("notifications");
-
     const model = new Model(this, "model-notifications-post-request", {
       restApi: this.api,
       contentType: "application/json",
@@ -104,7 +102,7 @@ export class ApiConstruct extends Construct {
       }
     );
 
-    resource.addMethod(
+    this.api.root.addMethod(
       "POST",
       new LambdaIntegration(this.props.notificationFunction),
       {
