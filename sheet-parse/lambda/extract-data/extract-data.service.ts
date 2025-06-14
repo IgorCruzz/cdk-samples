@@ -1,18 +1,29 @@
 import { S3EventRecord } from "aws-lambda";
-import { S3Interface } from "../shared/s3";
+import { IS3 } from "../shared/s3";
 import { parse } from "csv-parse";
 import { customerSchema } from "../schema/customer.schema";
 import { IArchiveRepository } from "../repository/archive.repository";
 import { ICustomerRepository } from "../repository/customer.repository";
+import { ISendNotification } from "../shared/send-notification";
 
-export class ExtractDataService {
+interface IExtractDataService {
+  extract: ({ s3Record }: { s3Record: S3EventRecord }) => Promise<void>;
+}
+
+export class ExtractDataService implements IExtractDataService {
   constructor(
-    private readonly s3: S3Interface,
+    private readonly s3: IS3,
     private readonly customerRepository: ICustomerRepository,
-    private readonly archiveRepository: IArchiveRepository
+    private readonly archiveRepository: IArchiveRepository,
+    private readonly sendNotification: ISendNotification
   ) {}
+  s3Record: S3EventRecord;
 
-  extract = async ({ s3Record }: { s3Record: S3EventRecord }) => {
+  extract = async ({
+    s3Record,
+  }: {
+    s3Record: S3EventRecord;
+  }): Promise<void> => {
     try {
       const stream = await this.s3.getObject({
         key: s3Record.s3.object.key,
@@ -37,7 +48,32 @@ export class ExtractDataService {
       for await (const customer of stream.pipe(
         parse({
           skipEmptyLines: true,
-          columns: true,
+          columns: (header) => {
+            const allowedHeaders = [
+              "Nome",
+              "CNPJ",
+              "Email",
+              "Telefone",
+              "Endereço",
+              "Cidade",
+              "Estado",
+              "CEP",
+            ];
+
+            const verifyHeaders = header.every((h: string) =>
+              allowedHeaders.includes(h)
+            );
+
+            if (!verifyHeaders) {
+              throw new Error(
+                `Invalid headers in CSV file. Expected: ${allowedHeaders.join(
+                  ", "
+                )}`
+              );
+            }
+
+            return header;
+          },
           trim: true,
         })
       )) {
@@ -99,29 +135,9 @@ export class ExtractDataService {
         status: "COMPLETED",
       });
 
-      const response = await fetch(
-        `https://api.igorcruz.space/notification/notifications`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            notifications: [
-              {
-                service: "EMAIL",
-                title: "File processed",
-                message,
-              },
-              {
-                service: "WHATSAPP",
-                title: "File processed",
-                message,
-              },
-            ],
-          }),
-        }
-      );
+      const response = await this.sendNotification.send({
+        message,
+      });
 
       if (!response.ok) {
         throw new Error(
@@ -134,6 +150,12 @@ export class ExtractDataService {
       await this.archiveRepository.updateStatus({
         key: s3Record.s3.object.key,
         status: "FAILED",
+      });
+
+      await this.sendNotification.send({
+        message: `Error processing file ${s3Record.s3.object.key}: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
       });
 
       throw new Error(
