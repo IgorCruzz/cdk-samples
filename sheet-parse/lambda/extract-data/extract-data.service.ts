@@ -63,9 +63,7 @@ export class ExtractDataService {
           chunk.push(data);
 
           if (chunk.length === 25) {
-            const a = await this.customerRepository.save({ data: chunk });
-
-            console.log({ a });
+            await this.customerRepository.save({ data: chunk });
 
             success += chunk.length;
             chunk.length = 0;
@@ -80,6 +78,7 @@ export class ExtractDataService {
       if (chunk.length) {
         try {
           await this.customerRepository.save({ data: chunk });
+
           success += chunk.length;
           chunk.length = 0;
         } catch (error) {
