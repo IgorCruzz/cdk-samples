@@ -7,6 +7,8 @@ import {
   LambdaIntegration,
   BasePathMapping,
   DomainName,
+  UsagePlan,
+  Period,
   ApiKey,
 } from "aws-cdk-lib/aws-apigateway";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
@@ -26,6 +28,38 @@ export class ApiConstruct extends Construct {
 
     this.sheetParseResouce();
     this.basePathMapping();
+    this.usagePlan();
+  }
+
+  private usagePlan() {
+    const usagePlan = new UsagePlan(this, "MeuUsagePlan", {
+      description:
+        "Permite 10 requisições por dia (aproximadamente equivalente a 10 em 10h)",
+      throttle: {
+        rateLimit: 1,
+        burstLimit: 1,
+      },
+      quota: {
+        limit: 10,
+        period: Period.DAY,
+      },
+    });
+
+    usagePlan.addApiStage({
+      stage: this.api.deploymentStage,
+    });
+
+    const apiKey = ApiKey.fromApiKeyId(
+      this,
+      "api-key",
+      StringParameter.fromStringParameterName(
+        this,
+        "parameter-api-key",
+        "/api/api-key"
+      ).stringValue
+    );
+
+    usagePlan.addApiKey(apiKey);
   }
 
   private sheetParseApi() {
