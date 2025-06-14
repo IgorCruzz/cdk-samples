@@ -12,29 +12,38 @@ import { Readable } from "stream";
 
 const client = new S3Client({});
 
-export interface S3Interface {
-  createPresignedUrl: ({
-    bucket,
-  }: {
-    bucket: string;
-  }) => Promise<{ url: string; key: string }>;
-  getObject: ({
-    key,
-    Bucket,
-  }: {
-    key: string;
-    Bucket: string;
-  }) => Promise<Readable>;
-  removeObject: ({
-    Key,
-    Bucket,
-  }: {
-    Key: string;
-    Bucket: string;
-  }) => Promise<void>;
+export type CreatePresignedUrlInput = {
+  bucket: string;
+};
+
+export type GetObjectInput = {
+  key: string;
+  Bucket: string;
+};
+
+export type RemoveObjectInput = {
+  Key: string;
+  Bucket: string;
+};
+
+export type CreatePresignedUrlOutput = {
+  url: string;
+  key: string;
+};
+
+export type GetObjectOutput = Readable;
+
+export type RemoveObjectOutput = void;
+
+export interface IS3 {
+  createPresignedUrl: (
+    input: CreatePresignedUrlInput
+  ) => Promise<CreatePresignedUrlOutput>;
+  getObject: (input: GetObjectInput) => Promise<GetObjectOutput>;
+  removeObject: (input: RemoveObjectInput) => Promise<RemoveObjectOutput>;
 }
 
-export class S3 implements S3Interface {
+export class S3 implements IS3 {
   createPresignedUrl = async ({
     bucket,
   }: {
