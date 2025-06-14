@@ -129,6 +129,8 @@ export class ExtractDataService {
         );
       }
     } catch (error) {
+      console.log({ error });
+
       await this.archiveRepository.updateStatus({
         key: s3Record.s3.object.key,
         status: "FAILED",
