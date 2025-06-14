@@ -8,16 +8,18 @@ import { CustomerType } from "../schema/customer.schema";
 
 const client = new DynamoDBClient({});
 
+type CustomerRepositoryInput = {
+  data: CustomerType[];
+};
+
+type CustomerRepositoryOutput = Promise<BatchGetCommandOutput>;
+
 export interface ICustomerRepository {
-  save: ({ data }: { data: CustomerType[] }) => Promise<BatchGetCommandOutput>;
+  save: ({ data }: CustomerRepositoryInput) => CustomerRepositoryOutput;
 }
 
 export class CustomerRepository implements ICustomerRepository {
-  async save({
-    data,
-  }: {
-    data: CustomerType[];
-  }): Promise<BatchGetCommandOutput> {
+  async save({ data }: CustomerRepositoryInput): CustomerRepositoryOutput {
     const customers = await Promise.all(
       data.map(async (item) => {
         return {
