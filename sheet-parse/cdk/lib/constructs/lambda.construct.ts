@@ -84,6 +84,7 @@ export class LambdaConstruct extends Construct {
       },
       environment: {
         TABLE_NAME: table.tableName,
+        API_URL: "https://api.igorcruz.space",
       },
       loggingFormat: LoggingFormat.JSON,
       tracing: Tracing.ACTIVE,
