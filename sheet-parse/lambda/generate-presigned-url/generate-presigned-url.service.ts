@@ -1,14 +1,14 @@
 import { APIGatewayProxyResult } from "aws-lambda";
-import { S3Interface } from "../shared/s3";
+import { IS3 } from "../shared/s3";
 
-export interface GeneratePresignedUrlServiceInterface {
+export interface IGeneratePresignedUrlService {
   generate: () => Promise<APIGatewayProxyResult>;
 }
 
 export class GeneratePresignedUrlService
-  implements GeneratePresignedUrlServiceInterface
+  implements IGeneratePresignedUrlService
 {
-  constructor(private readonly s3: S3Interface) {}
+  constructor(private readonly s3: IS3) {}
 
   async generate(): Promise<APIGatewayProxyResult> {
     try {
