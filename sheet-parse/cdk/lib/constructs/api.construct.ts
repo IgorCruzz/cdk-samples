@@ -7,6 +7,7 @@ import {
   LambdaIntegration,
   BasePathMapping,
   DomainName,
+  ApiKey,
 } from "aws-cdk-lib/aws-apigateway";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
@@ -25,6 +26,15 @@ export class ApiConstruct extends Construct {
 
     this.sheetParseResouce();
     this.basePathMapping();
+    this.apiKey();
+  }
+
+  private apiKey() {
+    new ApiKey(this, "api-key-sheet-parse", {
+      apiKeyName: "sheet-parse-api-key",
+      description: "API key for sheet parse service",
+      enabled: true,
+    });
   }
 
   private sheetParseApi() {
