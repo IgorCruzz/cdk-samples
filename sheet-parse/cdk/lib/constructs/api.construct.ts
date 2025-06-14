@@ -53,9 +53,7 @@ export class ApiConstruct extends Construct {
   }
 
   private sheetParseResouce() {
-    const resource = this.api.root.addResource("generate");
-
-    resource.addMethod(
+    this.api.root.addMethod(
       "POST",
       new LambdaIntegration(this.props.sheetParseFunction),
       {}
