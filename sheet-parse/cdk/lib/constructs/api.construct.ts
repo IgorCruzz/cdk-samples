@@ -91,7 +91,9 @@ export class ApiConstruct extends Construct {
     this.api.root.addMethod(
       "POST",
       new LambdaIntegration(this.props.sheetParseFunction),
-      {}
+      {
+        apiKeyRequired: true,
+      }
     );
   }
 
