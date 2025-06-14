@@ -92,7 +92,7 @@ export class ApiConstruct extends Construct {
     new BasePathMapping(this, "sheet-parse-mapping", {
       domainName: domain,
       restApi: this.api,
-      basePath: "archives",
+      basePath: "files",
     });
   }
 }
