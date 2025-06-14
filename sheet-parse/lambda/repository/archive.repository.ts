@@ -8,28 +8,28 @@ import {
 
 const client = new DynamoDBClient({});
 
-type ArchiveInput = {
+type ArchiveRepositoryInput = {
   key: string;
   size: number;
   message: string;
   status: "PROCESSING" | "COMPLETED" | "FAILED";
 };
 
-type ArchiveOutput = {
+type ArchiveRepositoryOutput = {
   success: boolean;
   message: string;
 };
 
 export interface IArchiveRepository {
-  save: (item: ArchiveInput) => Promise<ArchiveOutput>;
+  save: (item: ArchiveRepositoryInput) => Promise<ArchiveRepositoryOutput>;
   updateStatus({
     key,
     status,
-  }: Pick<ArchiveInput, "key" | "status">): Promise<void>;
+  }: Pick<ArchiveRepositoryInput, "key" | "status">): Promise<void>;
 }
 
 export class ArchiveRepository implements IArchiveRepository {
-  async save(item: ArchiveInput): Promise<ArchiveOutput> {
+  async save(item: ArchiveRepositoryInput): Promise<ArchiveRepositoryOutput> {
     try {
       const { key } = item;
 
@@ -77,7 +77,7 @@ export class ArchiveRepository implements IArchiveRepository {
   async updateStatus({
     key,
     status,
-  }: Pick<ArchiveInput, "key" | "status">): Promise<void> {
+  }: Pick<ArchiveRepositoryInput, "key" | "status">): Promise<void> {
     const params: UpdateCommandInput = {
       TableName: process.env.TABLE_NAME as string,
       Key: {
