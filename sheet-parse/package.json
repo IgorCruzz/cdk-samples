@@ -10,7 +10,7 @@
     "test": "jest",
     "cdk": "cdk",
     "lint": "eslint '*.ts' --quiet --fix",
-    "local:extract": "sam local invoke ExtractDataFunction -e events/extract-data.json -t ./cdk.out/SheetParseStack.template.json"
+    "local:extract": "sam local invoke function-extract-data -e events/extract-data.json  --env-vars env.json  -t ./cdk.out/stack-sheet-parse.template.json"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
