@@ -5,6 +5,7 @@ import {
   UpdateCommand,
   UpdateCommandInput,
 } from "@aws-sdk/lib-dynamodb";
+import { actualDate } from "../utils/locale-date.util";
 
 const client = new DynamoDBClient({});
 
@@ -39,7 +40,7 @@ export class ArchiveRepository implements IArchiveRepository {
           PK: `ARCHIVE#${key}`,
           SK: `METADATA#${key}`,
           ...item,
-          CreatedAt: new Date().toISOString(),
+          CreatedAt: actualDate,
         },
         ConditionExpression: "attribute_not_exists(PK)",
       };
