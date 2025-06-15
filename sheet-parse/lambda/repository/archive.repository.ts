@@ -26,7 +26,8 @@ export interface IArchiveRepository {
   updateStatus({
     key,
     status,
-  }: Pick<ArchiveRepositoryInput, "key" | "status">): Promise<void>;
+    message,
+  }: Pick<ArchiveRepositoryInput, "key" | "status" | "message">): Promise<void>;
 }
 
 export class ArchiveRepository implements IArchiveRepository {
@@ -78,7 +79,11 @@ export class ArchiveRepository implements IArchiveRepository {
   async updateStatus({
     key,
     status,
-  }: Pick<ArchiveRepositoryInput, "key" | "status">): Promise<void> {
+    message,
+  }: Pick<
+    ArchiveRepositoryInput,
+    "key" | "status" | "message"
+  >): Promise<void> {
     const params: UpdateCommandInput = {
       TableName: process.env.TABLE_NAME as string,
       Key: {
@@ -92,10 +97,7 @@ export class ArchiveRepository implements IArchiveRepository {
       },
       ExpressionAttributeValues: {
         ":status": status,
-        ":message":
-          status === "COMPLETED"
-            ? "Archive processing completed."
-            : "Archive processing failed.",
+        ":message": message,
       },
     };
 
