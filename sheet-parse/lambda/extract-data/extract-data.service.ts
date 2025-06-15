@@ -123,11 +123,6 @@ export class ExtractDataService implements IExtractDataService {
         }
       }
 
-      await this.s3.removeObject({
-        Key: s3Record.s3.object.key,
-        Bucket: s3Record.s3.bucket.name,
-      });
-
       const message = `Process completed successfully. Processed ${success} records with ${failure} failures.`;
 
       await this.archiveRepository.updateStatus({
@@ -163,6 +158,11 @@ export class ExtractDataService implements IExtractDataService {
           error instanceof Error ? error.message : String(error)
         }`
       );
+    } finally {
+      await this.s3.removeObject({
+        Key: s3Record.s3.object.key,
+        Bucket: s3Record.s3.bucket.name,
+      });
     }
   };
 }
