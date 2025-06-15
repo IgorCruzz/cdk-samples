@@ -123,11 +123,12 @@ export class ExtractDataService implements IExtractDataService {
         }
       }
 
-      const message = `Process completed successfully. Processed ${success} records with ${failure} failures.`;
+      const message = `Process completed successfully: Processed ${success} records with ${failure} failures.`;
 
       await this.archiveRepository.updateStatus({
         key: s3Record.s3.object.key,
         status: "COMPLETED",
+        message,
       });
 
       const response = await this.sendNotification.send({
@@ -142,15 +143,18 @@ export class ExtractDataService implements IExtractDataService {
     } catch (error) {
       console.log({ error });
 
+      const message = `Error processing file ${s3Record.s3.object.key}: ${
+        error instanceof Error ? error.message : String(error)
+      }`;
+
       await this.archiveRepository.updateStatus({
         key: s3Record.s3.object.key,
         status: "FAILED",
+        message,
       });
 
       await this.sendNotification.send({
-        message: `Error processing file ${s3Record.s3.object.key}: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
+        message,
       });
 
       throw new Error(
