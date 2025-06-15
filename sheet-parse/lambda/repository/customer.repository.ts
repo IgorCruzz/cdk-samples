@@ -5,6 +5,7 @@ import {
   BatchGetCommandOutput,
 } from "@aws-sdk/lib-dynamodb";
 import { CustomerType } from "../schema/customer.schema";
+import { actualDate } from "../utils/locale-date.util";
 
 const client = new DynamoDBClient({});
 
@@ -29,7 +30,7 @@ export class CustomerRepository implements ICustomerRepository {
               PK: `CUSTOMER#${item.cnpj}`,
               SK: `METADATA#${item.cnpj}`,
               ...item,
-              CreatedAt: new Date().toISOString(),
+              CreatedAt: actualDate,
             },
           },
         };
