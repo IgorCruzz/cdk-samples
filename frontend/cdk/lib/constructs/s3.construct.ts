@@ -12,7 +12,7 @@ export class S3Construct extends Construct {
 
     this.bucket = this.webSiteBucket();
 
-    new BucketDeployment(this, "DeployFiles", {
+    new BucketDeployment(this, "deployment-bucket", {
       sources: [Source.asset(join(__dirname, "../../../app/build"))],
       destinationBucket: this.bucket,
       retainOnDelete: false,
