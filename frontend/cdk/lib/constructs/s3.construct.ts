@@ -1,21 +1,36 @@
 import { Construct } from "constructs";
-import { Bucket } from "aws-cdk-lib/aws-s3";
+import { Bucket, IBucket } from "aws-cdk-lib/aws-s3";
 import { RemovalPolicy } from "aws-cdk-lib";
+import { BucketDeployment, Source } from "aws-cdk-lib/aws-s3-deployment";
+import { join } from "node:path";
 
 export class S3Construct extends Construct {
+  private readonly bucket: IBucket;
+
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    this.bucket();
+    this.bucket = this.webSiteBucket();
+
+    new BucketDeployment(this, "DeployFiles", {
+      sources: [Source.asset(join(__dirname, "../../../app/build"))],
+      destinationBucket: this.bucket,
+      retainOnDelete: false,
+    });
   }
 
-  bucket() {
+  webSiteBucket() {
     return new Bucket(this, "bucket-static-website", {
-      autoDeleteObjects: true,
       websiteIndexDocument: "index.html",
       websiteErrorDocument: "error.html",
       publicReadAccess: true,
       removalPolicy: RemovalPolicy.RETAIN,
+      blockPublicAccess: {
+        blockPublicAcls: false,
+        ignorePublicAcls: false,
+        blockPublicPolicy: false,
+        restrictPublicBuckets: false,
+      },
     });
   }
 }
