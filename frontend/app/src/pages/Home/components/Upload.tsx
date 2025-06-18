@@ -1,5 +1,7 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card" 
 import { Form } from '@/components/ui/form'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form'
 
 export function Upload() { 
@@ -22,13 +24,13 @@ export function Upload() {
         <CardDescription>Select a file to upload and click the submit button.</CardDescription>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="flex flex-col items-center justify-center">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>  
-            <input type="file" 
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-center gap-4">  
+            <Input type="file" 
             {...form.register('file')}
             />
-            <button type="submit">Submit</button>s
+            <Button type="submit">Submit</Button>
           </form>          
         </Form>
       </CardContent>
