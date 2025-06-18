@@ -17,16 +17,16 @@ export function Upload() {
   };
 
   return ( 
-    <div className="w-1/2"> 
-      <Card>
+    <div className="w-1/2 text-amber-50"> 
+      <Card className="bg-[#121314]">
       <CardHeader className="item-center justify-center">
-        <CardTitle className="text-center">Upload a File</CardTitle>
-        <CardDescription>Select a file to upload and click the submit button.</CardDescription>
+        <CardTitle className="text-center text-amber-50">Upload a File</CardTitle>
+        <CardDescription className="text-amber-50">Select a file to upload and click the submit button.</CardDescription>
       </CardHeader>
 
       <CardContent className="flex flex-col items-center justify-center">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-center gap-4">  
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-center gap-4 text-amber-50">  
             <Input type="file" 
             {...form.register('file')}
             />
