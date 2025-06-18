@@ -1,12 +1,13 @@
 import {
   Historic,
-  Progess
+  Progess,
+  Upload
 } from './components'
 
-export default function Upload() {
+export default function Home() {
   return (
     <div>
-      UPLOAD
+      <Upload />
       <Progess />
       <Historic /> 
     </div>
