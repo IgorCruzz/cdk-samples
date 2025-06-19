@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { Form } from "@radix-ui/react-form"; 
 import { files } from '@/services/endpoints/files';
 import { useMutation } from '@tanstack/react-query'
+import axios from 'axios';
 
 export function Upload() {
   const { register, handleSubmit } = useForm<{ file: File | null }>({
@@ -13,13 +14,20 @@ export function Upload() {
     },
   }); 
 
-  const { mutateAsync } = useMutation({ mutationFn: files.preSignedUrl })
+  const { mutateAsync: PreSignedUrlMutateAsync } = useMutation({ mutationFn: files.preSignedUrl })
+
+  const { mutateAsync: UploadMutateAsync } = useMutation({ mutationFn: async ({url, file}:  { url: string, file: File}) => {
+    return await axios.put(url, file); 
+  }})
 
   const onSubmit = async ({ file }: { file: File | null }) => {
     
-    const { data } =  await mutateAsync();
+    const { data } =  await PreSignedUrlMutateAsync();
 
-    console.log({ data, file });    
+    await UploadMutateAsync({
+      url: data.url,
+      file: file as File 
+    });  
   };
 
   return ( 
