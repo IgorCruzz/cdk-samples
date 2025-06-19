@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form'
 import { Form } from "@radix-ui/react-form"; 
+import { files } from '@/services/endpoints/files';
+import { useMutation } from '@tanstack/react-query'
 
 export function Upload() {
   const { register, handleSubmit } = useForm<{ file: File | null }>({
@@ -11,9 +13,13 @@ export function Upload() {
     },
   }); 
 
-  const onSubmit = ({ file }: { file: File | null }) => {
-    console.log(file);
-    // Handle file upload logic here
+  const { mutateAsync } = useMutation({ mutationFn: files.preSignedUrl })
+
+  const onSubmit = async ({ file }: { file: File | null }) => {
+    
+    const { data } =  await mutateAsync();
+
+    console.log({ data, file });    
   };
 
   return ( 
