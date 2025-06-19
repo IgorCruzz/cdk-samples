@@ -1,15 +1,15 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card" 
-import { Form } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form'
+import { Form } from "@radix-ui/react-form"; 
 
-export function Upload() { 
-  const form = useForm<{ file: File | null }>({
+export function Upload() {
+  const { register, handleSubmit } = useForm<{ file: File | null }>({
     defaultValues: {
       file: null,
     },
-  });
+  }); 
 
   const onSubmit = ({ file }: { file: File | null }) => {
     console.log(file);
@@ -25,13 +25,11 @@ export function Upload() {
       </CardHeader>
 
       <CardContent className="flex flex-col items-center justify-center">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-center gap-4 text-amber-50">  
+        <Form onSubmit={handleSubmit(onSubmit)}>   
             <Input type="file" 
-            {...form.register('file')}
+            {...register('file')}
             />
-            <Button type="submit">Submit</Button>
-          </form>          
+            <Button type="submit">Submit</Button>        
         </Form>
       </CardContent>
       </Card>    
