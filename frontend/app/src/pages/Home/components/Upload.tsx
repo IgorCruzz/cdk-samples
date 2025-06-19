@@ -6,6 +6,7 @@ import { Form } from "@radix-ui/react-form";
 import { files } from '@/services/endpoints/files';
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios';
+import { toast } from "sonner"
 
 export function Upload() {
   const { register, handleSubmit } = useForm<{ file: File | null }>({
@@ -28,8 +29,11 @@ export function Upload() {
       url: data.url,
       file: file as File 
       });  
+
+      toast("File uploaded successfully!") 
     } catch (error) {
-      console.error("Error uploading file:", error);
+      toast("Failed to upload file. Please try again.");
+      console.error(error);
       return;      
     }   
   };
