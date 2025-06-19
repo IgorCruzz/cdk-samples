@@ -79,7 +79,7 @@ export class ApiConstruct extends Construct {
       defaultCorsPreflightOptions: {
         allowOrigins: Cors.ALL_ORIGINS,
         allowMethods: ["OPTIONS", "POST"],
-        allowHeaders: ["Content-Type", "Authorization"],
+        allowHeaders: ["Content-Type", "Authorization", "X-Api-Key"],
       },
       disableExecuteApiEndpoint: true,
     });
