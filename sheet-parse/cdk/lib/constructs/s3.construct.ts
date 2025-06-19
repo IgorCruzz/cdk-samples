@@ -1,5 +1,5 @@
 import { RemovalPolicy } from "aws-cdk-lib";
-import { Bucket } from "aws-cdk-lib/aws-s3";
+import { Bucket, HttpMethods } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
 
 export class S3Construct extends Construct {
@@ -15,6 +15,13 @@ export class S3Construct extends Construct {
     return new Bucket(this, "bucket-sheet-parse", {
       removalPolicy: RemovalPolicy.RETAIN,
       publicReadAccess: false,
+      cors: [
+        {
+          allowedMethods: [HttpMethods.PUT],
+          allowedOrigins: ["*"],
+          allowedHeaders: ["*"],
+        },
+      ],
     });
   }
 }
