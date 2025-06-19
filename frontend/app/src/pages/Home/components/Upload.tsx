@@ -21,13 +21,17 @@ export function Upload() {
   }})
 
   const onSubmit = async ({ file }: { file: File | null }) => {
-    
-    const { data } =  await PreSignedUrlMutateAsync();
+    try {
+      const { data } =  await PreSignedUrlMutateAsync();
 
-    await UploadMutateAsync({
+      await UploadMutateAsync({
       url: data.url,
       file: file as File 
-    });  
+      });  
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      return;      
+    }   
   };
 
   return ( 
