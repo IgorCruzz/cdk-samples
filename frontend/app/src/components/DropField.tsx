@@ -12,7 +12,7 @@ interface DropzoneFieldProps<T extends FieldValues> extends UseControllerProps<T
 
 export function DropzoneField<T extends FieldValues>({
   label = "Selecione um arquivo",
-  accept = { "application/pdf": [".pdf"] },
+  accept = { "application/pdf": [".csv"] },
   ...controllerProps
 }: DropzoneFieldProps<T>) {
   return (
