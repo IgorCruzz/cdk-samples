@@ -1,15 +1,38 @@
-import { IArchiveRepository, Files } from "../repository/archive.repository";
+import { IArchiveRepository } from "../repository/archive.repository";
+import { APIGatewayProxyResult } from "aws-lambda";
 
 interface IGetFilesService {
   getFiles: () => Promise<GetFilesOutput>;
 }
 
-type GetFilesOutput = Files[];
+type GetFilesOutput = APIGatewayProxyResult;
 
 export class GetFilesServices implements IGetFilesService {
   constructor(private readonly archiveRepository: IArchiveRepository) {}
 
   getFiles = async (): Promise<GetFilesOutput> => {
-    return await this.archiveRepository.getFiles();
+    try {
+      const files = await this.archiveRepository.getFiles();
+
+      return {
+        statusCode: 200,
+        body: JSON.stringify(files),
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          "Access-Control-Allow-Methods": "GET, OPTIONS",
+        },
+      };
+    } catch (error) {
+      return {
+        statusCode: 500,
+        body: "Internal Server Error",
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          "Access-Control-Allow-Methods": "GET, OPTIONS",
+        },
+      };
+    }
   };
 }
