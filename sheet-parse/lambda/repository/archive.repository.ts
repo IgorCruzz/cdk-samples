@@ -4,6 +4,7 @@ import {
   PutCommand,
   UpdateCommand,
   UpdateCommandInput,
+  QueryCommandInput,
 } from "@aws-sdk/lib-dynamodb";
 import { actualDate } from "../utils/locale-date.util";
 
@@ -38,7 +39,7 @@ export class ArchiveRepository implements IArchiveRepository {
       const params: PutCommandInput = {
         TableName: process.env.TABLE_NAME as string,
         Item: {
-          PK: `ARCHIVE#${key}`,
+          PK: `ARCHIVE`,
           SK: `METADATA#${key}`,
           ...item,
           CreatedAt: actualDate,
