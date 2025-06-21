@@ -16,6 +16,7 @@ import { IFunction } from "aws-cdk-lib/aws-lambda";
 
 interface ApiConstructProps {
   sheetParseFunction: IFunction;
+  getFilesDataFunction: IFunction;
 }
 
 export class ApiConstruct extends Construct {
@@ -29,6 +30,8 @@ export class ApiConstruct extends Construct {
     this.sheetParseResouce();
     this.basePathMapping();
     this.usagePlan();
+
+    this.getFilesDataResouce();
   }
 
   private usagePlan() {
@@ -131,5 +134,17 @@ export class ApiConstruct extends Construct {
       restApi: this.api,
       basePath: "files",
     });
+  }
+
+  private getFilesDataResouce() {
+    this.api.root
+      .addResource("files")
+      .addMethod(
+        "GET",
+        new LambdaIntegration(this.props.getFilesDataFunction),
+        {
+          apiKeyRequired: true,
+        }
+      );
   }
 }
