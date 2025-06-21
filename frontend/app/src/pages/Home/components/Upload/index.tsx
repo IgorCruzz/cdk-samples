@@ -12,7 +12,7 @@ import { fileSchema } from '@/schemas/file';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AxiosError } from 'axios';
 
-export function Upload() {
+export function Upload()  {
   const form = useForm<{ file: File }>({
     resolver: zodResolver(fileSchema),
     mode: "onChange",
@@ -48,7 +48,7 @@ export function Upload() {
         toast.error('Erro ao salvar.');
       }
       console.error(error);
-    } finally {
+    } finally { 
       setLoading(false);
     }
   };
