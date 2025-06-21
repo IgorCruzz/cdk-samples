@@ -1,15 +1,24 @@
-# Welcome to your CDK TypeScript project
+# ⚛️ Frontend – Aplicação React com Vite e Infraestrutura Serverless
 
-You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`FrontendStack`)
-which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
+Esta aplicação **frontend** foi construída com **React + Vite** e é responsável pelo **upload de arquivos CSV** e **visualização dos dados processados**. A infraestrutura é provisionada com **AWS CDK**, incluindo o **Amazon S3** para hospedagem estática e **CloudFront** para distribuição global do conteúdo.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## 🛠️ Arquitetura
 
-## Useful commands
+<p align="center">
+  <img src="https://github.com/IgorCruzz/cdk-samples/blob/main/diagrams/frontend-architecture.png" alt="Arquitetura Frontend" />
+</p>
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+## 🚀 Principais Funcionalidades
+
+- 💻 Interface web para upload de arquivos CSV  
+- 👁️ Visualização dos dados processados  
+- ☁️ Hospedagem estática no Amazon S3  
+- 🌍 Distribuição global via CloudFront  
+- ⚙️ Provisionamento da infraestrutura com AWS CDK  
+
+## 📦 Tecnologias & Serviços
+
+- **React + Vite** – Framework e bundler para o frontend  
+- **Amazon S3** – Bucket para hospedagem estática  
+- **Amazon CloudFront** – CDN para entrega rápida do conteúdo  
+- **AWS CDK** – Infraestrutura como código para provisionamento  
