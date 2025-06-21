@@ -13,7 +13,6 @@ import { S3Construct } from "./s3.construct";
 import { DynamoDBConstruct } from "./dynamo.construct";
 import { EventType } from "aws-cdk-lib/aws-s3";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import { ApiKey } from "aws-cdk-lib/aws-apigateway";
 
 interface LambdaStackProps {
   s3Construct: S3Construct;
@@ -23,6 +22,7 @@ interface LambdaStackProps {
 export class LambdaConstruct extends Construct {
   public readonly generatePreSignedUrlFunction: NodejsFunction;
   public readonly extractDataFunction: NodejsFunction;
+  public readonly getFilesDataFunction: NodejsFunction;
 
   constructor(
     scope: Construct,
@@ -33,6 +33,7 @@ export class LambdaConstruct extends Construct {
 
     this.generatePreSignedUrlFunction = this.createGenerateUrlFunction();
     this.extractDataFunction = this.createExtractDataFunction();
+    this.getFilesDataFunction = this.createGetFilesDataFunction();
   }
 
   private createGenerateUrlFunction() {
@@ -60,6 +61,32 @@ export class LambdaConstruct extends Construct {
       environment: {
         BUCKET_NAME: bucket.bucketName,
       },
+    });
+
+    bucket.grantPut(fn);
+
+    return fn;
+  }
+
+  private createGetFilesDataFunction() {
+    const { bucket } = this.props.s3Construct;
+
+    const fn = new NodejsFunction(this, "function-get-files-data", {
+      memorySize: 128,
+      architecture: Architecture.X86_64,
+      runtime: Runtime.NODEJS_20_X,
+      timeout: Duration.seconds(30),
+      description: "A Lambda function to get files data",
+      entry: join(__dirname, "../../../lambda/get-files/handler.ts"),
+      handler: "getFilesDataHanlder",
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: "es2020",
+      },
+      loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
+      logRetention: RetentionDays.ONE_WEEK,
     });
 
     bucket.grantPut(fn);
