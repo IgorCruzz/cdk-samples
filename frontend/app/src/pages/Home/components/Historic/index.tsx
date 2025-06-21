@@ -6,7 +6,7 @@ import { columns } from './columns';
 
 export const Historic = () => {
   const { data, isLoading } = useQuery({
-    queryKey: [],
+    queryKey: ['files'],
     queryFn: files.getFiles,
     refetchOnWindowFocus: false,
     retry: false,
