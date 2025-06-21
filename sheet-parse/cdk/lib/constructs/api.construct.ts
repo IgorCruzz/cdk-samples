@@ -137,14 +137,12 @@ export class ApiConstruct extends Construct {
   }
 
   private getFilesDataResouce() {
-    this.api.root
-      .addResource("files")
-      .addMethod(
-        "GET",
-        new LambdaIntegration(this.props.getFilesDataFunction),
-        {
-          apiKeyRequired: true,
-        }
-      );
+    this.api.root.addMethod(
+      "GET",
+      new LambdaIntegration(this.props.getFilesDataFunction),
+      {
+        apiKeyRequired: true,
+      }
+    );
   }
 }
