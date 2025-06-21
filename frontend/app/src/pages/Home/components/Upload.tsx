@@ -1,19 +1,25 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card" 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button' 
 import { useForm } from 'react-hook-form'
-import { Form } from "@radix-ui/react-form"; 
+import { Form } from "@/components/ui/form"
 import { files } from '@/services/endpoints/files';
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios';
 import { toast } from "sonner"
+import DropField from '@/components/DropField'
+import { useState } from "react";
+import { fileSchema } from '@/schemas/file'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { AxiosError } from 'axios';  
+ 
 
 export function Upload() {
-  const { register, handleSubmit } = useForm<{ file: File | null }>({
-    defaultValues: {
-      file: null,
-    },
-  }); 
+  const form = useForm<{ file: File }>({
+    resolver: zodResolver(fileSchema), 
+    mode: "onChange"
+  })
+  const [loading, setLoading] = useState(false)
+
 
   const { mutateAsync: PreSignedUrlMutateAsync } = useMutation({ mutationFn: files.preSignedUrl })
 
@@ -21,21 +27,29 @@ export function Upload() {
     return await axios.put(url, file); 
   }})
 
-  const onSubmit = async ({ file }: { file: File | null }) => {
-    try {
-      const { data } =  await PreSignedUrlMutateAsync();
+  const onSubmit = async ({ file }: { file: File }) => {
+    try { 
+      setLoading(true)
+
+      const { data } =  await PreSignedUrlMutateAsync();     
 
       await UploadMutateAsync({
       url: data.url,
-      file: file as File 
-      });  
+      file
+      });      
 
-      toast("File uploaded successfully!") 
+      toast.success('File uploaded successfully!');      
+
+      form.reset(); 
     } catch (error) {
-      toast("Failed to upload file. Please try again.");
+      if (error instanceof AxiosError) {
+          toast.error('Erro ao salvar.')
+      } 
       console.error(error);
       return;      
-    }   
+    }  finally {
+      setLoading(false);
+    }
   };
 
   return ( 
@@ -47,11 +61,12 @@ export function Upload() {
       </CardHeader>
 
       <CardContent className="flex flex-col items-center justify-center">
-        <Form onSubmit={handleSubmit(onSubmit)}>   
-            <Input type="file" 
-            {...register('file')}
-            />
-            <Button type="submit">Submit</Button>        
+        <Form {...form}>   
+          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col items-center justify-center gap-3">
+            <DropField name="file" />
+            <Button type="submit" disabled={!form.formState.isValid} className="w-full">{loading ? 'Sending...' : 'Send'}</Button> 
+          </form>
+                   
         </Form>
       </CardContent>
       </Card>    
