@@ -46,7 +46,14 @@ export class ArchiveRepository implements IArchiveRepository {
       ExpressionAttributeValues: {
         ":pk": "ARCHIVE",
       },
-      ProjectionExpression: "SK",
+      ProjectionExpression: "#key, #size, #message, #status",
+      ScanIndexForward: false,
+      ExpressionAttributeNames: {
+        "#status": "status",
+        "#message": "message",
+        "#key": "key",
+        "#size": "size",
+      },
     };
 
     const command = new QueryCommand(params);
