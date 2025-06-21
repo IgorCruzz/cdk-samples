@@ -7,6 +7,8 @@ export const Historic: React.FC = () => {
   const { data } = useQuery({
     queryKey: [],
     queryFn: files.getFiles, 
+    refetchOnWindowFocus: false,
+    retry: false,
   });
 
   console.log({ data });
