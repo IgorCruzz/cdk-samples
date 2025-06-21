@@ -14,7 +14,7 @@ export const Historic = () => {
 
   return (
     <div className="w-1/2 h-full">
-      <Card className="border border-[--border]">
+      <Card className="border border-[--border]  h-full">
         <CardHeader className="items-center justify-center">
           <CardTitle className="text-center">Histórico</CardTitle>
         </CardHeader>
