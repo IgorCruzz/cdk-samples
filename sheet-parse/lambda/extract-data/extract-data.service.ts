@@ -37,7 +37,7 @@ export class ExtractDataService implements IExtractDataService {
       const archive = await this.archiveRepository.save({
         key: s3Record.s3.object.key,
         size: s3Record.s3.object.size,
-        message: `Processing file ${s3Record.s3.object.key}...`,
+        message: ``,
         status: "PROCESSING",
       });
 
