@@ -14,10 +14,6 @@ export class GetFilesServices implements IGetFilesService {
     try {
       const files = await this.archiveRepository.getFiles();
 
-      console.log({
-        files,
-      });
-
       return {
         statusCode: 200,
         body: JSON.stringify(files),
