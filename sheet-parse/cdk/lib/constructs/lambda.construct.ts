@@ -69,6 +69,7 @@ export class LambdaConstruct extends Construct {
   }
 
   private createGetFilesDataFunction() {
+    const { table } = this.props.dynamoDBConstruct;
     const { bucket } = this.props.s3Construct;
 
     const fn = new NodejsFunction(this, "function-get-files-data", {
@@ -87,6 +88,9 @@ export class LambdaConstruct extends Construct {
       loggingFormat: LoggingFormat.JSON,
       tracing: Tracing.ACTIVE,
       logRetention: RetentionDays.ONE_WEEK,
+      environment: {
+        TABLE_NAME: table.tableName,
+      },
     });
 
     bucket.grantPut(fn);
