@@ -34,13 +34,13 @@ export class ApiConstruct extends Construct {
   private usagePlan() {
     const usagePlan = new UsagePlan(this, "MeuUsagePlan", {
       description:
-        "Permite 10 requisições por dia (aproximadamente equivalente a 10 em 10h)",
+        "Permite 25 requisições por dia (aproximadamente equivalente a 10 em 10h)",
       throttle: {
         rateLimit: 1,
         burstLimit: 1,
       },
       quota: {
-        limit: 10,
+        limit: 25,
         period: Period.DAY,
       },
     });
