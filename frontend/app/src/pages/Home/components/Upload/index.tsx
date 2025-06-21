@@ -27,7 +27,7 @@ export function Upload()  {
   const { mutateAsync: UploadMutateAsync } = useMutation({
     mutationFn: async ({ url, file }: { url: string; file: File }) => {
       return await axios.put(url, file);
-    },
+    }
   });
 
   const onSubmit = async ({ file }: { file: File }) => {
