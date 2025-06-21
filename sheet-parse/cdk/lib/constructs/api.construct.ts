@@ -37,7 +37,7 @@ export class ApiConstruct extends Construct {
   private usagePlan() {
     const usagePlan = new UsagePlan(this, "MeuUsagePlan", {
       description:
-        "Permite 25 requisições por dia (aproximadamente equivalente a 10 em 10h)",
+        "Permite 250 requisições por dia (aproximadamente equivalente a 10 em 10h)",
       throttle: {
         rateLimit: 1,
         burstLimit: 1,
