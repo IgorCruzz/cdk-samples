@@ -24,6 +24,8 @@ export class GetFilesServices implements IGetFilesService {
         },
       };
     } catch (error) {
+      console.log({ error });
+
       return {
         statusCode: 500,
         body: "Internal Server Error",
