@@ -5,24 +5,31 @@ import {
   UpdateCommand,
   UpdateCommandInput,
   QueryCommandInput,
+  QueryCommand,
+  QueryCommandOutput,
 } from "@aws-sdk/lib-dynamodb";
 import { actualDate } from "../utils/locale-date.util";
 
 const client = new DynamoDBClient({});
 
-type ArchiveRepositoryInput = {
+type Files = {
   key: string;
   size: number;
   message: string;
   status: "PROCESSING" | "COMPLETED" | "FAILED";
 };
 
+type ArchiveRepositoryInput = Files;
+
 type ArchiveRepositoryOutput = {
   success: boolean;
   message: string;
 };
 
+type GetFilesOutput = Files;
+
 export interface IArchiveRepository {
+  getFiles: () => Promise<GetFilesOutput[]>;
   save: (item: ArchiveRepositoryInput) => Promise<ArchiveRepositoryOutput>;
   updateStatus({
     key,
@@ -32,6 +39,22 @@ export interface IArchiveRepository {
 }
 
 export class ArchiveRepository implements IArchiveRepository {
+  async getFiles(): Promise<GetFilesOutput[]> {
+    const params: QueryCommandInput = {
+      TableName: process.env.TABLE_NAME as string,
+      KeyConditionExpression: "PK = :pk",
+      ExpressionAttributeValues: {
+        ":pk": "ARCHIVE",
+      },
+      ProjectionExpression: "SK",
+    };
+
+    const command = new QueryCommand(params);
+    const response: QueryCommandOutput = await client.send(command);
+
+    return response.Items as ArchiveRepositoryInput[];
+  }
+
   async save(item: ArchiveRepositoryInput): Promise<ArchiveRepositoryOutput> {
     try {
       const { key } = item;
