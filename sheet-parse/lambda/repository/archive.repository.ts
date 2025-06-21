@@ -83,7 +83,7 @@ export class ArchiveRepository implements IArchiveRepository {
 
       return {
         success: true,
-        message: `Item with PK ${key} saved successfully.`,
+        message: `Item with SK ${key} saved successfully.`,
       };
     } catch (error: unknown) {
       if (
@@ -94,7 +94,7 @@ export class ArchiveRepository implements IArchiveRepository {
 
         return {
           success: false,
-          message: `Item with PK ${item.key} already exists.`,
+          message: `Item with SK ${item.key} already exists.`,
         };
       }
 
