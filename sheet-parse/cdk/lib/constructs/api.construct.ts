@@ -43,7 +43,7 @@ export class ApiConstruct extends Construct {
         burstLimit: 1,
       },
       quota: {
-        limit: 25,
+        limit: 250,
         period: Period.DAY,
       },
     });
