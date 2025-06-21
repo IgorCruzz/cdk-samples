@@ -2,8 +2,7 @@ import { type ColumnDef } from "@tanstack/react-table"
 
 export type File = {
   size: number
-  status: string
-  message: string
+  status: string 
   key: string
 }
 
@@ -22,10 +21,5 @@ export const columns: ColumnDef<File>[] = [
     accessorKey: "status",
     header: "Status",
     cell: (info) => info.getValue(),
-  },
-  {
-    accessorKey: "message",
-    header: "Message",
-    cell: (info) => info.getValue(),
-  },
+  }, 
 ]
