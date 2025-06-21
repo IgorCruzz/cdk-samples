@@ -67,7 +67,7 @@ export class ArchiveRepository implements IArchiveRepository {
           ...item,
           CreatedAt: actualDate,
         },
-        ConditionExpression: "attribute_not_exists(PK)",
+        ConditionExpression: "attribute_not_exists(SK)",
       };
 
       const command = new PutCommand(params);
