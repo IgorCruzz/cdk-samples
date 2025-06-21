@@ -12,7 +12,7 @@ import { actualDate } from "../utils/locale-date.util";
 
 const client = new DynamoDBClient({});
 
-type Files = {
+export type Files = {
   key: string;
   size: number;
   message: string;
