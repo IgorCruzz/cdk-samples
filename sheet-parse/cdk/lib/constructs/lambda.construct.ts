@@ -93,7 +93,7 @@ export class LambdaConstruct extends Construct {
       },
     });
 
-    bucket.grantPut(fn);
+    table.grantReadWriteData(fn);
 
     return fn;
   }
