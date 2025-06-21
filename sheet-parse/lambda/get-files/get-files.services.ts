@@ -1,11 +1,15 @@
-import { IArchiveRepository } from "../repository/archive.repository";
+import { IArchiveRepository, Files } from "../repository/archive.repository";
 
 interface IGetFilesService {
-  getFiles: () => Promise<string[]>;
+  getFiles: () => Promise<GetFilesOutput>;
 }
+
+type GetFilesOutput = Files[];
 
 export class GetFilesServices implements IGetFilesService {
   constructor(private readonly archiveRepository: IArchiveRepository) {}
 
-  getFiles: () => Promise<string[]>;
+  getFiles = async (): Promise<GetFilesOutput> => {
+    return await this.archiveRepository.getFiles();
+  };
 }
