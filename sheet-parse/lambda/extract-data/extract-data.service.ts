@@ -129,6 +129,8 @@ export class ExtractDataService implements IExtractDataService {
         key: s3Record.s3.object.key,
         status: "COMPLETED",
         message,
+        successLines: success,
+        failedLines: failure,
       });
 
       const response = await this.sendNotification.send({
