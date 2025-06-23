@@ -17,6 +17,8 @@ export type Files = {
   size: number;
   message: string;
   status: "PROCESSING" | "COMPLETED" | "FAILED";
+  successLines?: number;
+  failedLines?: number;
 };
 
 type ArchiveRepositoryInput = Files;
@@ -35,7 +37,10 @@ export interface IArchiveRepository {
     key,
     status,
     message,
-  }: Pick<ArchiveRepositoryInput, "key" | "status" | "message">): Promise<void>;
+  }: Pick<
+    ArchiveRepositoryInput,
+    "key" | "status" | "message" | "successLines" | "failedLines"
+  >): Promise<void>;
 }
 
 export class ArchiveRepository implements IArchiveRepository {
@@ -72,6 +77,8 @@ export class ArchiveRepository implements IArchiveRepository {
           PK: `ARCHIVE`,
           SK: `METADATA#${key}`,
           ...item,
+          successLines: 0,
+          failedLines: 0,
           CreatedAt: actualDate,
         },
         ConditionExpression: "attribute_not_exists(SK)",
@@ -111,24 +118,31 @@ export class ArchiveRepository implements IArchiveRepository {
     key,
     status,
     message,
+    successLines = 0,
+    failedLines = 0,
   }: Pick<
     ArchiveRepositoryInput,
-    "key" | "status" | "message"
+    "key" | "status" | "message" | "successLines" | "failedLines"
   >): Promise<void> {
     const params: UpdateCommandInput = {
       TableName: process.env.TABLE_NAME as string,
       Key: {
-        PK: `ARCHIVE#${key}`,
+        PK: `ARCHIVE`,
         SK: `METADATA#${key}`,
       },
-      UpdateExpression: "SET #status = :status, #message = :message",
+      UpdateExpression:
+        "SET #status = :status, #message = :message, #successLines = :successLines, #failedLines = :failedLines",
       ExpressionAttributeNames: {
         "#status": "status",
         "#message": "message",
+        "#successLines": "successLines",
+        "#failedLines": "failedLines",
       },
       ExpressionAttributeValues: {
         ":status": status,
         ":message": message,
+        ":successLines": successLines,
+        ":failedLines": failedLines,
       },
     };
 
