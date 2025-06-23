@@ -70,7 +70,6 @@ export class LambdaConstruct extends Construct {
 
   private createGetFilesDataFunction() {
     const { table } = this.props.dynamoDBConstruct;
-    const { bucket } = this.props.s3Construct;
 
     const fn = new NodejsFunction(this, "function-get-files-data", {
       memorySize: 128,
