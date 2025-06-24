@@ -28,23 +28,27 @@ type ArchiveRepositoryOutput = {
   message: string;
 };
 
+type GetFilesInput = {
+  exclusiveStartKey: Record<string, string> | undefined;
+};
+
 type GetFilesOutput = Files;
 
 export interface IArchiveRepository {
-  getFiles: () => Promise<GetFilesOutput[]>;
-  save: (item: ArchiveRepositoryInput) => Promise<ArchiveRepositoryOutput>;
-  updateStatus({
-    key,
-    status,
-    message,
-  }: Pick<
-    ArchiveRepositoryInput,
-    "key" | "status" | "message" | "successLines" | "failedLines"
-  >): Promise<void>;
+  getFiles: (input: GetFilesInput) => Promise<GetFilesOutput[]>;
+  save: (input: ArchiveRepositoryInput) => Promise<ArchiveRepositoryOutput>;
+  updateStatus(
+    data: Pick<
+      ArchiveRepositoryInput,
+      "key" | "status" | "message" | "successLines" | "failedLines"
+    >
+  ): Promise<void>;
 }
 
 export class ArchiveRepository implements IArchiveRepository {
-  async getFiles(): Promise<GetFilesOutput[]> {
+  async getFiles({
+    exclusiveStartKey = undefined,
+  }: GetFilesInput): Promise<GetFilesOutput[]> {
     const params: QueryCommandInput = {
       TableName: process.env.TABLE_NAME as string,
       KeyConditionExpression: "PK = :pk",
@@ -59,6 +63,8 @@ export class ArchiveRepository implements IArchiveRepository {
         "#key": "key",
         "#size": "size",
       },
+      Limit: 20,
+      ExclusiveStartKey: exclusiveStartKey,
     };
 
     const command = new QueryCommand(params);
