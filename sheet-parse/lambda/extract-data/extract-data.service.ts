@@ -138,7 +138,7 @@ export class ExtractDataService implements IExtractDataService {
       });
 
       if (!response.ok) {
-        throw new Error(
+        console.log(
           `Failed to send notification: ${response.status} ${response.statusText}`
         );
       }
