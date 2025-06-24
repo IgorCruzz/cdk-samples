@@ -5,7 +5,7 @@ import { BucketDeployment, Source } from "aws-cdk-lib/aws-s3-deployment";
 import { join } from "node:path";
 
 export class S3Construct extends Construct {
-  private readonly bucket: IBucket;
+  public readonly bucket: IBucket;
 
   constructor(scope: Construct, id: string) {
     super(scope, id);
