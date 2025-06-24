@@ -74,7 +74,7 @@ export class ArchiveRepository implements IArchiveRepository {
       ...(exclusiveStartKey && {
         ExclusiveStartKey: exclusiveStartKeyParsed,
       }),
-      Limit: 20,
+      Limit: 10,
     };
 
     const command = new QueryCommand(params);
