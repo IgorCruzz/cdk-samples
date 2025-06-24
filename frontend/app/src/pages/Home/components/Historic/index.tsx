@@ -16,7 +16,7 @@ export const Historic = () => {
     <div className="w-1/2 h-full">
       <Card className="border border-[--border]  h-full">
         <CardHeader className="items-center justify-center">
-          <CardTitle className="text-center">Histórico</CardTitle>
+          <CardTitle className="text-center">History</CardTitle>
         </CardHeader>
 
         <CardContent className="w-full flex flex-col items-center justify-center">
