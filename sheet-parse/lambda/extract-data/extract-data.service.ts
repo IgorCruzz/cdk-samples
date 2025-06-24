@@ -6,8 +6,14 @@ import { IArchiveRepository } from "../repository/archive.repository";
 import { ICustomerRepository } from "../repository/customer.repository";
 import { ISendNotification } from "../shared/send-notification";
 
+type ExtractDataServiceInput = {
+  s3Record: S3EventRecord;
+};
+
+type ExtractDataServiceOutput = Promise<void>;
+
 interface IExtractDataService {
-  extract: ({ s3Record }: { s3Record: S3EventRecord }) => Promise<void>;
+  extract: (input: ExtractDataServiceInput) => ExtractDataServiceOutput;
 }
 
 export class ExtractDataService implements IExtractDataService {
@@ -21,9 +27,7 @@ export class ExtractDataService implements IExtractDataService {
 
   extract = async ({
     s3Record,
-  }: {
-    s3Record: S3EventRecord;
-  }): Promise<void> => {
+  }: ExtractDataServiceInput): ExtractDataServiceOutput => {
     try {
       const stream = await this.s3.getObject({
         key: s3Record.s3.object.key,
@@ -153,13 +157,15 @@ export class ExtractDataService implements IExtractDataService {
         key: s3Record.s3.object.key,
         status: "FAILED",
         message,
+        successLines: 0,
+        failedLines: 0,
       });
 
       await this.sendNotification.send({
         message,
       });
 
-      throw new Error(
+      console.log(
         `Error processing S3 record: ${
           error instanceof Error ? error.message : String(error)
         }`
