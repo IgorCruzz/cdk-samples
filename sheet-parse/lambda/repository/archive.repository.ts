@@ -34,7 +34,7 @@ type GetFilesInput = {
 
 type GetFilesOutput = Promise<{
   itens: Files[];
-  lastEvaluatedKey: string | undefined;
+  lastEvaluatedKey: string | null;
   count: number;
 }>;
 
@@ -87,7 +87,7 @@ export class ArchiveRepository implements IArchiveRepository {
         ? Buffer.from(JSON.stringify(response.LastEvaluatedKey)).toString(
             "base64"
           )
-        : undefined,
+        : null,
     };
   }
 
