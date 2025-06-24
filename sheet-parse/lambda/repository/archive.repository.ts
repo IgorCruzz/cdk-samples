@@ -29,13 +29,16 @@ type ArchiveRepositoryOutput = {
 };
 
 type GetFilesInput = {
-  exclusiveStartKey: Record<string, string> | undefined;
+  exclusiveStartKey?: string;
 };
 
-type GetFilesOutput = Files;
+type GetFilesOutput = Promise<{
+  itens: Files[];
+  lastEvaluatedKey: string | undefined;
+}>;
 
 export interface IArchiveRepository {
-  getFiles: (input: GetFilesInput) => Promise<GetFilesOutput[]>;
+  getFiles: (input: GetFilesInput) => GetFilesOutput;
   save: (input: ArchiveRepositoryInput) => Promise<ArchiveRepositoryOutput>;
   updateStatus(
     data: Pick<
@@ -46,9 +49,13 @@ export interface IArchiveRepository {
 }
 
 export class ArchiveRepository implements IArchiveRepository {
-  async getFiles({
-    exclusiveStartKey = undefined,
-  }: GetFilesInput): Promise<GetFilesOutput[]> {
+  async getFiles({ exclusiveStartKey }: GetFilesInput): GetFilesOutput {
+    const exclusiveStartKeyParsed = exclusiveStartKey
+      ? (JSON.parse(
+          Buffer.from(exclusiveStartKey, "base64").toString()
+        ) as Record<string, string>)
+      : undefined;
+
     const params: QueryCommandInput = {
       TableName: process.env.TABLE_NAME as string,
       KeyConditionExpression: "PK = :pk",
@@ -63,14 +70,23 @@ export class ArchiveRepository implements IArchiveRepository {
         "#key": "key",
         "#size": "size",
       },
+      ...(exclusiveStartKey && {
+        ExclusiveStartKey: exclusiveStartKeyParsed,
+      }),
       Limit: 20,
-      ExclusiveStartKey: exclusiveStartKey,
     };
 
     const command = new QueryCommand(params);
     const response: QueryCommandOutput = await client.send(command);
 
-    return response.Items as ArchiveRepositoryInput[];
+    return {
+      itens: response.Items as Files[],
+      lastEvaluatedKey: response.LastEvaluatedKey
+        ? Buffer.from(JSON.stringify(response.LastEvaluatedKey)).toString(
+            "base64"
+          )
+        : undefined,
+    };
   }
 
   async save(item: ArchiveRepositoryInput): Promise<ArchiveRepositoryOutput> {
