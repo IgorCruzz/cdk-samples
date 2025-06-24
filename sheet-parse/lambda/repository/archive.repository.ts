@@ -35,6 +35,7 @@ type GetFilesInput = {
 type GetFilesOutput = Promise<{
   itens: Files[];
   lastEvaluatedKey: string | undefined;
+  count: number;
 }>;
 
 export interface IArchiveRepository {
@@ -80,6 +81,7 @@ export class ArchiveRepository implements IArchiveRepository {
     const response: QueryCommandOutput = await client.send(command);
 
     return {
+      count: response.Count || 0,
       itens: response.Items as Files[],
       lastEvaluatedKey: response.LastEvaluatedKey
         ? Buffer.from(JSON.stringify(response.LastEvaluatedKey)).toString(
