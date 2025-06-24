@@ -1,9 +1,12 @@
+import { APIGatewayProxyEvent } from "aws-lambda";
 import { ArchiveRepository } from "../repository/archive.repository";
 import { GetFilesServices } from "./get-files.services";
 
-export const getFilesDataHanlder = async () => {
+export const getFilesDataHanlder = async (event: APIGatewayProxyEvent) => {
   const archiveRepository = new ArchiveRepository();
   const getFilesServices = new GetFilesServices(archiveRepository);
 
-  return getFilesServices.getFiles();
+  const exclusiveStartKey = event.queryStringParameters?.exclusiveStartKey;
+
+  return getFilesServices.getFiles({ exclusiveStartKey });
 };
