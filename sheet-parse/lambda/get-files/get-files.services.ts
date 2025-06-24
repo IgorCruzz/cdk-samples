@@ -1,15 +1,15 @@
 import { IArchiveRepository } from "../repository/archive.repository";
 import { APIGatewayProxyResult } from "aws-lambda";
 
-interface IGetFilesService {
-  getFiles: (input: GetFilesInput) => GetFilesOutput;
-}
-
 type GetFilesInput = {
-  exclusiveStartKey?: Record<string, string>;
+  exclusiveStartKey?: string;
 };
 
 type GetFilesOutput = Promise<APIGatewayProxyResult>;
+
+interface IGetFilesService {
+  getFiles: (input: GetFilesInput) => GetFilesOutput;
+}
 
 export class GetFilesServices implements IGetFilesService {
   constructor(private readonly archiveRepository: IArchiveRepository) {}
