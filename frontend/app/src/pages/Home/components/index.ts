@@ -1,2 +1,2 @@
 export  { Upload } from './Upload';
-export { Historic } from './Historic/index';
+export { History } from './History';
