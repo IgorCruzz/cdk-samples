@@ -3,6 +3,7 @@ import { APIGatewayProxyResult } from "aws-lambda";
 
 type GetFilesInput = {
   startKey?: string;
+  limit: number;
 };
 
 type GetFilesOutput = Promise<APIGatewayProxyResult>;
@@ -14,10 +15,11 @@ interface IGetFilesService {
 export class GetFilesServices implements IGetFilesService {
   constructor(private readonly archiveRepository: IArchiveRepository) {}
 
-  getFiles = async ({ startKey }: GetFilesInput): GetFilesOutput => {
+  getFiles = async ({ startKey, limit }: GetFilesInput): GetFilesOutput => {
     try {
       const files = await this.archiveRepository.getFiles({
         startKey,
+        limit,
       });
 
       return {
