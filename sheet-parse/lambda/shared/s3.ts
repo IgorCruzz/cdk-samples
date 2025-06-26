@@ -7,7 +7,7 @@ import {
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { randomUUID } from "crypto";
+import KSUID from "ksuid";
 import { Readable } from "stream";
 
 const client = new S3Client({});
@@ -49,7 +49,8 @@ export class S3 implements IS3 {
   }: {
     bucket: string;
   }): Promise<{ url: string; key: string }> => {
-    const key = `${randomUUID()}.csv`;
+    const ID = await KSUID.random();
+    const key = `${ID.string}.csv`;
 
     const params = {
       Bucket: bucket,
