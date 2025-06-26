@@ -4,6 +4,7 @@ import { files } from '@/services/endpoints/files';
 import { DataTable } from './data-table';
 import { columns } from './columns';
 import { useEffect, useState } from 'react';
+import { Pagination } from '@/components/Pagination';
 
 export const History = () => {
   const [startKeys, setStartKeys] = useState<{ startKey: string | null }[]>([{ startKey: null }]);
@@ -40,25 +41,29 @@ export const History = () => {
           <CardTitle className="text-center">History</CardTitle>
         </CardHeader>
 
-        <CardContent className="w-full flex flex-col items-center justify-center">
+        <CardContent className="h-full w-full flex flex-col items-center justify-center">
           {isLoading ? (
             <div className="flex items-center justify-center h-full">
               <span>Loading...</span>
             </div>
           ) : (
-             <DataTable
+            <div className="h-full w-full flex flex-col items-center justify-between">
+            <DataTable
             pagination={pagination}
             setPagination={setPagination}
             columns={columns}
-            data={data?.data.itens || []}
-            lastKey={data?.data.lastKey}
-            setStartKeys={setStartKeys}
-            startKeys={startKeys}
-          />
-          )}
+            data={data?.data.itens || []} 
+            />
 
-          
-         
+          <Pagination 
+          pagination={pagination}
+          setPagination={setPagination} 
+          lastKey={data?.data.lastKey}
+          setStartKeys={setStartKeys}
+          startKeys={startKeys}
+          />
+          </div>
+          )}        
         </CardContent>
       </Card>
     </div>
