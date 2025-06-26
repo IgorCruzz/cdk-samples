@@ -1,5 +1,10 @@
 import { Construct } from "constructs";
-import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
+import {
+  AttributeType,
+  BillingMode,
+  StreamViewType,
+  Table,
+} from "aws-cdk-lib/aws-dynamodb";
 import { RemovalPolicy } from "aws-cdk-lib";
 
 export class DynamoDBConstruct extends Construct {
@@ -23,6 +28,7 @@ export class DynamoDBConstruct extends Construct {
       },
       billingMode: BillingMode.PAY_PER_REQUEST,
       removalPolicy: RemovalPolicy.RETAIN,
+      stream: StreamViewType.NEW_AND_OLD_IMAGES,
     });
   }
 }
