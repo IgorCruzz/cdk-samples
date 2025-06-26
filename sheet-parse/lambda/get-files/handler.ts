@@ -6,7 +6,7 @@ export const getFilesDataHanlder = async (event: APIGatewayProxyEvent) => {
   const archiveRepository = new ArchiveRepository();
   const getFilesServices = new GetFilesServices(archiveRepository);
 
-  const exclusiveStartKey = event.queryStringParameters?.exclusiveStartKey;
+  const startKey = event.queryStringParameters?.startKey;
 
-  return getFilesServices.getFiles({ exclusiveStartKey });
+  return getFilesServices.getFiles({ startKey });
 };
