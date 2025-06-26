@@ -53,6 +53,7 @@ export const History = () => {
             data={data?.data.itens || []}
             lastKey={data?.data.lastKey}
             setStartKeys={setStartKeys}
+            startKeys={startKeys}
           />
           )}
 
