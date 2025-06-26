@@ -8,5 +8,7 @@ export const getFilesDataHanlder = async (event: APIGatewayProxyEvent) => {
 
   const startKey = event.queryStringParameters?.startKey;
 
-  return getFilesServices.getFiles({ startKey });
+  const limit = parseInt(event.queryStringParameters?.limit || "20", 20);
+
+  return getFilesServices.getFiles({ startKey, limit });
 };
