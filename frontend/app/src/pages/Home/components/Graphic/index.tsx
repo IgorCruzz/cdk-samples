@@ -1,69 +1,46 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Button } from '@/components/ui/button';
-import { useForm } from 'react-hook-form';
-import { Form } from "@/components/ui/form";
-import { files } from '@/services/endpoints/files';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { toast } from "sonner";
-import DropField from '@/components/DropField';
-import { useState } from "react";
-import { fileSchema } from '@/schemas/file';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { AxiosError } from 'axios';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-export function Graphic()  {
-  const form = useForm<{ file: File }>({
-    resolver: zodResolver(fileSchema),
-    mode: "onChange",
-  });
+export function Graphic()  {  
+  const data = [
+    { name: 'Arquivos Completos', value: 120 },
+    { name: 'Arquivos com Falhas', value: 30 },
+  ];
 
-  const [loading, setLoading] = useState(false);
-
-  const { mutateAsync: PreSignedUrlMutateAsync } = useMutation({
-    mutationFn: files.preSignedUrl,
-  });
-
-  const { mutateAsync: UploadMutateAsync } = useMutation({
-    mutationFn: async ({ url, file }: { url: string; file: File }) => {
-      return await axios.put(url, file);
-    }
-  });
-
-  const onSubmit = async ({ file }: { file: File }) => {
-    try {
-      setLoading(true);
-
-      const { data } = await PreSignedUrlMutateAsync();
-
-      await UploadMutateAsync({
-        url: data.url,
-        file,
-      });
-
-      toast.success('File uploaded successfully!');
-      form.reset();
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error('Erro ao salvar.');
-      }
-      console.error(error);
-    } finally { 
-      setLoading(false);
-    }
-  };
+ 
+  const COLORS = ['#4F46E5', '#EF4444'];  
 
   return (
     <div className="h-3/6"> 
       <Card className="h-full border border-[--border]">
         <CardHeader className="items-center justify-center">
-          <CardTitle className="text-center">Upload a File</CardTitle>
+          <CardTitle className="text-center">Statistic</CardTitle>
           <CardDescription className="text-center">
-            Select a file to upload and click the submit button.
+            View the statistics of your uploaded files.
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="flex flex-col items-center justify-center"> 
+        <CardContent className="flex flex-col items-center justify-center" style={{ width: '100%', height: 300 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={data}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                fill="#8884d8"
+                label
+              >
+                {data.map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend verticalAlign="bottom" height={36} />
+            </PieChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
     </div>
