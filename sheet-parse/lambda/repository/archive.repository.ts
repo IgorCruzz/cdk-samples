@@ -64,13 +64,16 @@ export class ArchiveRepository implements IArchiveRepository {
       ExpressionAttributeValues: {
         ":pk": "ARCHIVE",
       },
-      ProjectionExpression: "#key, #size, #message, #status",
+      ProjectionExpression:
+        "#key, #size, #message, #status, #successLines, #failedLines",
       ScanIndexForward: true,
       ExpressionAttributeNames: {
         "#status": "status",
         "#message": "message",
         "#key": "key",
         "#size": "size",
+        "#successLines": "successLines",
+        "#failedLines": "failedLines",
       },
       ...(startKey && {
         ExclusiveStartKey: startKeyParsed,
