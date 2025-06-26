@@ -35,30 +35,43 @@ export const Pagination = ({
   const canNext = !!lastKey;
 
   const handlePrevious = () => {
-    if (!canPrevious) return;
+  if (!canPrevious) return;
 
-    const previousStartKey = startKeys[pageIndex - 1]?.startKey ?? null;
+  console.log({
+    startKeys,
+    pageIndex
+  });
 
-    setPagination((prev) => ({
-      ...prev,
-      pageIndex: prev.pageIndex - 1,
-      lastKey: previousStartKey,
-    }));
+  const previousStartKey = startKeys[pageIndex - 1]?.startKey ?? null;
+
+ 
+  
+
+  setPagination((prev) => ({
+    ...prev,
+    pageIndex: prev.pageIndex - 1,
+    lastKey: previousStartKey,
+  }));
   };
 
-  const handleNext = () => {
-    if (!canNext) return;
 
-   
-    setStartKeys((prev) => [...prev, { startKey: lastKey }]);
+ const handleNext = () => {
+  if (!canNext) return;
+ 
+  setStartKeys((prev) => {
+    if (prev[pageIndex + 1]?.startKey === lastKey) {
+      return prev;
+    } 
+    const newKeys = prev.slice(0, pageIndex + 1);
+    return [...newKeys, { startKey: lastKey }];
+  });
 
-    setPagination((prev) => ({
-      ...prev,
-      pageIndex: prev.pageIndex + 1,
-      lastKey: lastKey,
-    }));
-  };
-
+  setPagination((prev) => ({
+    ...prev,
+    pageIndex: prev.pageIndex + 1,
+    lastKey: lastKey,
+  }));
+};
   return (
     <Card className="w-full flex justify-center items-center shadow-lg py-4">
       <CardContent className="flex items-center gap-4 px-4">
