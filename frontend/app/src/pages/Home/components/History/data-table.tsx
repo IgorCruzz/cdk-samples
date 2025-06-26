@@ -34,7 +34,8 @@ interface DataTableProps<TData, TValue> {
   lastKey?: string;
   setStartKeys: React.Dispatch<
     React.SetStateAction<{ startKey: string | null }[]>
-  >
+  >;
+  startKeys: { startKey: string | null }[];
 }
 
 export function DataTable<TData, TValue>({
@@ -43,7 +44,8 @@ export function DataTable<TData, TValue>({
   pagination,
   setPagination,
   lastKey,
-  setStartKeys
+  setStartKeys,
+  startKeys
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -105,10 +107,10 @@ export function DataTable<TData, TValue>({
       </Table> 
       <Pagination 
       pagination={pagination}
-      setPagination={setPagination}
-      total={table.getPageCount() * pagination.pageSize}
+      setPagination={setPagination} 
       lastKey={lastKey}
       setStartKeys={setStartKeys}
+      startKeys={startKeys}
       />
     </div>
   )
