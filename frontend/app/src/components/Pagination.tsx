@@ -1,12 +1,12 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 
 interface PaginationProps {
   pagination: {
     pageIndex: number;
     pageSize: number;
+    lastKey?: string | null;
   };
   setPagination: React.Dispatch<
     React.SetStateAction<{
@@ -15,124 +15,75 @@ interface PaginationProps {
       lastKey?: string | null;
     }>
   >;
-  total: number;
-  lastKey?: string;
+  lastKey?: string | null; 
   setStartKeys: React.Dispatch<
     React.SetStateAction<{ startKey: string | null }[]>
-  >
+  >;
+  startKeys: { startKey: string | null }[];
 }
 
 export const Pagination = ({
   pagination,
   setPagination,
-  total,
   lastKey,
-  setStartKeys
+  setStartKeys,
+  startKeys,
 }: PaginationProps) => {
-  const totalPages = Math.ceil(total / pagination.pageSize);
-  const currentPage = pagination.pageIndex + 1;
+  const { pageIndex } = pagination;
 
-  const getPageNumbers = () => {
-    const pages: (number | string)[] = [];
+  const canPrevious = pageIndex > 0;
+  const canNext = !!lastKey;
 
-    const firstPage = 1;
-    const lastPage = totalPages;
-    const current = currentPage;
+  const handlePrevious = () => {
+    if (!canPrevious) return;
 
-  
-    pages.push(firstPage);
+    const previousStartKey = startKeys[pageIndex - 1]?.startKey ?? null;
 
-  
-    if (current - 2 > firstPage) {
-      pages.push('ellipsis-prev');
-    }
-
- 
-    const start = Math.max(current - 1, firstPage + 1);
-    const end = Math.min(current + 1, lastPage - 1);
-
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-
- 
-    if (current + 2 < lastPage) {
-      pages.push('ellipsis-next');
-    }
- 
-    if (lastPage > firstPage) {
-      pages.push(lastPage);
-    }
-
-    return pages;
+    setPagination((prev) => ({
+      ...prev,
+      pageIndex: prev.pageIndex - 1,
+      lastKey: previousStartKey,
+    }));
   };
 
-  const pagesToRender = getPageNumbers();
+  const handleNext = () => {
+    if (!canNext) return;
+
+    // Guarda o lastKey atual antes de ir para a próxima página
+    setStartKeys((prev) => [...prev, { startKey: lastKey }]);
+
+    setPagination((prev) => ({
+      ...prev,
+      pageIndex: prev.pageIndex + 1,
+      lastKey: lastKey,
+    }));
+  };
 
   return (
-    <Card className="w-full flex flex-col md:flex-row justify-center md:justify-between items-center ml-auto shadow-lg pb-10 lg:p-0">
-      <CardContent className="flex items-center gap-4 py-2 px-4">
+    <Card className="w-full flex justify-center items-center shadow-lg py-4">
+      <CardContent className="flex items-center gap-4 px-4">
         <Button
           variant="outline"
           size="sm"
-          onClick={() =>
-            setPagination((prev) => ({
-              ...prev,
-              pageIndex: Math.max(prev.pageIndex - 1, 0),
-            }))
-          }
-          disabled={pagination.pageIndex === 0}
+          onClick={handlePrevious}
+          disabled={!canPrevious}
           className="border-none"
         >
-          previous
+          Anterior
         </Button>
 
-        <div className="flex items-center gap-1">
-          {pagesToRender.map((page, idx) =>
-            page === 'ellipsis-prev' || page === 'ellipsis-next' ? (
-              <span key={idx} className="select-none px-2">
-                ...
-              </span>
-            ) : (
-              <Button
-                key={idx}
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  setPagination((prev) => ({
-                    ...prev,
-                    pageIndex: (page as number) - 1,
-                  }))
-                }
-                className={cn('border-none', {
-                  'font-bold': page === currentPage,
-                })}
-              >
-                {page}
-              </Button>
-            ),
-          )}
-        </div>
+        <span className="text-sm text-muted-foreground">
+          Página {pageIndex + 1}
+        </span>
 
         <Button
           variant="outline"
           size="sm"
-          onClick={() =>
-          {
-            setPagination((prev) => ({
-              ...prev,
-              pageIndex: Math.min(prev.pageIndex + 1, totalPages - 1),
-              lastKey: lastKey || null,
-            })) 
-            
-            if (lastKey) 
-              setStartKeys((prev) => [...prev, { startKey: lastKey }]);
-          }
-          }
-          disabled={!lastKey}
+          onClick={handleNext}
+          disabled={!canNext}
           className="border-none"
         >
-          next
+          Próxima
         </Button>
       </CardContent>
     </Card>
