@@ -30,6 +30,7 @@ type ArchiveRepositoryOutput = {
 
 type GetFilesInput = {
   startKey?: string;
+  limit: number;
 };
 
 type GetFilesOutput = Promise<{
@@ -49,7 +50,7 @@ export interface IArchiveRepository {
 }
 
 export class ArchiveRepository implements IArchiveRepository {
-  async getFiles({ startKey }: GetFilesInput): GetFilesOutput {
+  async getFiles({ startKey, limit }: GetFilesInput): GetFilesOutput {
     const startKeyParsed = startKey
       ? (JSON.parse(Buffer.from(startKey, "base64").toString()) as Record<
           string,
@@ -74,7 +75,7 @@ export class ArchiveRepository implements IArchiveRepository {
       ...(startKey && {
         ExclusiveStartKey: startKeyParsed,
       }),
-      Limit: 10,
+      Limit: limit,
     };
 
     const command = new QueryCommand(params);
