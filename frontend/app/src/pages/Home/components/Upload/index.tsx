@@ -63,7 +63,7 @@ export function Upload()  {
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="flex flex-col items-center justify-center">
+        <CardContent className="h-full flex flex-col items-center justify-center">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col items-center justify-center gap-3">
               <DropField name="file" />
