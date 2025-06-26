@@ -18,11 +18,6 @@ export const columns: ColumnDef<File>[] = [
     cell: (info) => `${info.getValue()} bytes`,
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: (info) => info.getValue(),
-  },
-  {
     accessorKey: "successLines",
     header: "Success Lines",
     cell: (info) => info.getValue(),
@@ -32,4 +27,10 @@ export const columns: ColumnDef<File>[] = [
     header: "Failed Lines",
     cell: (info) => info.getValue(),
   },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: (info) => info.getValue(),
+  },
+
 ]
