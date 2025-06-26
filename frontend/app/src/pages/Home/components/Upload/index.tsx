@@ -54,8 +54,8 @@ export function Upload()  {
   };
 
   return (
-    <div className="w-1/2">
-      <Card className="border border-[--border]">
+    <div className="h-3/6">
+      <Card className="h-full border border-[--border]">
         <CardHeader className="items-center justify-center">
           <CardTitle className="text-center">Upload a File</CardTitle>
           <CardDescription className="text-center">
