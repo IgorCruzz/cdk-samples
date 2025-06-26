@@ -1,3 +1,4 @@
+import { LIMIT } from '@/utils/limit';
 import { api } from '../api'
 
 export const files = {
@@ -7,7 +8,8 @@ export const files = {
   getFiles: async ({ startKey }: { startKey?: string | null}) => {
     return await api.get('files', {
       params: {
-        startKey
+        startKey,
+        limit: LIMIT
       }
     });
   }
