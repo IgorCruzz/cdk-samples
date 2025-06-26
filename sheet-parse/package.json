@@ -13,7 +13,6 @@
     "local:api": "sam local start-api -t ./cdk.out/stack-sheet-parse.template.json --env-vars env.json",
     "local:extract": "sam local invoke function-extract-data -e events/extract-data.json  --env-vars env.json  -t ./cdk.out/stack-sheet-parse.template.json",
     "local:get": "sam local invoke function-get-files-data -e events/get-files.json  --env-vars env.json  -t ./cdk.out/stack-sheet-parse.template.json"
-
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
