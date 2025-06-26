@@ -49,7 +49,7 @@ export const Pagination = ({
   const handleNext = () => {
     if (!canNext) return;
 
-    // Guarda o lastKey atual antes de ir para a próxima página
+   
     setStartKeys((prev) => [...prev, { startKey: lastKey }]);
 
     setPagination((prev) => ({
