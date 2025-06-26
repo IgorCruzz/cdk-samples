@@ -21,5 +21,15 @@ export const columns: ColumnDef<File>[] = [
     accessorKey: "status",
     header: "Status",
     cell: (info) => info.getValue(),
-  }, 
+  },
+  {
+    accessorKey: "successLines",
+    header: "Success Lines",
+    cell: (info) => info.getValue(),
+  },
+  {
+    accessorKey: "failedLines",
+    header: "Failed Lines",
+    cell: (info) => info.getValue(),
+  },
 ]
