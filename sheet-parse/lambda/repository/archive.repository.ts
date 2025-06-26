@@ -29,13 +29,12 @@ type ArchiveRepositoryOutput = {
 };
 
 type GetFilesInput = {
-  exclusiveStartKey?: string;
+  startKey?: string;
 };
 
 type GetFilesOutput = Promise<{
   itens: Files[];
-  lastEvaluatedKey: string | null;
-  count: number;
+  lastKey: string | null;
 }>;
 
 export interface IArchiveRepository {
@@ -50,11 +49,12 @@ export interface IArchiveRepository {
 }
 
 export class ArchiveRepository implements IArchiveRepository {
-  async getFiles({ exclusiveStartKey }: GetFilesInput): GetFilesOutput {
-    const exclusiveStartKeyParsed = exclusiveStartKey
-      ? (JSON.parse(
-          Buffer.from(exclusiveStartKey, "base64").toString()
-        ) as Record<string, string>)
+  async getFiles({ startKey }: GetFilesInput): GetFilesOutput {
+    const startKeyParsed = startKey
+      ? (JSON.parse(Buffer.from(startKey, "base64").toString()) as Record<
+          string,
+          string
+        >)
       : undefined;
 
     const params: QueryCommandInput = {
@@ -64,15 +64,15 @@ export class ArchiveRepository implements IArchiveRepository {
         ":pk": "ARCHIVE",
       },
       ProjectionExpression: "#key, #size, #message, #status",
-      ScanIndexForward: false,
+      ScanIndexForward: true,
       ExpressionAttributeNames: {
         "#status": "status",
         "#message": "message",
         "#key": "key",
         "#size": "size",
       },
-      ...(exclusiveStartKey && {
-        ExclusiveStartKey: exclusiveStartKeyParsed,
+      ...(startKey && {
+        ExclusiveStartKey: startKeyParsed,
       }),
       Limit: 10,
     };
@@ -81,9 +81,8 @@ export class ArchiveRepository implements IArchiveRepository {
     const response: QueryCommandOutput = await client.send(command);
 
     return {
-      count: response.Count || 0,
       itens: response.Items as Files[],
-      lastEvaluatedKey: response.LastEvaluatedKey
+      lastKey: response.LastEvaluatedKey
         ? Buffer.from(JSON.stringify(response.LastEvaluatedKey)).toString(
             "base64"
           )
