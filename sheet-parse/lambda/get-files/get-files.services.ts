@@ -2,7 +2,7 @@ import { IArchiveRepository } from "../repository/archive.repository";
 import { APIGatewayProxyResult } from "aws-lambda";
 
 type GetFilesInput = {
-  exclusiveStartKey?: string;
+  startKey?: string;
 };
 
 type GetFilesOutput = Promise<APIGatewayProxyResult>;
@@ -14,10 +14,10 @@ interface IGetFilesService {
 export class GetFilesServices implements IGetFilesService {
   constructor(private readonly archiveRepository: IArchiveRepository) {}
 
-  getFiles = async ({ exclusiveStartKey }: GetFilesInput): GetFilesOutput => {
+  getFiles = async ({ startKey }: GetFilesInput): GetFilesOutput => {
     try {
       const files = await this.archiveRepository.getFiles({
-        exclusiveStartKey,
+        startKey,
       });
 
       return {
@@ -38,7 +38,8 @@ export class GetFilesServices implements IGetFilesService {
         body: "Internal Server Error",
         headers: {
           "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          "Access-Control-Allow-Headers":
+            "Content-Type, Authorization, X-Api-Key",
           "Access-Control-Allow-Methods": "GET, OPTIONS",
         },
       };
