@@ -65,7 +65,7 @@ export function Upload()  {
 
         <CardContent className="h-full flex flex-col items-center justify-center">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col items-center justify-center gap-3">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full h-full flex flex-col items-center justify-center gap-3">
               <DropField name="file" />
               <Button type="submit" disabled={!form.formState.isValid} className="w-full">
                 {loading ? 'Sending...' : 'Send'}
