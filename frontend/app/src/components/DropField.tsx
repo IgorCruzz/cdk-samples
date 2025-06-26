@@ -26,14 +26,15 @@ const DropField = ({
         const files = field.value ? [field.value as File] : [];
 
         return (
-          <div className="w-full">
+          <div className="w-full h-full">
             <div
               {...getRootProps()}
               className="
-                w-full p-6 border-2 border-dashed rounded-md cursor-pointer text-center
+                w-full h-full p-6 border-2 border-dashed rounded-md cursor-pointer text-center
                 bg-[--muted] text-[--muted-foreground] 
                 hover:brightness-75
                 dark:bg-[--muted-foreground] dark:text-[--muted]
+                flex items-center justify-center
               "
             >
               <input {...getInputProps()} />
@@ -46,7 +47,7 @@ const DropField = ({
                   ))}
                 </ul>
               ) : (
-                <p>Drag and drop a file here, or click to select a file</p>
+                <p className="text-center">Drag and drop a file here, or click to select a file</p>
               )}
             </div>
 
