@@ -15,21 +15,45 @@ import {
 } from "@/components/ui/table"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
-
+import { Pagination } from '@/components/Pagination'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  data: TData[] 
+  setPagination: React.Dispatch<
+      React.SetStateAction<{
+        pageIndex: number;
+        pageSize: number;
+        lastKey?: string | null;
+      }>
+    >;
+  pagination: {
+    pageIndex: number
+    pageSize: number
+  },
+  lastKey?: string;
+  setStartKeys: React.Dispatch<
+    React.SetStateAction<{ startKey: string | null }[]>
+  >
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  pagination,
+  setPagination,
+  lastKey,
+  setStartKeys
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
+    state: {
+    pagination,
+    },
+   onPaginationChange: setPagination
   })
 
   return (
@@ -78,7 +102,14 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
         </ScrollArea>      
-      </Table>
+      </Table> 
+      <Pagination 
+      pagination={pagination}
+      setPagination={setPagination}
+      total={table.getPageCount() * pagination.pageSize}
+      lastKey={lastKey}
+      setStartKeys={setStartKeys}
+      />
     </div>
   )
 }
