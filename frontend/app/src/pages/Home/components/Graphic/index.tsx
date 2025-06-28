@@ -3,8 +3,8 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recha
 
 export function Graphic()  {  
   const data = [
-    { name: 'Arquivos Completos', value: 120 },
-    { name: 'Arquivos com Falhas', value: 30 },
+    { name: 'Completed', value: 120 },
+    { name: 'Failed', value: 30 },
   ];
 
  
