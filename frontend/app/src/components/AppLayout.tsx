@@ -11,7 +11,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   </main>
 
   <footer className="h-[100px] flex items-center justify-center">
-    © 2025 - Todos os direitos reservados
+    Igor Cruz
   </footer>
 </div>
 
