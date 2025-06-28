@@ -65,7 +65,8 @@ export function Upload()  {
   };
 
   return ( 
-      <Card className="h-1/2 rounded-tl-4xl rounded-br-4xl">
+      <Card className="h-1/2 rounded-tl-4xl rounded-br-4xl border-t-green-500 border-t-4 ">
+
         <CardHeader className="text-center">
           <CardTitle>Upload a File</CardTitle>
           <CardDescription>
