@@ -1,46 +1,71 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+"use client"
 
-export function Graphic()  {  
-  const data = [
-    { name: 'Completed', value: 120 },
-    { name: 'Failed', value: 30 },
-  ];
+import { TrendingUp } from "lucide-react"
+import { Pie, PieChart } from "recharts"
 
- 
-  const COLORS = ['#4F46E5', '#EF4444'];  
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  type ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
 
-  return ( 
-      <Card className="h-8/12  rounded-tl-4xl rounded-br-4xl">
-        <CardHeader className="text-center">
-          <CardTitle>Statistic</CardTitle>
-          <CardDescription >
-            View the statistics of your uploaded files.
-          </CardDescription>
-        </CardHeader>
+export const description = "A pie chart with no separator"
 
-        <CardContent className="h-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                fill="#8884d8"
-                label
-              >
-                {data.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend verticalAlign="bottom" height={10} />
-            </PieChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card> 
-  );
+const chartData = [
+  { browser: "completed", visitors: 100, fill: "var(--color-completed)" },
+  { browser: "failed", visitors: 20, fill: "var(--color-failed)" },
+]
+
+const chartConfig = {
+  visitors: {
+    label: "Visitors",
+  },
+  completed: {
+    label: "Completed",
+    color: "var(--chart-1)",
+  },
+  failed: {
+    label: "Failed",
+    color: "var(--chart-2)",
+  }, 
+} satisfies ChartConfig
+
+export function Graphic() {
+  return (
+    <Card className="h-1/2">
+      <CardHeader className="text-center">
+        <CardTitle>Statistic</CardTitle>
+        <CardDescription>  Overview of your file upload results, showing how many were completed successfully and how many failed.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex-1 pb-0">
+        <ChartContainer
+          config={chartConfig}
+          className="mx-auto aspect-square max-h-[250px]"
+        >
+          <PieChart>
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
+            <Pie
+              data={chartData}
+              dataKey="visitors"
+              nameKey="browser"
+              stroke="0"
+            />
+          </PieChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  )
 }
