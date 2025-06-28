@@ -35,17 +35,9 @@ export const Pagination = ({
   const canNext = !!lastKey;
 
   const handlePrevious = () => {
-  if (!canPrevious) return;
+  if (!canPrevious) return; 
 
-  console.log({
-    startKeys,
-    pageIndex
-  });
-
-  const previousStartKey = startKeys[pageIndex - 1]?.startKey ?? null;
-
- 
-  
+  const previousStartKey = startKeys[pageIndex - 1]?.startKey ?? null; 
 
   setPagination((prev) => ({
     ...prev,
@@ -82,11 +74,11 @@ export const Pagination = ({
           disabled={!canPrevious}
           className="border-none"
         >
-          Anterior
+          Previous
         </Button>
 
         <span className="text-sm text-muted-foreground">
-          Página {pageIndex + 1}
+          Page {pageIndex + 1}
         </span>
 
         <Button
@@ -96,7 +88,7 @@ export const Pagination = ({
           disabled={!canNext}
           className="border-none"
         >
-          Próxima
+          Next
         </Button>
       </CardContent>
     </Card>
