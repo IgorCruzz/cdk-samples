@@ -36,13 +36,13 @@ export const History = () => {
           <CardTitle className="text-center">History</CardTitle>
         </CardHeader>
 
-        <CardContent className="h-full">
+        <CardContent className="h-full flex items-center justify-center">
           {isLoading ? (
             <div>
               <span>Loading...</span>
             </div>
           ) : (
-            <div className="flex flex-col justify-between h-full">
+            <div className="flex flex-col justify-between w-full h-full">
             <DataTable
             pagination={pagination}
             setPagination={setPagination}
