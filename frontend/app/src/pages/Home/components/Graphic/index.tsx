@@ -41,7 +41,7 @@ const chartConfig = {
 
 export function Graphic() {
   return (
-    <Card className="h-1/2">
+    <Card className="h-1/2 rounded-tl-4xl rounded-br-4xl border-t-green-500 border-t-4">
       <CardHeader className="text-center">
         <CardTitle>Statistic</CardTitle>
         <CardDescription>  Overview of your file upload results, showing how many were completed successfully and how many failed.
