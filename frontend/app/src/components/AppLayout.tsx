@@ -3,8 +3,10 @@ import Logo from '@/assets/logo.png';
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
   <div className="min-h-screen flex flex-col justify-between">
-  <header className="h-[50px] flex items-center justify-center bg-[oklch(15.823%_0.01178_260.646)] p-5">
-    <img src={Logo} alt="Logo" height={80} width={80} />
+  <div className="absolute top-0 left-0 w-full h-[4px] rounded-tl-4xl bg-gradient-to-r from-green-500 to-white z-10" />
+
+  <header className="h-[150px] flex items-center justify-center bg-[oklch(15.823%_0.01178_260.646)] p-5">
+    <img src={Logo} alt="Logo" height={180} width={180} />
   </header>
 
   <main className="flex-1 p-8">
