@@ -31,7 +31,7 @@ export const History = () => {
   });  
 
   return ( 
-      <Card className="flex flex-col h-full">
+      <Card className="flex flex-col h-full rounded-tl-4xl rounded-br-4xl">
         <CardHeader>
           <CardTitle className="text-center">History</CardTitle>
         </CardHeader>
