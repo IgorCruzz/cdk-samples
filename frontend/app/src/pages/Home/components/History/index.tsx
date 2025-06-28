@@ -31,7 +31,7 @@ export const History = () => {
   });  
 
   return (
-    <div className="w-1/2 min-h-full">
+    <div className="w-full lg:w-1/2 min-h-full">
       <Card className="border border-[--border] h-full">
         <CardHeader className="items-center justify-center">
           <CardTitle className="text-center">History</CardTitle>
