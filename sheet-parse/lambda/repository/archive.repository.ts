@@ -66,7 +66,7 @@ export class ArchiveRepository implements IArchiveRepository {
       },
       ProjectionExpression:
         "#key, #size, #message, #status, #successLines, #failedLines",
-      ScanIndexForward: true,
+      ScanIndexForward: false,
       ExpressionAttributeNames: {
         "#status": "status",
         "#message": "message",
