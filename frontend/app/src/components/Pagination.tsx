@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { StepBack, StepForward } from 'lucide-react';
 
 interface PaginationProps {
   pagination: {
@@ -65,8 +66,8 @@ export const Pagination = ({
   }));
 };
   return (
-    <Card className="w-full flex justify-center items-center shadow-lg py-4">
-      <CardContent className="flex items-center gap-4 px-4">
+    <Card className="w-full flex justify-center items-center py-4">
+      <CardContent className="flex items-center justify-center gap-4 px-4 flex-col sm:flex-row">
         <Button
           variant="outline"
           size="sm"
@@ -74,7 +75,7 @@ export const Pagination = ({
           disabled={!canPrevious}
           className="border-none"
         >
-          Previous
+          <StepBack />
         </Button>
 
         <span className="text-sm text-muted-foreground">
@@ -88,7 +89,7 @@ export const Pagination = ({
           disabled={!canNext}
           className="border-none"
         >
-          Next
+          <StepForward />
         </Button>
       </CardContent>
     </Card>
