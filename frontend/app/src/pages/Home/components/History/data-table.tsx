@@ -50,10 +50,9 @@ export function DataTable<TData, TValue>({
    onPaginationChange: setPagination
   })
 
-  return (
-    <div className="rounded-md border w-full">
+  return ( 
       <Table>
-        <ScrollArea className="max-h-[700px] w-full">
+        <ScrollArea>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -97,7 +96,5 @@ export function DataTable<TData, TValue>({
         </TableBody>
         </ScrollArea>      
       </Table> 
-      
-    </div>
   )
 }
