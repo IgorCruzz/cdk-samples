@@ -10,17 +10,16 @@ export function Graphic()  {
  
   const COLORS = ['#4F46E5', '#EF4444'];  
 
-  return (
-    <div className="w-full"> 
-      <Card className="h-full border border-[--border]">
-        <CardHeader className="items-center justify-center">
-          <CardTitle className="text-center">Statistic</CardTitle>
-          <CardDescription className="text-center">
+  return ( 
+      <Card className="h-1/2">
+        <CardHeader className="text-center">
+          <CardTitle>Statistic</CardTitle>
+          <CardDescription >
             View the statistics of your uploaded files.
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="flex flex-col items-center justify-center" style={{ width: '100%', height: 300 }}>
+        <CardContent className="h-full">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -38,11 +37,10 @@ export function Graphic()  {
                 ))}
               </Pie>
               <Tooltip />
-              <Legend verticalAlign="bottom" height={36} />
+              <Legend verticalAlign="bottom" height={10} />
             </PieChart>
           </ResponsiveContainer>
         </CardContent>
-      </Card>
-    </div>
+      </Card> 
   );
 }
