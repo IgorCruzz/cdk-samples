@@ -30,13 +30,9 @@ export const History = () => {
     retry: false,
   });  
 
-  useEffect(() => {
-    console.log({ startKeys, lastKey: startKeys[pagination.pageIndex] });    
-  },[pagination.pageIndex, startKeys]);
-
   return (
-    <div className="w-1/2 h-full">
-      <Card className="border border-[--border]  h-full">
+    <div className="w-1/2 min-h-full">
+      <Card className="border border-[--border] h-full">
         <CardHeader className="items-center justify-center">
           <CardTitle className="text-center">History</CardTitle>
         </CardHeader>
