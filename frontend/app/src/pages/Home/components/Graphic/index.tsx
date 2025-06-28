@@ -11,7 +11,7 @@ export function Graphic()  {
   const COLORS = ['#4F46E5', '#EF4444'];  
 
   return (
-    <div className="h-3/6"> 
+    <div className="w-full"> 
       <Card className="h-full border border-[--border]">
         <CardHeader className="items-center justify-center">
           <CardTitle className="text-center">Statistic</CardTitle>
