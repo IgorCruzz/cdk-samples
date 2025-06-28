@@ -30,20 +30,19 @@ export const History = () => {
     retry: false,
   });  
 
-  return (
-    <div className="w-full lg:w-1/2 min-h-full">
-      <Card className="border border-[--border] h-full">
-        <CardHeader className="items-center justify-center">
+  return ( 
+      <Card className="flex flex-col h-full">
+        <CardHeader>
           <CardTitle className="text-center">History</CardTitle>
         </CardHeader>
 
-        <CardContent className="h-full w-full flex flex-col items-center justify-center">
+        <CardContent className="h-full">
           {isLoading ? (
-            <div className="flex items-center justify-center h-full">
+            <div>
               <span>Loading...</span>
             </div>
           ) : (
-            <div className="h-full w-full flex flex-col items-center justify-between">
+            <div className="flex flex-col justify-between h-full">
             <DataTable
             pagination={pagination}
             setPagination={setPagination}
@@ -61,8 +60,7 @@ export const History = () => {
           </div>
           )}        
         </CardContent>
-      </Card>
-    </div>
+      </Card> 
   );
 };
 
