@@ -30,7 +30,6 @@ export class CustomerRepository implements ICustomerRepository {
               PK: `CUSTOMER#${item.cnpj}`,
               SK: `METADATA#${item.cnpj}`,
               ...item,
-              CreatedAt: actualDate,
             },
           },
         };
