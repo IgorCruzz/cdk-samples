@@ -45,7 +45,7 @@ export function Upload()  {
       form.reset();
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast.error('Erro ao salvar.');
+        toast.error('Oops! Something went wrong while uploading the file.');
       }
       console.error(error);
     } finally { 
