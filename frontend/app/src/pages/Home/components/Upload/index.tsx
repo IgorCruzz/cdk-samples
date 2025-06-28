@@ -53,27 +53,25 @@ export function Upload()  {
     }
   };
 
-  return (
-    <div className="w-full">
-      <Card className="h-full border border-[--border]">
-        <CardHeader className="items-center justify-center">
-          <CardTitle className="text-center">Upload a File</CardTitle>
-          <CardDescription className="text-center">
+  return ( 
+      <Card className="h-1/2">
+        <CardHeader className="text-center">
+          <CardTitle>Upload a File</CardTitle>
+          <CardDescription>
             Select a file to upload and click the submit button.
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="h-full flex flex-col items-center justify-center">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full h-full flex flex-col items-center justify-center gap-3">
+        <CardContent className="flex-1">
+          <Form {...form} >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 h-full">
               <DropField name="file" />
-              <Button type="submit" disabled={!form.formState.isValid} className="w-full">
+              <Button type="submit" disabled={!form.formState.isValid}>
                 {loading ? 'Sending...' : 'Send'}
               </Button>
             </form>
           </Form>
         </CardContent>
-      </Card>
-    </div>
+      </Card> 
   );
 }
