@@ -11,6 +11,7 @@ import { useState } from "react";
 import { fileSchema } from '@/schemas/file';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AxiosError } from 'axios';
+import { SendHorizontal } from "lucide-react";
 
 export function Upload()  {
   const form = useForm<{ file: File }>({
@@ -19,6 +20,7 @@ export function Upload()  {
   });
 
   const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);  
 
   const { mutateAsync: PreSignedUrlMutateAsync } = useMutation({
     mutationFn: files.preSignedUrl,
@@ -26,7 +28,16 @@ export function Upload()  {
 
   const { mutateAsync: UploadMutateAsync } = useMutation({
     mutationFn: async ({ url, file }: { url: string; file: File }) => {
-      return await axios.put(url, file);
+      return await axios.put(url, file, {
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(percentCompleted);
+          }
+        }
+      });
     }
   });
 
@@ -54,7 +65,7 @@ export function Upload()  {
   };
 
   return ( 
-      <Card className="h-[30%] rounded-tl-4xl rounded-br-4xl">
+      <Card className="h-1/2 rounded-tl-4xl rounded-br-4xl">
         <CardHeader className="text-center">
           <CardTitle>Upload a File</CardTitle>
           <CardDescription>
@@ -67,7 +78,7 @@ export function Upload()  {
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 h-full">
               <DropField name="file" />
               <Button type="submit" disabled={!form.formState.isValid}>
-                {loading ? 'Sending...' : 'Send'}
+                {loading ? `${uploadProgress}%` : <SendHorizontal />}
               </Button>
             </form>
           </Form>
