@@ -5,6 +5,7 @@ import {
   Architecture,
   LoggingFormat,
   Runtime,
+  StartingPosition,
   Tracing,
 } from "aws-cdk-lib/aws-lambda";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
@@ -13,6 +14,7 @@ import { S3Construct } from "./s3.construct";
 import { DynamoDBConstruct } from "./dynamo.construct";
 import { EventType } from "aws-cdk-lib/aws-s3";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
+import { DynamoEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 
 interface LambdaStackProps {
   s3Construct: S3Construct;
@@ -34,6 +36,7 @@ export class LambdaConstruct extends Construct {
     this.generatePreSignedUrlFunction = this.createGenerateUrlFunction();
     this.extractDataFunction = this.createExtractDataFunction();
     this.getFilesDataFunction = this.createGetFilesDataFunction();
+    this.createStreamFunction();
   }
 
   private createGenerateUrlFunction() {
@@ -140,6 +143,41 @@ export class LambdaConstruct extends Construct {
     bucket.grantDelete(fn);
 
     table.grantReadWriteData(fn);
+
+    return fn;
+  }
+
+  private createStreamFunction() {
+    const { table } = this.props.dynamoDBConstruct;
+
+    const fn = new NodejsFunction(this, "function-stream-data", {
+      memorySize: 128,
+      architecture: Architecture.X86_64,
+      runtime: Runtime.NODEJS_20_X,
+      timeout: Duration.seconds(30),
+      description: "A Lambda function to get files data",
+      entry: join(__dirname, "../../../lambda/stream-statistics/handler.ts"),
+      handler: "handler",
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: "es2020",
+      },
+      loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
+      logRetention: RetentionDays.ONE_WEEK,
+      environment: {
+        TABLE_NAME: table.tableName,
+      },
+    });
+
+    fn.addEventSource(
+      new DynamoEventSource(table, {
+        startingPosition: StartingPosition.LATEST,
+        batchSize: 100,
+        retryAttempts: 2,
+      })
+    );
 
     return fn;
   }
