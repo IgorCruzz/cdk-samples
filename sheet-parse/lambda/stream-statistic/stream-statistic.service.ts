@@ -11,35 +11,22 @@ export class StreamService implements IGetFilesService {
   stream = async (event: StreamInput): StreamOutput => {
     for (const record of event.Records) {
       const eventName = record.eventName;
-      const keys = record.dynamodb?.Keys;
       const oldImage = record.dynamodb?.OldImage;
       const newImage = record.dynamodb?.NewImage;
 
-      console.log("--- Evento DynamoDB Stream ---");
-      console.log("Tipo de evento:", eventName);
-      console.log("Chave primária:", JSON.stringify(keys));
-
-      if (eventName === "INSERT") {
-        console.log("Novo item inserido:", JSON.stringify(newImage));
-      }
-
       if (eventName === "MODIFY") {
-        console.log("Item foi modificado");
-        console.log("Antes (OldImage):", JSON.stringify(oldImage));
-        console.log("Depois (NewImage):", JSON.stringify(newImage));
-
-        const oldStatus = oldImage?.status?.S;
-        const newStatus = newImage?.status?.S;
-        if (oldStatus !== newStatus) {
-          console.log(`O status mudou de "${oldStatus}" para "${newStatus}"`);
-        }
+        continue;
       }
 
-      if (eventName === "REMOVE") {
-        console.log("Item removido:", JSON.stringify(oldImage));
-      }
+      console.log("Item foi modificado");
+      console.log("Antes (OldImage):", JSON.stringify(oldImage));
+      console.log("Depois (NewImage):", JSON.stringify(newImage));
 
-      console.log("------------------------------");
+      const oldStatus = oldImage?.status?.S;
+      const newStatus = newImage?.status?.S;
+      if (oldStatus !== newStatus) {
+        console.log(`O status mudou de "${oldStatus}" para "${newStatus}"`);
+      }
     }
   };
 }
