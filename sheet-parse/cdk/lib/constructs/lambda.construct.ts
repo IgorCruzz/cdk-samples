@@ -156,7 +156,7 @@ export class LambdaConstruct extends Construct {
       runtime: Runtime.NODEJS_20_X,
       timeout: Duration.seconds(30),
       description: "A Lambda function to get files data",
-      entry: join(__dirname, "../../../lambda/stream-statistics/handler.ts"),
+      entry: join(__dirname, "../../../lambda/stream-statistic/handler.ts"),
       handler: "handler",
       bundling: {
         minify: true,
