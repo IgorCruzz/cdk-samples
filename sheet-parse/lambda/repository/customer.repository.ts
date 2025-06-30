@@ -5,7 +5,6 @@ import {
   BatchGetCommandOutput,
 } from "@aws-sdk/lib-dynamodb";
 import { CustomerType } from "../schema/customer.schema";
-import { actualDate } from "../utils/locale-date.util";
 
 const client = new DynamoDBClient({});
 
