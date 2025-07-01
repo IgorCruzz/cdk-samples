@@ -1,5 +1,3 @@
-"use client"
-
 import { Pie, PieChart, Legend } from "recharts"
 
 import {
