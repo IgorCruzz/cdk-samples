@@ -25,6 +25,7 @@ export class LambdaConstruct extends Construct {
   public readonly generatePreSignedUrlFunction: NodejsFunction;
   public readonly extractDataFunction: NodejsFunction;
   public readonly getFilesDataFunction: NodejsFunction;
+  public readonly getStatisticDataFunction: NodejsFunction;
 
   constructor(
     scope: Construct,
@@ -37,6 +38,7 @@ export class LambdaConstruct extends Construct {
     this.extractDataFunction = this.createExtractDataFunction();
     this.getFilesDataFunction = this.createGetFilesDataFunction();
     this.createStreamFunction();
+    this.getStatisticDataFunction = this.createGetStatisticDataFunction();
   }
 
   private createGenerateUrlFunction() {
@@ -180,6 +182,35 @@ export class LambdaConstruct extends Construct {
         retryAttempts: 2,
       })
     );
+
+    return fn;
+  }
+
+  private createGetStatisticDataFunction() {
+    const { table } = this.props.dynamoDBConstruct;
+
+    const fn = new NodejsFunction(this, "function-get-statistic-data", {
+      memorySize: 128,
+      architecture: Architecture.X86_64,
+      runtime: Runtime.NODEJS_20_X,
+      timeout: Duration.seconds(30),
+      description: "A Lambda function to get statistic data",
+      entry: join(__dirname, "../../../lambda/get-statistic/handler.ts"),
+      handler: "handler",
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: "es2020",
+      },
+      loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
+      logRetention: RetentionDays.ONE_WEEK,
+      environment: {
+        TABLE_NAME: table.tableName,
+      },
+    });
+
+    table.grantReadWriteData(fn);
 
     return fn;
   }
