@@ -1,13 +1,11 @@
 "use client"
-
-import { TrendingUp } from "lucide-react"
+ 
 import { Pie, PieChart } from "recharts"
 
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
+  CardDescription, 
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -17,8 +15,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-
-export const description = "A pie chart with no separator"
 
 const chartData = [
   { browser: "completed", visitors: 100, fill: "var(--color-completed)" },
