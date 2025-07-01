@@ -47,6 +47,9 @@ button {
   @apply bg-green-900 cursor-pointer text-white
 }
 
+button:hover {
+  @apply brightness-50
+}
  
 
 @theme inline {
