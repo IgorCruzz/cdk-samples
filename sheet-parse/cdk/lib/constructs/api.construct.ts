@@ -17,6 +17,7 @@ import { IFunction } from "aws-cdk-lib/aws-lambda";
 interface ApiConstructProps {
   sheetParseFunction: IFunction;
   getFilesDataFunction: IFunction;
+  getStatisticDataFunction: IFunction;
 }
 
 export class ApiConstruct extends Construct {
@@ -32,6 +33,7 @@ export class ApiConstruct extends Construct {
     this.usagePlan();
 
     this.getFilesDataResouce();
+    this.getStatisticDataResouce();
   }
 
   private usagePlan() {
@@ -140,6 +142,16 @@ export class ApiConstruct extends Construct {
     this.api.root.addMethod(
       "GET",
       new LambdaIntegration(this.props.getFilesDataFunction),
+      {
+        apiKeyRequired: true,
+      }
+    );
+  }
+
+  private getStatisticDataResouce() {
+    this.api.root.addMethod(
+      "GET",
+      new LambdaIntegration(this.props.getStatisticDataFunction),
       {
         apiKeyRequired: true,
       }
