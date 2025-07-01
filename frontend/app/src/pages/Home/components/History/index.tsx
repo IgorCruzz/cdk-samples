@@ -5,6 +5,8 @@ import { DataTable } from './data-table';
 import { columns } from './columns';
 import { useState } from 'react';
 import { Pagination } from '@/components/Pagination';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 
 export const History = () => {
   const [startKeys, setStartKeys] = useState<{ startKey: string | null }[]>([{ startKey: null }]);
@@ -21,7 +23,7 @@ export const History = () => {
     lastKey: null,
   });
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['files', pagination.lastKey],
     queryFn: () => files.getFiles({
       startKey: pagination.lastKey,
@@ -32,8 +34,9 @@ export const History = () => {
 
   return ( 
       <Card className="flex flex-col h-full rounded-tl-4xl rounded-br-4xl border-t-green-500 border-t-4">
-        <CardHeader>
+        <CardHeader className="flex items-center justify-center gap-4">
           <CardTitle className="text-center">History</CardTitle>
+           <Button onClick={() => refetch()}><RefreshCw /></Button>
         </CardHeader>
 
         <CardContent className="h-full flex items-center justify-center">
