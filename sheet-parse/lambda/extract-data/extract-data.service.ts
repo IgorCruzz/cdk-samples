@@ -131,7 +131,7 @@ export class ExtractDataService implements IExtractDataService {
 
       await this.archiveRepository.updateStatus({
         key: s3Record.s3.object.key,
-        status: !success && !failure ? "FAILED" : "COMPLETED",
+        status: !success ? "FAILED" : "COMPLETED",
         message,
         successLines: success,
         failedLines: failure,
