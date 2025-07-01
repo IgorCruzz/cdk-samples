@@ -11,7 +11,7 @@ export default function App() {
   return ( 
       <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <Toaster richColors position="top-right" />
+        <Toaster richColors position="top-right" duration={2000} />
          <Routes>
           <Route path="/" element={
             <Layout>
