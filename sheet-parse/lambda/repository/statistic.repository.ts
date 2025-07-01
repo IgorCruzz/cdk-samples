@@ -23,8 +23,8 @@ export class StatisticRepository implements IStatisticRepository {
       },
       UpdateExpression:
         input.type === "COMPLETED"
-          ? "SET #completed =  if_not_exists(#completed, :completed) + :completed"
-          : "SET #failed = if_not_exists(#failed, :failed) + :failed",
+          ? "SET #completed =  if_not_exists(#completed, 0) + :completed"
+          : "SET #failed = if_not_exists(#failed, 0) + :failed",
       ExpressionAttributeNames: {
         ...(input.type === "COMPLETED"
           ? { "#completed": "Completed" }
