@@ -56,13 +56,12 @@ export function Graphic() {
               verticalAlign="bottom"
               align="center"
             />
-            <Pie
+           <Pie
               data={chartData}
               dataKey="value"
               nameKey="name"
               stroke="0"
               label={({ name, value }) => `${name}: ${value}`}
-
             />
           </PieChart>
         </ChartContainer>
