@@ -149,7 +149,9 @@ export class ApiConstruct extends Construct {
   }
 
   private getStatisticDataResouce() {
-    this.api.root.addMethod(
+    const resource = this.api.root.addResource("statistics");
+
+    resource.addMethod(
       "GET",
       new LambdaIntegration(this.props.getStatisticDataFunction),
       {
