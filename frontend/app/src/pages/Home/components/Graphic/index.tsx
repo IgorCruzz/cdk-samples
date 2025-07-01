@@ -13,11 +13,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-
-const chartData = [
-  { name: "completed", value: 100, fill: "var(--color-completed)" },
-  { name: "failed", value: 20, fill: "var(--color-failed)" },
-]
+import { files } from "@/services/endpoints/files"
+import { useQuery } from "@tanstack/react-query"
 
 const chartConfig = {
   completed: {
@@ -31,6 +28,17 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function Graphic() {
+  const { data, isLoading } = useQuery({
+    queryKey: ["files-statistics"],
+    queryFn: files.statistics,
+    refetchOnWindowFocus: false,
+  })
+
+  const chartData = [
+  { name: "completed", value: data?.data.Completed, fill: "var(--color-completed)" },
+  { name: "failed", value: data?.data.Failed, fill: "var(--color-failed)" },
+  ]
+
   return (
     <Card className="h-1/2 rounded-tl-4xl rounded-br-4xl border-t-green-500 border-t-4">
       <CardHeader className="text-center">
@@ -40,7 +48,12 @@ export function Graphic() {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer
+        {isLoading ? (
+          <div className="flex h-full items-center justify-center">
+            <span>Loading...</span>
+          </div>
+        ): (
+           <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[200px]"
         >
@@ -63,6 +76,8 @@ export function Graphic() {
             />
           </PieChart>
         </ChartContainer>
+        )} 
+       
       </CardContent>
     </Card>
   )
