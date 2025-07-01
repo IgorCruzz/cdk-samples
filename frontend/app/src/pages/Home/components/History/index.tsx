@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { files } from '@/services/endpoints/files';
 import { DataTable } from './data-table';
 import { columns } from './columns';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Pagination } from '@/components/Pagination';
 
 export const History = () => {
