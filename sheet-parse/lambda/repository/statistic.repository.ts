@@ -27,8 +27,8 @@ export class StatisticRepository implements IStatisticRepository {
           : "SET #failed = if_not_exists(#failed, :failed) + :failed",
       ExpressionAttributeNames: {
         ...(input.type === "COMPLETED"
-          ? { "#completed": "completed" }
-          : { "#failed": "failed" }),
+          ? { "#completed": "Completed" }
+          : { "#failed": "Failed" }),
       },
       ExpressionAttributeValues: {
         ...(input.type === "COMPLETED"
