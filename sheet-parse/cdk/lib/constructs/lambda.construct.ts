@@ -171,6 +171,8 @@ export class LambdaConstruct extends Construct {
       },
     });
 
+    table.grantReadWriteData(fn);
+
     fn.addEventSource(
       new DynamoEventSource(table, {
         startingPosition: StartingPosition.LATEST,
