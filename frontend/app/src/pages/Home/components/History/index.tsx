@@ -29,6 +29,7 @@ export const History = () => {
     queryFn: () => files.getFiles({
       startKey: pagination.lastKey,
     }),
+    refetchInterval: 10000, 
   });  
 
   if(isSuccess) {
