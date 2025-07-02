@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
+import { queryClient } from '@/lib/query-client';
 
 export const History = () => {
   const [startKeys, setStartKeys] = useState<{ startKey: string | null }[]>([{ startKey: null }]);
@@ -23,13 +24,17 @@ export const History = () => {
     lastKey: null,
   });
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, refetch, isSuccess } = useQuery({
     queryKey: ['files', pagination.lastKey],
     queryFn: () => files.getFiles({
       startKey: pagination.lastKey,
     }),
-
   });  
+
+  if(isSuccess) {
+    queryClient.invalidateQueries({ queryKey: ['files-statistics'] });
+  }
+
 
   return ( 
       <Card className="flex flex-col h-full rounded-tl-4xl rounded-br-4xl border-t-green-500 border-t-4">
