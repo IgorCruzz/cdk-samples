@@ -1,4 +1,4 @@
-import { Pie, PieChart, Legend } from "recharts"
+import { Pie, PieChart } from "recharts"
 
 import {
   Card,
@@ -53,29 +53,51 @@ export function Graphic() {
             <span>Loading...</span>
           </div>
         ): (
+          <>
+
+             <div className="flex justify-center gap-6 mb-4 text-sm">
+              <div className="flex items-center gap-2 text-green-600">
+                <span
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: chartConfig.completed.color }}
+                ></span>
+                <span>
+                  {chartConfig.completed.label}: {data?.data.Completed ?? 0}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-red-600">
+                <span
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: chartConfig.failed.color }}
+                ></span>
+                <span>
+                  {chartConfig.failed.label}: {data?.data.Failed ?? 0}
+                </span>
+              </div>
+            </div>
+            
            <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[200px]"
         >
+
           <PieChart>
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
-            />
-            <Legend
-              layout="horizontal"
-              verticalAlign="bottom"
-              align="center"
-            />
+            /> 
            <Pie
               data={chartData}
               dataKey="value"
               nameKey="name"
-              stroke="0"
-              label={({ name, value }) => `${name}: ${value}`}
+              stroke="0" 
             />
           </PieChart>
+           
+          
         </ChartContainer>
+
+            </>
         )} 
        
       </CardContent>
