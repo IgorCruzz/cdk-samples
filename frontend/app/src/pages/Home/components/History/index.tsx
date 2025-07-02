@@ -28,8 +28,7 @@ export const History = () => {
     queryFn: () => files.getFiles({
       startKey: pagination.lastKey,
     }),
-    refetchOnWindowFocus: false,
-    retry: false,
+
   });  
 
   return ( 
