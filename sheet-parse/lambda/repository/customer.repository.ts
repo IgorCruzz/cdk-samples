@@ -23,7 +23,7 @@ export class CustomerRepository implements ICustomerRepository {
     const customers = await Promise.all(
       data.map(async (item) => {
         return {
-          Put: {
+          PutRequest: {
             TableName: process.env.TABLE_NAME as string,
             Item: {
               PK: `CUSTOMER#${item.cnpj}`,
