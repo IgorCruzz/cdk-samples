@@ -3,6 +3,7 @@ import {
   type UseControllerProps,
 } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
+import { X } from "lucide-react"; // Ícone de "fechar/remover"
 
 const DropField = ({
   ...controllerProps
@@ -23,7 +24,7 @@ const DropField = ({
           },
         });
 
-        const files = field.value ? [field.value as File] : [];
+        const file = field.value as File | undefined;
 
         return (
           <div className="w-full h-full">
@@ -40,27 +41,44 @@ const DropField = ({
               <input {...getInputProps()} />
               {isDragActive ? (
                 <p>Drag a file here...</p>
-              ) : files.length > 0 ? (
-                <ul className="text-sm">
-                  {files.map((file, i) => (
-                    <li key={i}>{file.name}</li>
-                  ))}
-                </ul>
+              ) : file ? (
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">{file.name}</span>
+                    <span className="text-xs text-muted-foreground">{formatBytes(file.size)}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();  
+                      field.onChange(null); 
+                    }}
+                    className="
+                      p-1 rounded-full hover:bg-red-100 dark:hover:bg-red-900 transition
+                      text-red-500"
+                    title="Remover arquivo"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               ) : (
                 <p className="text-center">Drag and drop a file here, or click to select a file</p>
               )}
-            </div>
-
-            {fieldState.error && (
-              <p className="text-sm text-destructive mt-1">
-                {fieldState.error.message}
-              </p>
-            )}
+            </div> 
           </div>
         );
       }}
     />
   );
 };
+
+function formatBytes(bytes: number, decimals = 2) {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+}
 
 export default DropField;
