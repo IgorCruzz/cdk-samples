@@ -116,6 +116,7 @@ export class LambdaConstruct extends Construct {
       memorySize: 128,
       architecture: Architecture.X86_64,
       runtime: Runtime.NODEJS_20_X,
+      timeout: Duration.minutes(15),
       description: "A Lambda function to send notifications",
       entry: join(__dirname, "../../../lambda/extract-data/handler.ts"),
       handler: "extractDataHandler",
