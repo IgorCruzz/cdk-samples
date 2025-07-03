@@ -4,6 +4,7 @@ import {
 } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
 import { X } from "lucide-react"; // Ícone de "fechar/remover"
+import { formatBytes } from "@/utils/formatByes";
 
 const DropField = ({
   ...controllerProps
@@ -72,13 +73,6 @@ const DropField = ({
   );
 };
 
-function formatBytes(bytes: number, decimals = 2) {
-  if (bytes === 0) return "0 Bytes";
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ["Bytes", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-}
+
 
 export default DropField;
