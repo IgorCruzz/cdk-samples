@@ -28,6 +28,8 @@ export class CustomerRepository implements ICustomerRepository {
             Item: {
               PK: `CUSTOMER#${item.cnpj}`,
               SK: `METADATA#${item.cnpj}`,
+              GSI1PK: `CUSTOMER`,
+              GSI1SK: `METADATA#${item.cnpj}`,
               ...item,
             },
           },
