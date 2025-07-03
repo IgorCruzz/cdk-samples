@@ -28,6 +28,9 @@ export class ExtractDataService implements IExtractDataService {
   extract = async ({
     s3Record,
   }: ExtractDataServiceInput): ExtractDataServiceOutput => {
+    let success = 0;
+    let failure = 0;
+
     try {
       const stream = await this.s3.getObject({
         key: s3Record.s3.object.key,
@@ -35,8 +38,6 @@ export class ExtractDataService implements IExtractDataService {
       });
 
       const chunk = [];
-      let success = 0;
-      let failure = 0;
 
       const archive = await this.archiveRepository.save({
         key: s3Record.s3.object.key,
@@ -157,8 +158,8 @@ export class ExtractDataService implements IExtractDataService {
         key: s3Record.s3.object.key,
         status: "FAILED",
         message,
-        successLines: 0,
-        failedLines: 0,
+        successLines: success,
+        failedLines: failure,
       });
 
       await this.sendNotification.send({
