@@ -18,7 +18,7 @@ export class DynamoDBConstruct extends Construct {
   }
 
   createTable() {
-    const table = new Table(this, "table-sheet-parse", {
+    const table = new Table(this, "table-db-sheet-parse", {
       partitionKey: {
         name: "PK",
         type: AttributeType.STRING,
