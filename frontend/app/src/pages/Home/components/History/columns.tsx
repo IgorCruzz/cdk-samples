@@ -1,3 +1,4 @@
+import { formatBytes } from "@/utils/formatByes"
 import { type ColumnDef } from "@tanstack/react-table"
 import { CircleEllipsis, ThumbsDown, ThumbsUp } from "lucide-react"
 
@@ -18,7 +19,7 @@ export const columns: ColumnDef<File>[] = [
   {
     accessorKey: "size",
     header: "Size",
-    cell: (info) => `${info.getValue()} bytes`,
+    cell: (info) => `${formatBytes(info.getValue() as number)}`,
   },
   {
     accessorKey: "successLines",
