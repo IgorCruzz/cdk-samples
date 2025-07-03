@@ -2,6 +2,7 @@ import { Construct } from "constructs";
 import {
   AttributeType,
   BillingMode,
+  ProjectionType,
   StreamViewType,
   Table,
 } from "aws-cdk-lib/aws-dynamodb";
@@ -17,7 +18,7 @@ export class DynamoDBConstruct extends Construct {
   }
 
   createTable() {
-    return new Table(this, "table-sheet-parse", {
+    const table = new Table(this, "table-sheet-parse", {
       partitionKey: {
         name: "PK",
         type: AttributeType.STRING,
@@ -26,9 +27,25 @@ export class DynamoDBConstruct extends Construct {
         name: "SK",
         type: AttributeType.STRING,
       },
+
       billingMode: BillingMode.PAY_PER_REQUEST,
       removalPolicy: RemovalPolicy.RETAIN,
       stream: StreamViewType.NEW_AND_OLD_IMAGES,
     });
+
+    table.addGlobalSecondaryIndex({
+      indexName: "GSI1",
+      partitionKey: {
+        name: "GSI1PK",
+        type: AttributeType.STRING,
+      },
+      sortKey: {
+        name: "GSI1SK",
+        type: AttributeType.STRING,
+      },
+      projectionType: ProjectionType.ALL,
+    });
+
+    return table;
   }
 }
