@@ -109,7 +109,7 @@ export class ExtractDataService implements IExtractDataService {
             chunk.length = 0;
           }
         } catch (error) {
-          console.log({ from: "CSV", error });
+          console.log({ error });
 
           failure += 1;
         }
