@@ -16,7 +16,7 @@ import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
 interface LambdaStackProps {
   s3Construct: S3Construct;
-  documentDBCluster: DocumentDBConstruct;
+  documentDBConstruct: DocumentDBConstruct;
 }
 
 export class LambdaConstruct extends Construct {
@@ -71,7 +71,7 @@ export class LambdaConstruct extends Construct {
   }
 
   private createGetFilesDataFunction() {
-    const { cluster } = this.props.documentDBCluster;
+    const { cluster } = this.props.documentDBConstruct;
 
     const fn = new NodejsFunction(this, "function-get-files-data", {
       memorySize: 128,
@@ -102,7 +102,7 @@ export class LambdaConstruct extends Construct {
 
   private createExtractDataFunction() {
     const { bucket } = this.props.s3Construct;
-    const { cluster } = this.props.documentDBCluster;
+    const { cluster } = this.props.documentDBConstruct;
 
     const apiKey = StringParameter.fromStringParameterName(
       this,
@@ -149,7 +149,7 @@ export class LambdaConstruct extends Construct {
   }
 
   private createGetStatisticDataFunction() {
-    const { cluster } = this.props.documentDBCluster;
+    const { cluster } = this.props.documentDBConstruct;
 
     const fn = new NodejsFunction(this, "function-get-statistic-data", {
       memorySize: 128,
