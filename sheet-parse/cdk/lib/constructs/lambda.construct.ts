@@ -91,6 +91,9 @@ export class LambdaConstruct extends Construct {
       logRetention: RetentionDays.ONE_WEEK,
       environment: {
         DOCDB_URI: cluster.clusterEndpoint.hostname,
+        DOCDB_USER: "test",
+        DOCDB_PASSWORD:
+          cluster.secret?.secretValueFromJson("password").unsafeUnwrap() ?? "",
       },
     });
 
@@ -122,6 +125,9 @@ export class LambdaConstruct extends Construct {
       },
       environment: {
         DOCDB_URI: cluster.clusterEndpoint.hostname,
+        DOCDB_USER: "test",
+        DOCDB_PASSWORD:
+          cluster.secret?.secretValueFromJson("password").unsafeUnwrap() ?? "",
         API_URL: "https://api.igorcruz.space",
         API_KEY: apiKey,
       },
@@ -163,6 +169,9 @@ export class LambdaConstruct extends Construct {
       logRetention: RetentionDays.ONE_WEEK,
       environment: {
         DOCDB_URI: cluster.clusterEndpoint.hostname,
+        DOCDB_USER: "test",
+        DOCDB_PASSWORD:
+          cluster.secret?.secretValueFromJson("password").unsafeUnwrap() ?? "",
       },
     });
 
