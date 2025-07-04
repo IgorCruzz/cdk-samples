@@ -5,20 +5,18 @@ import {
   Architecture,
   LoggingFormat,
   Runtime,
-  StartingPosition,
   Tracing,
 } from "aws-cdk-lib/aws-lambda";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { join } from "node:path";
 import { S3Construct } from "./s3.construct";
-import { DynamoDBConstruct } from "./dynamo.construct";
+import { DocumentDBConstruct } from "./documentDB.construct";
 import { EventType } from "aws-cdk-lib/aws-s3";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import { DynamoEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 
 interface LambdaStackProps {
   s3Construct: S3Construct;
-  dynamoDBConstruct: DynamoDBConstruct;
+  documentDBCluster: DocumentDBConstruct;
 }
 
 export class LambdaConstruct extends Construct {
@@ -37,7 +35,6 @@ export class LambdaConstruct extends Construct {
     this.generatePreSignedUrlFunction = this.createGenerateUrlFunction();
     this.extractDataFunction = this.createExtractDataFunction();
     this.getFilesDataFunction = this.createGetFilesDataFunction();
-    this.createStreamFunction();
     this.getStatisticDataFunction = this.createGetStatisticDataFunction();
   }
 
@@ -74,7 +71,7 @@ export class LambdaConstruct extends Construct {
   }
 
   private createGetFilesDataFunction() {
-    const { table } = this.props.dynamoDBConstruct;
+    const { cluster } = this.props.documentDBCluster;
 
     const fn = new NodejsFunction(this, "function-get-files-data", {
       memorySize: 128,
@@ -93,18 +90,16 @@ export class LambdaConstruct extends Construct {
       tracing: Tracing.ACTIVE,
       logRetention: RetentionDays.ONE_WEEK,
       environment: {
-        TABLE_NAME: table.tableName,
+        DOCDB_URI: cluster.clusterEndpoint.hostname,
       },
     });
-
-    table.grantReadWriteData(fn);
 
     return fn;
   }
 
   private createExtractDataFunction() {
     const { bucket } = this.props.s3Construct;
-    const { table } = this.props.dynamoDBConstruct;
+    const { cluster } = this.props.documentDBCluster;
 
     const apiKey = StringParameter.fromStringParameterName(
       this,
@@ -126,7 +121,7 @@ export class LambdaConstruct extends Construct {
         target: "es2020",
       },
       environment: {
-        TABLE_NAME: table.tableName,
+        DOCDB_URI: cluster.clusterEndpoint.hostname,
         API_URL: "https://api.igorcruz.space",
         API_KEY: apiKey,
       },
@@ -144,50 +139,11 @@ export class LambdaConstruct extends Construct {
 
     bucket.grantDelete(fn);
 
-    table.grantReadWriteData(fn);
-
-    return fn;
-  }
-
-  private createStreamFunction() {
-    const { table } = this.props.dynamoDBConstruct;
-
-    const fn = new NodejsFunction(this, "function-stream-data", {
-      memorySize: 128,
-      architecture: Architecture.X86_64,
-      runtime: Runtime.NODEJS_20_X,
-      timeout: Duration.seconds(30),
-      description: "A Lambda function to get files data",
-      entry: join(__dirname, "../../../lambda/stream-statistic/handler.ts"),
-      handler: "handler",
-      bundling: {
-        minify: true,
-        sourceMap: true,
-        target: "es2020",
-      },
-      loggingFormat: LoggingFormat.JSON,
-      tracing: Tracing.ACTIVE,
-      logRetention: RetentionDays.ONE_WEEK,
-      environment: {
-        TABLE_NAME: table.tableName,
-      },
-    });
-
-    table.grantReadWriteData(fn);
-
-    fn.addEventSource(
-      new DynamoEventSource(table, {
-        startingPosition: StartingPosition.LATEST,
-        batchSize: 100,
-        retryAttempts: 2,
-      })
-    );
-
     return fn;
   }
 
   private createGetStatisticDataFunction() {
-    const { table } = this.props.dynamoDBConstruct;
+    const { cluster } = this.props.documentDBCluster;
 
     const fn = new NodejsFunction(this, "function-get-statistic-data", {
       memorySize: 128,
@@ -206,11 +162,9 @@ export class LambdaConstruct extends Construct {
       tracing: Tracing.ACTIVE,
       logRetention: RetentionDays.ONE_WEEK,
       environment: {
-        TABLE_NAME: table.tableName,
+        DOCDB_URI: cluster.clusterEndpoint.hostname,
       },
     });
-
-    table.grantReadWriteData(fn);
 
     return fn;
   }
