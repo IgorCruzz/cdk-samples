@@ -3,7 +3,7 @@ import { Construct } from "constructs";
 import {
   S3Construct,
   LambdaConstruct,
-  DynamoDBConstruct,
+  DocumentDBConstruct,
   ApiConstruct,
 } from "../constructs";
 
@@ -13,11 +13,14 @@ export class SheetParseStack extends Stack {
 
     const s3Construct = new S3Construct(this, "construct-s3");
 
-    const dynamoDBConstruct = new DynamoDBConstruct(this, "construct-dynamodb");
+    const documentDBConstruct = new DocumentDBConstruct(
+      this,
+      "construct-documentdb"
+    );
 
     const lambdaConstruct = new LambdaConstruct(this, "construct-lambda", {
       s3Construct,
-      dynamoDBConstruct,
+      documentDBConstruct,
     });
 
     const apiConstruct = new ApiConstruct(this, "construct-api", {
@@ -29,8 +32,8 @@ export class SheetParseStack extends Stack {
     Tags.of(s3Construct.bucket).add("Project", "sheet-parse");
     Tags.of(s3Construct.bucket).add("Name", "sheet-parse-bucket");
 
-    Tags.of(dynamoDBConstruct.table).add("Project", "sheet-parse");
-    Tags.of(dynamoDBConstruct.table).add("Name", "sheet-parse-table");
+    Tags.of(documentDBConstruct.cluster).add("Project", "sheet-parse");
+    Tags.of(documentDBConstruct.cluster).add("Name", "sheet-parse-cluster");
 
     Tags.of(lambdaConstruct.generatePreSignedUrlFunction).add(
       "Project",
