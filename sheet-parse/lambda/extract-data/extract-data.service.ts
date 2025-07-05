@@ -46,9 +46,9 @@ export class ExtractDataService implements IExtractDataService {
         status: "PROCESSING",
       });
 
-      if (!archive.success) {
-        throw new Error(archive.message);
-      }
+      // if (!archive.success) {
+      //   throw new Error(archive.message);
+      // }
 
       for await (const customer of stream.pipe(
         parse({
