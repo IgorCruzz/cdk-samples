@@ -8,7 +8,10 @@ export const dbHelper = {
     if (this.client) return;
 
     this.uri = uri;
-    this.client = await MongoClient.connect(uri);
+
+    this.client = await MongoClient.connect(uri, {
+      tlsAllowInvalidCertificates: true,
+    });
   },
 
   async disconnect(): Promise<void> {
