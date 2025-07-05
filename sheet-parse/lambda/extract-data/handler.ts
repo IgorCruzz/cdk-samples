@@ -8,9 +8,17 @@ import { dbHelper } from "../shared/repository/db-helper";
 
 let isDbConnected = false;
 
+const encodedPassword = encodeURIComponent(
+  process.env.DOCDB_PASSWORD as string
+);
+
+const MONGO_URI = `mongodb://${process.env.DOCDB_USER}:${encodedPassword}@${process.env.DOCDB_URI}:27017/sheet-parse`;
+
 export const extractDataHandler = async (event: S3Event) => {
+  console.log({ MONGO_URI });
+
   if (!isDbConnected) {
-    await dbHelper.connect(process.env.MONGODB_URI || "");
+    await dbHelper.connect(MONGO_URI || "");
     isDbConnected = true;
   }
 
