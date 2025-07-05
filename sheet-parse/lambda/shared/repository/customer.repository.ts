@@ -1,18 +1,11 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-  BatchWriteCommandInput,
-  BatchWriteCommand,
-  BatchGetCommandOutput,
-} from "@aws-sdk/lib-dynamodb";
 import { CustomerType } from "../schema/customer.schema";
-
-const client = new DynamoDBClient({});
+import { dbHelper } from "./db-helper";
 
 type CustomerRepositoryInput = {
   data: CustomerType[];
 };
 
-type CustomerRepositoryOutput = Promise<BatchGetCommandOutput>;
+type CustomerRepositoryOutput = Promise<void>;
 
 export interface ICustomerRepository {
   save: ({ data }: CustomerRepositoryInput) => CustomerRepositoryOutput;
@@ -20,33 +13,10 @@ export interface ICustomerRepository {
 
 export class CustomerRepository implements ICustomerRepository {
   async save({ data }: CustomerRepositoryInput): CustomerRepositoryOutput {
-    const customers = await Promise.all(
-      data.map(async (item) => {
-        return {
-          PutRequest: {
-            TableName: process.env.TABLE_NAME as string,
-            Item: {
-              PK: `CUSTOMER#${item.cnpj}`,
-              SK: `METADATA#${item.cnpj}`,
-              GSI1PK: `CUSTOMER`,
-              GSI1SK: `METADATA#${item.cnpj}`,
-              ...item,
-            },
-          },
-        };
-      })
-    );
+    const customer = dbHelper.getCollection("customers");
 
-    const params: BatchWriteCommandInput = {
-      RequestItems: {
-        [process.env.TABLE_NAME as string]: customers,
-      },
-    };
+    await customer?.insertMany(data);
 
-    const command = new BatchWriteCommand(params);
-
-    const res: BatchGetCommandOutput = await client.send(command);
-
-    return res;
+    return;
   }
 }
