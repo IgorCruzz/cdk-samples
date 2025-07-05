@@ -1,16 +1,5 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-  PutCommandInput,
-  PutCommand,
-  UpdateCommand,
-  UpdateCommandInput,
-  QueryCommandInput,
-  QueryCommand,
-  QueryCommandOutput,
-} from "@aws-sdk/lib-dynamodb";
 import { actualDate } from "../utils/locale-date.util";
-
-const client = new DynamoDBClient({});
+import { dbHelper } from "./db-helper";
 
 export type Files = {
   key: string;
@@ -23,10 +12,7 @@ export type Files = {
 
 type ArchiveRepositoryInput = Files;
 
-type ArchiveRepositoryOutput = {
-  success: boolean;
-  message: string;
-};
+type ArchiveRepositoryOutput = void;
 
 type GetFilesInput = {
   startKey?: string;
@@ -51,94 +37,25 @@ export interface IArchiveRepository {
 
 export class ArchiveRepository implements IArchiveRepository {
   async getFiles({ startKey, limit }: GetFilesInput): GetFilesOutput {
-    const startKeyParsed = startKey
-      ? (JSON.parse(Buffer.from(startKey, "base64").toString()) as Record<
-          string,
-          string
-        >)
-      : undefined;
+    const archiveCollection = dbHelper.getCollection("archive");
 
-    const params: QueryCommandInput = {
-      TableName: process.env.TABLE_NAME as string,
-      KeyConditionExpression: "PK = :pk",
-      ExpressionAttributeValues: {
-        ":pk": "ARCHIVE",
-      },
-      ProjectionExpression:
-        "#key, #size, #message, #status, #successLines, #failedLines",
-      ScanIndexForward: false,
-      ExpressionAttributeNames: {
-        "#status": "status",
-        "#message": "message",
-        "#key": "key",
-        "#size": "size",
-        "#successLines": "successLines",
-        "#failedLines": "failedLines",
-      },
-      ...(startKey && {
-        ExclusiveStartKey: startKeyParsed,
-      }),
-      Limit: limit,
-    };
-
-    const command = new QueryCommand(params);
-    const response: QueryCommandOutput = await client.send(command);
+    const archives = await archiveCollection?.aggregate().toArray();
 
     return {
-      itens: response.Items as Files[],
-      lastKey: response.LastEvaluatedKey
-        ? Buffer.from(JSON.stringify(response.LastEvaluatedKey)).toString(
-            "base64"
-          )
-        : null,
+      itens: archives as Files[],
+      lastKey: null,
     };
   }
 
   async save(item: ArchiveRepositoryInput): Promise<ArchiveRepositoryOutput> {
-    try {
-      const { key } = item;
+    const archives = dbHelper.getCollection("archive");
 
-      const params: PutCommandInput = {
-        TableName: process.env.TABLE_NAME as string,
-        Item: {
-          PK: `ARCHIVE`,
-          SK: `METADATA#${key}`,
-          ...item,
-          successLines: 0,
-          failedLines: 0,
-          CreatedAt: actualDate,
-        },
-        ConditionExpression: "attribute_not_exists(SK)",
-      };
-
-      const command = new PutCommand(params);
-
-      await client.send(command);
-
-      return {
-        success: true,
-        message: `Item with SK ${key} saved successfully.`,
-      };
-    } catch (error: unknown) {
-      if (
-        error instanceof Error &&
-        error.name === "ConditionalCheckFailedException"
-      ) {
-        console.error("Error putting item in DynamoDB:", error.message);
-
-        return {
-          success: false,
-          message: `Item with SK ${item.key} already exists.`,
-        };
-      }
-
-      return {
-        success: false,
-        message: `Error putting item in DynamoDB: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
-      };
-    }
+    await archives?.insertOne({
+      ...item,
+      successLines: 0,
+      failedLines: 0,
+      createdAt: actualDate,
+    });
   }
 
   async updateStatus({
@@ -151,30 +68,19 @@ export class ArchiveRepository implements IArchiveRepository {
     ArchiveRepositoryInput,
     "key" | "status" | "message" | "successLines" | "failedLines"
   >): Promise<void> {
-    const params: UpdateCommandInput = {
-      TableName: process.env.TABLE_NAME as string,
-      Key: {
-        PK: `ARCHIVE`,
-        SK: `METADATA#${key}`,
-      },
-      UpdateExpression:
-        "SET #status = :status, #message = :message, #successLines = :successLines, #failedLines = :failedLines",
-      ExpressionAttributeNames: {
-        "#status": "status",
-        "#message": "message",
-        "#successLines": "successLines",
-        "#failedLines": "failedLines",
-      },
-      ExpressionAttributeValues: {
-        ":status": status,
-        ":message": message,
-        ":successLines": successLines,
-        ":failedLines": failedLines,
-      },
-    };
+    const archives = dbHelper.getCollection("archive");
 
-    const command = new UpdateCommand(params);
-
-    await client.send(command);
+    await archives?.updateOne(
+      { key },
+      {
+        $set: {
+          status,
+          message,
+          successLines,
+          failedLines,
+          updatedAt: actualDate,
+        },
+      }
+    );
   }
 }
