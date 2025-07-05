@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
-import { ArchiveRepository } from "../repository/archive.repository";
+import { ArchiveRepository } from "../shared/repository/archive.repository";
 import { GetFilesServices } from "./get-files.services";
 
 export const getFilesDataHanlder = async (event: APIGatewayProxyEvent) => {

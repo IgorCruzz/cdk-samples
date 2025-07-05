@@ -1,5 +1,5 @@
 import { APIGatewayProxyResult } from "aws-lambda";
-import { IS3 } from "../shared/s3";
+import { IS3 } from "../shared/infra/s3";
 
 type GeneratePresignedUrlServiceOutput = Promise<APIGatewayProxyResult>;
 

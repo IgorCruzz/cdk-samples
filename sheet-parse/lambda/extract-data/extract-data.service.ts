@@ -1,10 +1,10 @@
 import { S3EventRecord } from "aws-lambda";
-import { IS3 } from "../shared/s3";
+import { IS3 } from "../shared/infra/s3";
 import { parse } from "csv-parse";
-import { customerSchema } from "../schema/customer.schema";
-import { IArchiveRepository } from "../repository/archive.repository";
-import { ICustomerRepository } from "../repository/customer.repository";
-import { ISendNotification } from "../shared/send-notification";
+import { customerSchema } from "../shared/schema/customer.schema";
+import { IArchiveRepository } from "../shared/repository/archive.repository";
+import { ICustomerRepository } from "../shared/repository/customer.repository";
+import { ISendNotification } from "../shared/infra/send-notification";
 
 type ExtractDataServiceInput = {
   s3Record: S3EventRecord;

@@ -1,4 +1,4 @@
-import { IArchiveRepository } from "../repository/archive.repository";
+import { IArchiveRepository } from "../shared/repository/archive.repository";
 import { APIGatewayProxyResult } from "aws-lambda";
 
 type GetFilesInput = {

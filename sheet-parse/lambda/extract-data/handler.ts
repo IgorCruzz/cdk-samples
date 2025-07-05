@@ -1,9 +1,9 @@
 import { S3Event } from "aws-lambda";
-import { S3 } from "../shared/s3";
-import { ArchiveRepository } from "../repository/archive.repository";
-import { CustomerRepository } from "../repository/customer.repository";
+import { S3 } from "../shared/infra/s3";
+import { ArchiveRepository } from "../shared/repository/archive.repository";
+import { CustomerRepository } from "../shared/repository/customer.repository";
 import { ExtractDataService } from "./extract-data.service";
-import { SendNotification } from "../shared/send-notification";
+import { SendNotification } from "../shared/infra/send-notification";
 
 export const extractDataHandler = async (event: S3Event) => {
   for (const record of event.Records) {

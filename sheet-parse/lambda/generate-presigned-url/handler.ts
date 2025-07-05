@@ -1,5 +1,5 @@
 import { GeneratePresignedUrlService } from "./generate-presigned-url.service";
-import { S3 } from "../shared/s3";
+import { S3 } from "../shared/infra/s3";
 
 export const generatePreSignedUrlHandler = async () => {
   const s3 = new S3();
