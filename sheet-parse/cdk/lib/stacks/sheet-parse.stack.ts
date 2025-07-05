@@ -26,7 +26,6 @@ export class SheetParseStack extends Stack {
     const apiConstruct = new ApiConstruct(this, "construct-api", {
       sheetParseFunction: lambdaConstruct.generatePreSignedUrlFunction,
       getFilesDataFunction: lambdaConstruct.getFilesDataFunction,
-      getStatisticDataFunction: lambdaConstruct.getStatisticDataFunction,
     });
 
     Tags.of(s3Construct.bucket).add("Project", "sheet-parse");
