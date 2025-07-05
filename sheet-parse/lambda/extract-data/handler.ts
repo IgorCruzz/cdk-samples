@@ -16,7 +16,9 @@ const MONGO_URI = `mongodb://${process.env.DOCDB_USER}:${encodedPassword}@${proc
 const client = new MongoClient(MONGO_URI);
 
 export const extractDataHandler = async (event: S3Event) => {
-  await client.db("admin").command({ listDatabases: 1 });
+  const db = await client.db("admin").command({ listDatabases: 1 });
+
+  console.log({ db });
 
   for (const record of event.Records) {
     const s3 = new S3();

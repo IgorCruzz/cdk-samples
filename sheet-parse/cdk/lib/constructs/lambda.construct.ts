@@ -10,13 +10,11 @@ import {
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { join } from "node:path";
 import { S3Construct } from "./s3.construct";
-import { DocumentDBConstruct } from "./documentDB.construct";
 import { EventType } from "aws-cdk-lib/aws-s3";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
 interface LambdaStackProps {
   s3Construct: S3Construct;
-  documentDBConstruct: DocumentDBConstruct;
 }
 
 export class LambdaConstruct extends Construct {
@@ -69,8 +67,6 @@ export class LambdaConstruct extends Construct {
   }
 
   private createGetFilesDataFunction() {
-    const { cluster } = this.props.documentDBConstruct;
-
     const fn = new NodejsFunction(this, "function-get-files-data", {
       memorySize: 128,
       architecture: Architecture.X86_64,
@@ -88,10 +84,9 @@ export class LambdaConstruct extends Construct {
       tracing: Tracing.ACTIVE,
       logRetention: RetentionDays.ONE_WEEK,
       environment: {
-        DOCDB_URI: cluster.clusterEndpoint.hostname,
+        DOCDB_URI: "TEST",
         DOCDB_USER: "test",
-        DOCDB_PASSWORD:
-          cluster.secret?.secretValueFromJson("password").unsafeUnwrap() ?? "",
+        DOCDB_PASSWORD: "TEST",
       },
     });
 
@@ -100,7 +95,6 @@ export class LambdaConstruct extends Construct {
 
   private createExtractDataFunction() {
     const { bucket } = this.props.s3Construct;
-    const { cluster } = this.props.documentDBConstruct;
 
     const apiKey = StringParameter.fromStringParameterName(
       this,
@@ -122,10 +116,9 @@ export class LambdaConstruct extends Construct {
         target: "es2020",
       },
       environment: {
-        DOCDB_URI: cluster.clusterEndpoint.hostname,
+        DOCDB_URI: "TEST",
         DOCDB_USER: "test",
-        DOCDB_PASSWORD:
-          cluster.secret?.secretValueFromJson("password").unsafeUnwrap() ?? "",
+        DOCDB_PASSWORD: "TEST",
         API_URL: "https://api.igorcruz.space",
         API_KEY: apiKey,
       },
