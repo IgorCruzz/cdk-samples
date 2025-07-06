@@ -1,5 +1,6 @@
 import { actualDate } from "../utils/locale-date.util";
 import { dbHelper } from "./db-helper";
+import { QueryBuilder } from "./query-builder";
 
 export type Files = {
   key: string;
@@ -15,7 +16,7 @@ type ArchiveRepositoryInput = Files;
 type ArchiveRepositoryOutput = void;
 
 type GetFilesInput = {
-  startKey?: string;
+  page: number;
   limit: number;
 };
 
@@ -36,10 +37,18 @@ export interface IArchiveRepository {
 }
 
 export class ArchiveRepository implements IArchiveRepository {
-  async getFiles({ startKey, limit }: GetFilesInput): GetFilesOutput {
+  async getFiles({ page, limit }: GetFilesInput): GetFilesOutput {
     const archiveCollection = dbHelper.getCollection("archive");
 
-    const archives = await archiveCollection?.aggregate().toArray();
+    const queryBuilder = new QueryBuilder().sort({ createdAt: -1 }).build();
+
+    const skip = (page - 1) * limit;
+
+    const archives = await archiveCollection
+      ?.aggregate(queryBuilder)
+      .skip(skip)
+      .limit(limit)
+      .toArray();
 
     return {
       itens: archives as Files[],
