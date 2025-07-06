@@ -40,12 +40,13 @@ export class ArchiveRepository implements IArchiveRepository {
   async getFiles({ page, limit }: GetFilesInput): GetFilesOutput {
     const archiveCollection = dbHelper.getCollection("archive");
 
-    const queryBuilder = new QueryBuilder().sort({ createdAt: -1 }).build();
+    const queryBuilder = new QueryBuilder().build();
 
     const skip = (page - 1) * limit;
 
     const archives = await archiveCollection
       ?.aggregate(queryBuilder)
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .toArray();
