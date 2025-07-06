@@ -4,21 +4,34 @@ import { ArchiveRepository } from "../shared/repository/archive.repository";
 import { CustomerRepository } from "../shared/repository/customer.repository";
 import { ExtractDataService } from "./extract-data.service";
 import { SendNotification } from "../shared/infra/send-notification";
+import {
+  SecretsManagerClient,
+  GetSecretValueCommand,
+} from "@aws-sdk/client-secrets-manager";
 
-import { MongoClient } from "mongodb";
+import { dbHelper } from "../shared/repository/db-helper";
 
-const encodedPassword = encodeURIComponent(
-  process.env.DOCDB_PASSWORD as string
-);
+const secretsManager = new SecretsManagerClient();
 
-const MONGO_URI = `mongodb://${process.env.DOCDB_USER}:${encodedPassword}@${process.env.DOCDB_URI}:27017/`;
+async function getMongoUri(): Promise<string> {
+  const res = await secretsManager.send(
+    new GetSecretValueCommand({
+      SecretId: "mongodb/uri",
+    })
+  );
 
-const client = new MongoClient(MONGO_URI);
+  const secret = JSON.parse(res.SecretString ?? "{}");
+  return secret["MONGO_URI"];
+}
+
+let isConnected = false;
 
 export const extractDataHandler = async (event: S3Event) => {
-  const db = await client.db("admin").command({ listDatabases: 1 });
-
-  console.log({ db });
+  if (!isConnected) {
+    const uri = await getMongoUri();
+    await dbHelper.connect(uri);
+    isConnected = true;
+  }
 
   for (const record of event.Records) {
     const s3 = new S3();
