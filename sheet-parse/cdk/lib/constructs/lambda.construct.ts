@@ -1,4 +1,4 @@
-import { aws_s3_notifications, Duration } from "aws-cdk-lib";
+import { aws_s3_notifications, Duration, Stack } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import {
@@ -12,6 +12,8 @@ import { join } from "node:path";
 import { S3Construct } from "./s3.construct";
 import { EventType } from "aws-cdk-lib/aws-s3";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
+import { ManagedPolicy, PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { SecurityGroup, SubnetType, Vpc } from "aws-cdk-lib/aws-ec2";
 
 interface LambdaStackProps {
   s3Construct: S3Construct;
@@ -83,12 +85,19 @@ export class LambdaConstruct extends Construct {
       loggingFormat: LoggingFormat.JSON,
       tracing: Tracing.ACTIVE,
       logRetention: RetentionDays.ONE_WEEK,
-      environment: {
-        DOCDB_URI: "TEST",
-        DOCDB_USER: "test",
-        DOCDB_PASSWORD: "TEST",
-      },
     });
+
+    const region = Stack.of(this).region;
+    const account = Stack.of(this).account;
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
+        ],
+      })
+    );
 
     return fn;
   }
@@ -116,16 +125,32 @@ export class LambdaConstruct extends Construct {
         target: "es2020",
       },
       environment: {
-        DOCDB_URI: "TEST",
-        DOCDB_USER: "test",
-        DOCDB_PASSWORD: "TEST",
         API_URL: "https://api.igorcruz.space",
         API_KEY: apiKey,
       },
       loggingFormat: LoggingFormat.JSON,
       tracing: Tracing.ACTIVE,
       logRetention: RetentionDays.ONE_WEEK,
+      allowPublicSubnet: true,
     });
+
+    fn.role?.addManagedPolicy(
+      ManagedPolicy.fromAwsManagedPolicyName(
+        "service-role/AWSLambdaVPCAccessExecutionRole"
+      )
+    );
+
+    const region = Stack.of(this).region;
+    const account = Stack.of(this).account;
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
+        ],
+      })
+    );
 
     bucket.addEventNotification(
       EventType.OBJECT_CREATED,
