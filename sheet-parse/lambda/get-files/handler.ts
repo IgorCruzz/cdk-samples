@@ -34,9 +34,9 @@ export const getFilesDataHanlder = async (event: APIGatewayProxyEvent) => {
   const archiveRepository = new ArchiveRepository();
   const getFilesServices = new GetFilesServices(archiveRepository);
 
-  const page = event.queryStringParameters?.page;
+  const page = parseInt(event.queryStringParameters?.page || "1");
 
   const limit = parseInt(event.queryStringParameters?.limit || "20");
 
-  return getFilesServices.getFiles({ page: Number(page), limit });
+  return getFilesServices.getFiles({ page, limit });
 };
