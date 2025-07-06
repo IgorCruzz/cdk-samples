@@ -2,7 +2,7 @@ import { IArchiveRepository } from "../shared/repository/archive.repository";
 import { APIGatewayProxyResult } from "aws-lambda";
 
 type GetFilesInput = {
-  startKey?: string;
+  page: number;
   limit: number;
 };
 
@@ -15,10 +15,10 @@ interface IGetFilesService {
 export class GetFilesServices implements IGetFilesService {
   constructor(private readonly archiveRepository: IArchiveRepository) {}
 
-  getFiles = async ({ startKey, limit }: GetFilesInput): GetFilesOutput => {
+  getFiles = async ({ page, limit }: GetFilesInput): GetFilesOutput => {
     try {
       const files = await this.archiveRepository.getFiles({
-        startKey,
+        page,
         limit,
       });
 
