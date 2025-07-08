@@ -21,6 +21,10 @@ type GetFilesInput = {
 
 type GetFilesOutput = Promise<{
   itens: Files[];
+  count: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }>;
 
 export interface IArchiveRepository {
@@ -36,9 +40,11 @@ export interface IArchiveRepository {
 
 export class ArchiveRepository implements IArchiveRepository {
   async getFiles({ page, limit }: GetFilesInput): GetFilesOutput {
-    const archiveCollection = dbHelper.getCollection("archive");
+    const archiveCollection = dbHelper.getCollection("customers");
 
     const skip = (page - 1) * limit;
+
+    const count = await archiveCollection.countDocuments({});
 
     const archives = await archiveCollection
       .find({})
@@ -47,8 +53,14 @@ export class ArchiveRepository implements IArchiveRepository {
       .limit(limit)
       .toArray();
 
+    const totalPages = Math.ceil(count / limit);
+
     return {
       itens: dbHelper.mapCollection(archives),
+      count,
+      page,
+      limit,
+      totalPages,
     };
   }
 
