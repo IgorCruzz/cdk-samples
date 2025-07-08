@@ -33,6 +33,7 @@ export class ApiConstruct extends Construct {
     this.usagePlan();
 
     this.getFilesDataResouce();
+    this.getStatisticDataResouce();
   }
 
   private usagePlan() {
