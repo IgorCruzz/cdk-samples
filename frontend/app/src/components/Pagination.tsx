@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { StepBack, StepForward } from 'lucide-react';
 
 interface PaginationProps {
   pagination: {
@@ -86,7 +87,7 @@ export const Pagination = ({
           disabled={pagination.pageIndex === 0}
           className="border-none"
         >
-          previous
+          <StepBack />
         </Button>
 
         <div className="flex items-center gap-1">
@@ -128,7 +129,7 @@ export const Pagination = ({
           disabled={pagination.pageIndex + 1 >= totalPages}
           className="border-none"
         >
-          next
+        <StepForward />  
         </Button>
       </CardContent>
     </Card>
