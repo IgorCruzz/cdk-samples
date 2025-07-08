@@ -45,6 +45,6 @@ export const extractDataHandler = async (event: S3Event) => {
       sendNotification
     );
 
-    return extractDataService.extract({ s3Record: record });
+    return await extractDataService.extract({ s3Record: record });
   }
 };
