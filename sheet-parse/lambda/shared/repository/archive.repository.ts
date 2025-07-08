@@ -27,6 +27,11 @@ type GetFilesOutput = Promise<{
   totalPages: number;
 }>;
 
+type GetStatisticOutput = Promise<{
+  totalSuccess: number;
+  totalFailed: number;
+}>;
+
 export interface IArchiveRepository {
   getFiles: (input: GetFilesInput) => GetFilesOutput;
   save: (input: ArchiveRepositoryInput) => Promise<ArchiveRepositoryOutput>;
@@ -36,9 +41,27 @@ export interface IArchiveRepository {
       "key" | "status" | "message" | "successLines" | "failedLines"
     >
   ): Promise<void>;
+  getStatistics(): GetStatisticOutput;
 }
 
 export class ArchiveRepository implements IArchiveRepository {
+  async getStatistics(): GetStatisticOutput {
+    const archiveCollection = dbHelper.getCollection("archives");
+
+    const totalSuccess = await archiveCollection.countDocuments({
+      status: "COMPLETED",
+    });
+
+    const totalFailed = await archiveCollection.countDocuments({
+      status: "FAILED",
+    });
+
+    return {
+      totalSuccess,
+      totalFailed,
+    };
+  }
+
   async getFiles({ page, limit }: GetFilesInput): GetFilesOutput {
     const archiveCollection = dbHelper.getCollection("archives");
 
