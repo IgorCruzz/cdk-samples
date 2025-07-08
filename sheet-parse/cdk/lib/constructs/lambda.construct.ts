@@ -184,6 +184,18 @@ export class LambdaConstruct extends Construct {
       logRetention: RetentionDays.ONE_WEEK,
     });
 
+    const region = Stack.of(this).region;
+    const account = Stack.of(this).account;
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
+        ],
+      })
+    );
+
     return fn;
   }
 }
