@@ -32,5 +32,5 @@ export const handler = async () => {
   const archiveRepository = new ArchiveRepository();
   const getFilesServices = new GetStatisticServices(archiveRepository);
 
-  return getFilesServices.getFiles();
+  return await getFilesServices.getFiles();
 };

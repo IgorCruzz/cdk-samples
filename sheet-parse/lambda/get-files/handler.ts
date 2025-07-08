@@ -38,5 +38,5 @@ export const getFilesDataHanlder = async (event: APIGatewayProxyEvent) => {
 
   const limit = parseInt(event.queryStringParameters?.limit || "20");
 
-  return getFilesServices.getFiles({ page, limit });
+  return await getFilesServices.getFiles({ page, limit });
 };
