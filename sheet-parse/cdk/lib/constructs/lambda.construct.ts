@@ -13,7 +13,6 @@ import { S3Construct } from "./s3.construct";
 import { EventType } from "aws-cdk-lib/aws-s3";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { ManagedPolicy, PolicyStatement } from "aws-cdk-lib/aws-iam";
-import { SecurityGroup, SubnetType, Vpc } from "aws-cdk-lib/aws-ec2";
 
 interface LambdaStackProps {
   s3Construct: S3Construct;
