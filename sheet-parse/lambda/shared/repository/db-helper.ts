@@ -17,8 +17,12 @@ export const dbHelper = {
     this.client = null;
   },
 
-  getCollection(name: string): Collection | null {
-    return this.client?.db().collection(name) || null;
+  getCollection(name: string): Collection {
+    if (!this.client) {
+      throw new Error("MongoClient is not connected");
+    }
+
+    return this.client.db().collection(name);
   },
 
   map: (data: any): any => {
