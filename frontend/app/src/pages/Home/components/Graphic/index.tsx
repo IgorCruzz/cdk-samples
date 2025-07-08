@@ -35,8 +35,8 @@ export function Graphic() {
   })
 
   const chartData = [
-  { name: "completed", value: data?.data.Completed, fill: "var(--color-completed)" },
-  { name: "failed", value: data?.data.Failed, fill: "var(--color-failed)" },
+  { name: "completed", value: data?.data.totalSuccess, fill: "var(--color-completed)" },
+  { name: "failed", value: data?.data.totalFailed, fill: "var(--color-failed)" },
   ]
 
   return (
@@ -62,7 +62,7 @@ export function Graphic() {
                   style={{ backgroundColor: chartConfig.completed.color }}
                 ></span>
                 <span>
-                  {chartConfig.completed.label}: {data?.data.Completed ?? 0}
+                  {chartConfig.completed.label}: {data?.data.totalSuccess ?? 0}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-red-600">
@@ -71,7 +71,7 @@ export function Graphic() {
                   style={{ backgroundColor: chartConfig.failed.color }}
                 ></span>
                 <span>
-                  {chartConfig.failed.label}: {data?.data.Failed ?? 0}
+                  {chartConfig.failed.label}: {data?.data.totalFailed ?? 0}
                 </span>
               </div>
             </div>
