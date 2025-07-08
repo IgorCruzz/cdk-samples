@@ -1,4 +1,3 @@
-import { LIMIT } from '@/utils/limit';
 import { api } from '../api'
 
 export const files = {
@@ -8,10 +7,10 @@ export const files = {
   preSignedUrl: async () => {
     return await api.post('files');
   },
-  getFiles: async ({ page }: { page: number }) => {
+  getFiles: async ({ page, limit }: { page: number; limit: number }) => {
     return await api.get('files', {
       params: {
-        limit: LIMIT,
+        limit,
         page
       }
     });
