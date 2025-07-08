@@ -7,12 +7,12 @@ export const files = {
   },
   preSignedUrl: async () => {
     return await api.post('files');
-  }, 
-  getFiles: async ({ startKey }: { startKey?: string | null}) => {
+  },
+  getFiles: async ({ page }: { page: number }) => {
     return await api.get('files', {
       params: {
-        startKey,
-        limit: LIMIT
+        limit: LIMIT,
+        page
       }
     });
   }
