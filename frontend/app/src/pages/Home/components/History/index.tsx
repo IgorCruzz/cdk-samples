@@ -10,24 +10,21 @@ import { RefreshCw } from 'lucide-react';
 import { queryClient } from '@/lib/query-client';
 
 export const History = () => {
-  const [startKeys, setStartKeys] = useState<{ startKey: string | null }[]>([{ startKey: null }]);
-
+ 
   const [pagination, setPagination] = useState<
   {
     pageIndex: number;
-    pageSize: number;
-    lastKey?: string | null;
+    pageSize: number; 
   }
   >({
     pageIndex: 0,
-    pageSize: 10,
-    lastKey: null,
+    pageSize: 10, 
   });
 
   const { data, isLoading, refetch, isSuccess } = useQuery({
-    queryKey: ['files', pagination.lastKey],
+    queryKey: ['files', pagination],
     queryFn: () => files.getFiles({
-      startKey: pagination.lastKey,
+      page: pagination.pageIndex + 1,
     }),
     refetchInterval: 10000, 
   });  
@@ -58,13 +55,12 @@ export const History = () => {
             data={data?.data.itens || []} 
             />
 
-          <Pagination 
-          pagination={pagination}
-          setPagination={setPagination} 
-          lastKey={data?.data.lastKey}
-          setStartKeys={setStartKeys}
-          startKeys={startKeys}
-          />
+         
+            <Pagination
+              pagination={pagination}
+              setPagination={setPagination}
+              total={data?.data.count || 0}
+            />
           </div>
           )}        
         </CardContent>
