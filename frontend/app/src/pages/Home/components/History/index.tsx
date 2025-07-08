@@ -18,7 +18,7 @@ export const History = () => {
   }
   >({
     pageIndex: 0,
-    pageSize: 1, 
+    pageSize: 20, 
   });
 
   const { data, isLoading, refetch, isSuccess } = useQuery({
