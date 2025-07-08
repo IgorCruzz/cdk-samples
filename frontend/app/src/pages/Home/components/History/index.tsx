@@ -18,13 +18,14 @@ export const History = () => {
   }
   >({
     pageIndex: 0,
-    pageSize: 10, 
+    pageSize: 1, 
   });
 
   const { data, isLoading, refetch, isSuccess } = useQuery({
     queryKey: ['files', pagination],
     queryFn: () => files.getFiles({
       page: pagination.pageIndex + 1,
+      limit: pagination.pageSize,
     }),
     refetchInterval: 10000, 
   });  
@@ -32,7 +33,6 @@ export const History = () => {
   if(isSuccess) {
     queryClient.invalidateQueries({ queryKey: ['files-statistics'] });
   }
-
 
   return ( 
       <Card className="flex flex-col h-full rounded-tl-4xl rounded-br-4xl border-t-green-500 border-t-4">
@@ -53,6 +53,7 @@ export const History = () => {
             setPagination={setPagination}
             columns={columns}
             data={data?.data.itens || []} 
+            total={data?.data.count || 0}
             />
 
          
