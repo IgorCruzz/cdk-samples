@@ -2,6 +2,7 @@ import {
   type ColumnDef,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table"
 
@@ -30,6 +31,7 @@ interface DataTableProps<TData, TValue> {
     pageIndex: number
     pageSize: number
   }, 
+  total: number
 }
 
 export function DataTable<TData, TValue>({
@@ -37,16 +39,19 @@ export function DataTable<TData, TValue>({
   data,
   pagination,
   setPagination, 
+  total
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
-    data,
     columns,
+    data: data ?? [],
     getCoreRowModel: getCoreRowModel(),
-    manualPagination: true,
+    getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
     state: {
-    pagination,
+      pagination,
     },
-   onPaginationChange: setPagination
+    pageCount: Math.ceil(total / pagination.pageSize), 
+    manualPagination: true,
   })
 
   return ( 
@@ -69,8 +74,7 @@ export function DataTable<TData, TValue>({
               })}
             </TableRow>
           ))}
-        </TableHeader>
-         
+        </TableHeader> 
           <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
