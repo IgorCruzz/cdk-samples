@@ -40,7 +40,7 @@ export interface IArchiveRepository {
 
 export class ArchiveRepository implements IArchiveRepository {
   async getFiles({ page, limit }: GetFilesInput): GetFilesOutput {
-    const archiveCollection = dbHelper.getCollection("customers");
+    const archiveCollection = dbHelper.getCollection("archives");
 
     const skip = (page - 1) * limit;
 
@@ -65,7 +65,7 @@ export class ArchiveRepository implements IArchiveRepository {
   }
 
   async save(item: ArchiveRepositoryInput): Promise<ArchiveRepositoryOutput> {
-    const archives = dbHelper.getCollection("archive");
+    const archives = dbHelper.getCollection("archives");
 
     await archives?.insertOne({
       ...item,
@@ -85,7 +85,7 @@ export class ArchiveRepository implements IArchiveRepository {
     ArchiveRepositoryInput,
     "key" | "status" | "message" | "successLines" | "failedLines"
   >): Promise<void> {
-    const archives = dbHelper.getCollection("archive");
+    const archives = dbHelper.getCollection("archives");
 
     await archives?.updateOne(
       { key },
