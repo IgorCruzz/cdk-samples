@@ -23,7 +23,7 @@ export class CertificateConstruct extends Construct {
       zoneName: "igorcruz.space",
     });
 
-    this.certificate = new Certificate(this, "certificate-*.igorcruz.space", {
+    this.certificate = new Certificate(this, "certificate-igorcruz-space", {
       domainName: "*.igorcruz.space",
       validation: CertificateValidation.fromDns(hostedZone),
     });
