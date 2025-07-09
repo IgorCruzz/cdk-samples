@@ -5,7 +5,7 @@ Este projeto é uma aplicação **serverless** para envio de **notificações em
 ## 🛠️ Arquitetura
 
 <p align="center">
-  <img src="https://github.com/IgorCruzz/cdk-samples/blob/main/diagrams/rest-api.jpg" alt="Arquitetura" />
+  <img src="https://github.com/IgorCruzz/cdk-samples/blob/main/diagrams/notifications.png" alt="Arquitetura" />
 </p>
 
 ## 🚀 Principais Funcionalidades
