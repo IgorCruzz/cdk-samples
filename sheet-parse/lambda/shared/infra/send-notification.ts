@@ -12,11 +12,6 @@ export class SendNotification implements ISendNotification {
   send = async ({
     message,
   }: sendNotificationInput): Promise<sendNotificationOutput> => {
-    console.log({
-      URL: `${process.env.API_URL}/notifications`,
-      K: process.env.API_KEY,
-    });
-
     const response = await fetch(`${process.env.API_URL}/notifications`, {
       method: "POST",
       headers: {
