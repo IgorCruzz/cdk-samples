@@ -50,7 +50,7 @@ export class LambdaConstruct extends Construct {
         __dirname,
         "../../../lambda/generate-presigned-url/handler.ts"
       ),
-      handler: "generatePreSignedUrlHandler",
+      handler: "handler",
       bundling: {
         minify: true,
         sourceMap: true,
@@ -77,7 +77,7 @@ export class LambdaConstruct extends Construct {
       timeout: Duration.seconds(30),
       description: "A Lambda function to get files data",
       entry: join(__dirname, "../../../lambda/get-files/handler.ts"),
-      handler: "getFilesDataHanlder",
+      handler: "handler",
       bundling: {
         minify: true,
         sourceMap: true,
@@ -119,7 +119,7 @@ export class LambdaConstruct extends Construct {
       timeout: Duration.minutes(15),
       description: "A Lambda function to send notifications",
       entry: join(__dirname, "../../../lambda/extract-data/handler.ts"),
-      handler: "extractDataHandler",
+      handler: "handler",
       bundling: {
         minify: true,
         sourceMap: true,

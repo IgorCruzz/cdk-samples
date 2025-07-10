@@ -23,7 +23,7 @@ async function getMongoUri(): Promise<string> {
 
 let isConnected = false;
 
-export const getFilesDataHanlder = async (event: APIGatewayProxyEvent) => {
+export const handler = async (event: APIGatewayProxyEvent) => {
   if (!isConnected) {
     const uri = await getMongoUri();
     await dbHelper.connect(uri);

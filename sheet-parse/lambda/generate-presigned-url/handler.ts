@@ -1,5 +1,5 @@
 import { service } from "./generate-presigned-url.service";
 
-export const generatePreSignedUrlHandler = async () => {
+export const handler = async () => {
   return await service();
 };

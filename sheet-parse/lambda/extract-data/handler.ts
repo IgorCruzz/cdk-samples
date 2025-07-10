@@ -22,7 +22,7 @@ async function getMongoUri(): Promise<string> {
 
 let isConnected = false;
 
-export const extractDataHandler = async (event: S3Event) => {
+export const handler = async (event: S3Event) => {
   if (!isConnected) {
     const uri = await getMongoUri();
     await dbHelper.connect(uri);
