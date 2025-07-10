@@ -10,7 +10,7 @@ import { randomUUID } from "node:crypto";
 
 const snsClient = new SNSClient({});
 
-export interface SNSSAdapterInterface {
+export interface SnsInterface {
   publishBatchMessage: (params: {
     data: Record<string, unknown>[];
     attributes?: { dataType: string; stringValue: string }[];
@@ -22,15 +22,12 @@ export interface SNSSAdapterInterface {
   }) => Promise<void>;
 }
 
-export class SNSSAdapter implements SNSSAdapterInterface {
-  publishMessage = async (params: {
-    data: unknown;
-    attributes?: { dataType: string; stringValue: string }[];
-  }) => {
+export const sns: SnsInterface = {
+  async publishMessage({ data, attributes }) {
     const publishCommandInput: PublishCommandInput = {
-      Message: JSON.stringify(params.data),
+      Message: JSON.stringify(data),
       TopicArn: process.env.SNS_DLQ_TOPIC_ARN,
-      MessageAttributes: params.attributes?.reduce(
+      MessageAttributes: attributes?.reduce(
         (acc, { dataType, stringValue }) => {
           acc[dataType] = {
             DataType: dataType,
@@ -44,22 +41,16 @@ export class SNSSAdapter implements SNSSAdapterInterface {
 
     const publishCommand = new PublishCommand(publishCommandInput);
     await snsClient.send(publishCommand);
-  };
+  },
 
-  publishBatchMessage = async ({
-    data,
-    attributes,
-  }: {
-    data: Record<string, unknown>[];
-    attributes?: { dataType: string; stringValue: string }[];
-  }) => {
+  async publishBatchMessage({ data, attributes }) {
     const publishBatchCommandInput: PublishBatchCommandInput = {
-      PublishBatchRequestEntries: data.map((item: Record<string, unknown>) => ({
+      PublishBatchRequestEntries: data.map((item) => ({
         Id: randomUUID(),
         Message: JSON.stringify(item),
         MessageAttributes:
           attributes &&
-          attributes?.reduce((acc, { dataType, stringValue }) => {
+          attributes.reduce((acc, { dataType, stringValue }) => {
             acc[stringValue] = {
               DataType: dataType,
               StringValue: item[stringValue] as string,
@@ -70,11 +61,9 @@ export class SNSSAdapter implements SNSSAdapterInterface {
       TopicArn: process.env.SNS_TOPIC_ARN,
     };
 
-    console.log({ publishBatchCommandInput });
-
     const publishBatchCommand = new PublishBatchCommand(
       publishBatchCommandInput
     );
     await snsClient.send(publishBatchCommand);
-  };
-}
+  },
+};
