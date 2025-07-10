@@ -1,13 +1,11 @@
 import { userRepository } from "../shared/repository/user.repository";
 import { APIGatewayProxyResult } from "aws-lambda";
 
-type DeleteUsersInput = {
+export const service = async ({
+  id,
+}: {
   id: string;
-};
-
-type DeleteUsersOutput = Promise<APIGatewayProxyResult>;
-
-export const service = async ({ id }: DeleteUsersInput): DeleteUsersOutput => {
+}): Promise<APIGatewayProxyResult> => {
   try {
     await userRepository.delete({
       id,

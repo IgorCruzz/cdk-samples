@@ -1,17 +1,13 @@
 import { userRepository } from "../shared/repository/user.repository";
 import { APIGatewayProxyResult } from "aws-lambda";
 
-type GetUsersInput = {
-  page: number;
-  limit: number;
-};
-
-type GetUsersOutput = Promise<APIGatewayProxyResult>;
-
 export const service = async ({
   page,
   limit,
-}: GetUsersInput): GetUsersOutput => {
+}: {
+  page: number;
+  limit: number;
+}): Promise<APIGatewayProxyResult> => {
   try {
     const files = await userRepository.getUsers({
       page,
