@@ -1,22 +1,26 @@
-import { userRepository, Users } from "../shared/repository/user.repository";
+import { userRepository } from "../shared/repository/user.repository";
 import { APIGatewayProxyResult } from "aws-lambda";
 
-type CreateUsersInput = Users;
+type DeleteUsersInput = {
+  id: string;
+};
 
-type CreateUsersOutput = Promise<APIGatewayProxyResult>;
+type DeleteUsersOutput = Promise<APIGatewayProxyResult>;
 
-export const service = async (data: CreateUsersInput): CreateUsersOutput => {
+export const service = async ({ id }: DeleteUsersInput): DeleteUsersOutput => {
   try {
-    const files = await userRepository.save(data);
+    await userRepository.delete({
+      id,
+    });
 
     return {
-      statusCode: 201,
-      body: JSON.stringify(files),
+      statusCode: 204,
+      body: "",
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers":
           "Content-Type, Authorization, X-Api-Key",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Methods": "DELETE, OPTIONS",
       },
     };
   } catch (error) {
@@ -29,7 +33,7 @@ export const service = async (data: CreateUsersInput): CreateUsersOutput => {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers":
           "Content-Type, Authorization, X-Api-Key",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Methods": "DELETE, OPTIONS",
       },
     };
   }

@@ -9,7 +9,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
     <img src={Logo} alt="Logo" height={100} width={100} />
   </header>
 
-  <main className="flex-1 p-8">
+  <main className="flex-1 p-8 bg-gradient-to-r from-green-500 to-white">
     {children}
   </main>
 

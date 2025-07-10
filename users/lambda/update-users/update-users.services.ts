@@ -1,13 +1,13 @@
 import { userRepository, Users } from "../shared/repository/user.repository";
 import { APIGatewayProxyResult } from "aws-lambda";
 
-type CreateUsersInput = Users;
+type UpdateUsersInput = Users;
 
-type CreateUsersOutput = Promise<APIGatewayProxyResult>;
+type UpdateUsersOutput = Promise<APIGatewayProxyResult>;
 
-export const service = async (data: CreateUsersInput): CreateUsersOutput => {
+export const service = async (data: UpdateUsersInput): UpdateUsersOutput => {
   try {
-    const files = await userRepository.save(data);
+    const files = await userRepository.update(data);
 
     return {
       statusCode: 201,

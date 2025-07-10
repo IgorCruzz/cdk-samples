@@ -1,22 +1,31 @@
-import { userRepository, Users } from "../shared/repository/user.repository";
+import { userRepository } from "../shared/repository/user.repository";
 import { APIGatewayProxyResult } from "aws-lambda";
 
-type CreateUsersInput = Users;
+type GetUsersInput = {
+  page: number;
+  limit: number;
+};
 
-type CreateUsersOutput = Promise<APIGatewayProxyResult>;
+type GetUsersOutput = Promise<APIGatewayProxyResult>;
 
-export const service = async (data: CreateUsersInput): CreateUsersOutput => {
+export const service = async ({
+  page,
+  limit,
+}: GetUsersInput): GetUsersOutput => {
   try {
-    const files = await userRepository.save(data);
+    const files = await userRepository.getUsers({
+      page,
+      limit,
+    });
 
     return {
-      statusCode: 201,
+      statusCode: 200,
       body: JSON.stringify(files),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers":
           "Content-Type, Authorization, X-Api-Key",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
       },
     };
   } catch (error) {
@@ -29,7 +38,7 @@ export const service = async (data: CreateUsersInput): CreateUsersOutput => {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers":
           "Content-Type, Authorization, X-Api-Key",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
       },
     };
   }
