@@ -47,7 +47,7 @@ export class LambdaConstruct extends Construct {
       timeout: Duration.seconds(30),
       description: "A Lambda function to send notifications",
       entry: join(__dirname, "../../../lambda/send-notification/handler.ts"),
-      handler: "notifierSendHandler",
+      handler: "handler",
       environment: {
         SNS_TOPIC_ARN: notifierSNSTopic.topicArn,
       },
@@ -113,7 +113,7 @@ export class LambdaConstruct extends Construct {
       timeout: Duration.seconds(30),
       description: "A Lambda function to process notifications",
       entry: join(__dirname, "../../../lambda/process-notification/handler.ts"),
-      handler: "notifierProcessHandler",
+      handler: "handler",
       environment: {
         TWILIO_ACCOUNT_SID: ACCOUNT_SID.stringValue,
         TWILIO_AUTH_TOKEN: AUTH_TOKEN.stringValue,
@@ -170,7 +170,7 @@ export class LambdaConstruct extends Construct {
       timeout: Duration.seconds(30),
       description: "A Lambda function to process notifications from DLQ",
       entry: join(__dirname, "../../../lambda/process-dlq/handler.ts"),
-      handler: "notifierProcessDLQHandler",
+      handler: "handler",
       bundling: {
         minify: true,
         sourceMap: true,
