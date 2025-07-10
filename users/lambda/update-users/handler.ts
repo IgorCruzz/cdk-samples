@@ -24,13 +24,27 @@ async function getMongoUri(): Promise<string> {
 let isConnected = false;
 
 export const handler = async (event: APIGatewayProxyEvent) => {
-  if (!isConnected) {
-    const uri = await getMongoUri();
-    await dbHelper.connect(uri);
-    isConnected = true;
+  try {
+    if (!isConnected) {
+      const uri = await getMongoUri();
+      await dbHelper.connect(uri);
+      isConnected = true;
+    }
+
+    const data = JSON.parse(event.body || "{}");
+
+    return await service(data);
+  } catch (error) {
+    console.error("Error in handler:", error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: "Internal Server Error" }),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers":
+          "Content-Type, Authorization, X-Api-Key",
+        "Access-Control-Allow-Methods": "PUT, OPTIONS",
+      },
+    };
   }
-
-  const data = JSON.parse(event.body || "{}");
-
-  return await service(data);
 };

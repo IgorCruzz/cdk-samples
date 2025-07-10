@@ -1,38 +1,7 @@
 import { userRepository } from "../shared/repository/user.repository";
-import { APIGatewayProxyResult } from "aws-lambda";
 
-export const service = async ({
-  id,
-}: {
-  id: string;
-}): Promise<APIGatewayProxyResult> => {
-  try {
-    await userRepository.delete({
-      id,
-    });
-
-    return {
-      statusCode: 204,
-      body: "",
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers":
-          "Content-Type, Authorization, X-Api-Key",
-        "Access-Control-Allow-Methods": "DELETE, OPTIONS",
-      },
-    };
-  } catch (error) {
-    console.log({ error });
-
-    return {
-      statusCode: 500,
-      body: "Internal Server Error",
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers":
-          "Content-Type, Authorization, X-Api-Key",
-        "Access-Control-Allow-Methods": "DELETE, OPTIONS",
-      },
-    };
-  }
+export const service = async ({ id }: { id: string }): Promise<void> => {
+  await userRepository.delete({
+    id,
+  });
 };

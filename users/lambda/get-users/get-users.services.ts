@@ -1,5 +1,4 @@
-import { userRepository } from "../shared/repository/user.repository";
-import { APIGatewayProxyResult } from "aws-lambda";
+import { userRepository, Users } from "../shared/repository/user.repository";
 
 export const service = async ({
   page,
@@ -7,35 +6,17 @@ export const service = async ({
 }: {
   page: number;
   limit: number;
-}): Promise<APIGatewayProxyResult> => {
-  try {
-    const files = await userRepository.getUsers({
-      page,
-      limit,
-    });
+}): Promise<{
+  itens: Users[];
+  count: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}> => {
+  const files = await userRepository.getUsers({
+    page,
+    limit,
+  });
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify(files),
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers":
-          "Content-Type, Authorization, X-Api-Key",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-      },
-    };
-  } catch (error) {
-    console.log({ error });
-
-    return {
-      statusCode: 500,
-      body: "Internal Server Error",
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers":
-          "Content-Type, Authorization, X-Api-Key",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-      },
-    };
-  }
+  return files;
 };
