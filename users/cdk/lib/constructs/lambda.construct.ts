@@ -34,7 +34,7 @@ export class LambdaConstruct extends Construct {
       timeout: Duration.seconds(30),
       description: "A Lambda function to delete a user",
       entry: join(__dirname, "../../../lambda/delete-user/handler.ts"),
-      handler: "deleteUserHandler",
+      handler: "handler",
       bundling: {
         minify: true,
         sourceMap: true,
@@ -67,7 +67,7 @@ export class LambdaConstruct extends Construct {
       timeout: Duration.seconds(30),
       description: "A Lambda function to update a user",
       entry: join(__dirname, "../../../lambda/update-user/handler.ts"),
-      handler: "updateUserHandler",
+      handler: "handler",
       bundling: {
         minify: true,
         sourceMap: true,
@@ -100,7 +100,7 @@ export class LambdaConstruct extends Construct {
       timeout: Duration.seconds(30),
       description: "A Lambda function to create a user",
       entry: join(__dirname, "../../../lambda/create-user/handler.ts"),
-      handler: "createUserHandler",
+      handler: "handler",
       bundling: {
         minify: true,
         sourceMap: true,
@@ -133,7 +133,7 @@ export class LambdaConstruct extends Construct {
       timeout: Duration.seconds(30),
       description: "A Lambda function to get users data",
       entry: join(__dirname, "../../../lambda/get-users/handler.ts"),
-      handler: "getUsersDataHandler",
+      handler: "handler",
       bundling: {
         minify: true,
         sourceMap: true,
