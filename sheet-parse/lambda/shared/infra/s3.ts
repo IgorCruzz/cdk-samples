@@ -43,12 +43,8 @@ export interface IS3 {
   removeObject: (input: RemoveObjectInput) => Promise<RemoveObjectOutput>;
 }
 
-export class S3 implements IS3 {
-  createPresignedUrl = async ({
-    bucket,
-  }: {
-    bucket: string;
-  }): Promise<{ url: string; key: string }> => {
+export const s3: IS3 = {
+  async createPresignedUrl({ bucket }) {
     const ID = await KSUID.random();
     const key = `${ID.string}.csv`;
 
@@ -65,22 +61,15 @@ export class S3 implements IS3 {
       url,
       key,
     };
-  };
+  },
 
-  getObject = async ({
-    key,
-    Bucket,
-  }: {
-    key: string;
-    Bucket: string;
-  }): Promise<Readable> => {
+  async getObject({ key, Bucket }) {
     const params: GetObjectCommandInput = {
       Bucket,
       Key: key,
     };
 
     const command = new GetObjectCommand(params);
-
     const { Body } = await client.send(command);
 
     if (!Body) {
@@ -88,16 +77,15 @@ export class S3 implements IS3 {
     }
 
     return Body as Readable;
-  };
+  },
 
-  removeObject = async ({ Key, Bucket }: { Key: string; Bucket: string }) => {
+  async removeObject({ Key, Bucket }) {
     const params: DeleteObjectCommandInput = {
       Bucket,
       Key,
     };
 
     const command = new DeleteObjectCommand(params);
-
     await client.send(command);
-  };
-}
+  },
+};

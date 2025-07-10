@@ -1,38 +1,27 @@
-export class QueryBuilder {
-  private readonly query: Record<string, object>[] = [];
+type QueryStep = Record<string, object>;
 
-  private addStep(step: string, data: object): QueryBuilder {
-    this.query.push({
-      [step]: data,
-    });
-    return this;
-  }
+export type QueryBuilder = {
+  match: (data: object) => QueryBuilder;
+  group: (data: object) => QueryBuilder;
+  sort: (data: object) => QueryBuilder;
+  unwind: (data: object) => QueryBuilder;
+  lookup: (data: object) => QueryBuilder;
+  project: (data: object) => QueryBuilder;
+  build: () => QueryStep[];
+};
 
-  match(data: object): QueryBuilder {
-    return this.addStep("$match", data);
-  }
+export const queryBuilder = (query: QueryStep[] = []): QueryBuilder => {
+  const addStep = (step: string, data: object): QueryBuilder => {
+    return queryBuilder([...query, { [step]: data }]);
+  };
 
-  group(data: object): QueryBuilder {
-    return this.addStep("$group", data);
-  }
-
-  sort(data: object): QueryBuilder {
-    return this.addStep("$sort", data);
-  }
-
-  unwind(data: object): QueryBuilder {
-    return this.addStep("$unwind", data);
-  }
-
-  lookup(data: object): QueryBuilder {
-    return this.addStep("$lookup", data);
-  }
-
-  project(data: object): QueryBuilder {
-    return this.addStep("$project", data);
-  }
-
-  build(): object[] {
-    return this.query;
-  }
-}
+  return {
+    match: (data) => addStep("$match", data),
+    group: (data) => addStep("$group", data),
+    sort: (data) => addStep("$sort", data),
+    unwind: (data) => addStep("$unwind", data),
+    lookup: (data) => addStep("$lookup", data),
+    project: (data) => addStep("$project", data),
+    build: () => query,
+  };
+};

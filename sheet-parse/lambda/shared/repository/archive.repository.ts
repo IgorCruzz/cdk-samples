@@ -44,7 +44,7 @@ export interface IArchiveRepository {
   getStatistics(): GetStatisticOutput;
 }
 
-export class ArchiveRepository implements IArchiveRepository {
+export const archiveRepository: IArchiveRepository = {
   async getStatistics(): GetStatisticOutput {
     const archiveCollection = dbHelper.getCollection("archives");
 
@@ -60,13 +60,12 @@ export class ArchiveRepository implements IArchiveRepository {
       totalSuccess,
       totalFailed,
     };
-  }
+  },
 
   async getFiles({ page, limit }: GetFilesInput): GetFilesOutput {
     const archiveCollection = dbHelper.getCollection("archives");
 
     const skip = (page - 1) * limit;
-
     const count = await archiveCollection.countDocuments({});
 
     const archives = await archiveCollection
@@ -85,18 +84,18 @@ export class ArchiveRepository implements IArchiveRepository {
       limit,
       totalPages,
     };
-  }
+  },
 
   async save(item: ArchiveRepositoryInput): Promise<ArchiveRepositoryOutput> {
     const archives = dbHelper.getCollection("archives");
 
-    await archives?.insertOne({
+    await archives.insertOne({
       ...item,
       successLines: 0,
       failedLines: 0,
       createdAt: actualDate,
     });
-  }
+  },
 
   async updateStatus({
     key,
@@ -104,13 +103,10 @@ export class ArchiveRepository implements IArchiveRepository {
     message,
     successLines = 0,
     failedLines = 0,
-  }: Pick<
-    ArchiveRepositoryInput,
-    "key" | "status" | "message" | "successLines" | "failedLines"
-  >): Promise<void> {
+  }): Promise<void> {
     const archives = dbHelper.getCollection("archives");
 
-    await archives?.updateOne(
+    await archives.updateOne(
       { key },
       {
         $set: {
@@ -122,5 +118,5 @@ export class ArchiveRepository implements IArchiveRepository {
         },
       }
     );
-  }
-}
+  },
+};

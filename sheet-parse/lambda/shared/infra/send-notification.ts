@@ -8,10 +8,10 @@ export type sendNotificationInput = {
 
 export type sendNotificationOutput = Response;
 
-export class SendNotification implements ISendNotification {
-  send = async ({
+export const sendNotification: ISendNotification = {
+  async send({
     message,
-  }: sendNotificationInput): Promise<sendNotificationOutput> => {
+  }: sendNotificationInput): Promise<sendNotificationOutput> {
     const response = await fetch(`${process.env.API_URL}/notifications`, {
       method: "POST",
       headers: {
@@ -35,5 +35,5 @@ export class SendNotification implements ISendNotification {
     });
 
     return response;
-  };
-}
+  },
+};

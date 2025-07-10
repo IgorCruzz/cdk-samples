@@ -11,12 +11,12 @@ export interface ICustomerRepository {
   save: ({ data }: CustomerRepositoryInput) => CustomerRepositoryOutput;
 }
 
-export class CustomerRepository implements ICustomerRepository {
+export const customerRepository: ICustomerRepository = {
   async save({ data }: CustomerRepositoryInput): CustomerRepositoryOutput {
     const customer = dbHelper.getCollection("customers");
 
-    await customer?.insertMany(data);
+    await customer.insertMany(data);
 
     return;
-  }
-}
+  },
+};

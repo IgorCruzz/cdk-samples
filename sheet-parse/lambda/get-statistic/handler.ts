@@ -1,5 +1,4 @@
-import { ArchiveRepository } from "../shared/repository/archive.repository";
-import { GetStatisticServices } from "./get-statistic.service";
+import { service } from "./get-statistic.service";
 import {
   SecretsManagerClient,
   GetSecretValueCommand,
@@ -29,8 +28,5 @@ export const handler = async () => {
     isConnected = true;
   }
 
-  const archiveRepository = new ArchiveRepository();
-  const getFilesServices = new GetStatisticServices(archiveRepository);
-
-  return await getFilesServices.getFiles();
+  return await service();
 };

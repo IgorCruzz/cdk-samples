@@ -1,6 +1,5 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
-import { ArchiveRepository } from "../shared/repository/archive.repository";
-import { GetFilesServices } from "./get-files.services";
+import { service } from "./get-files.services";
 
 import {
   SecretsManagerClient,
@@ -31,12 +30,9 @@ export const getFilesDataHanlder = async (event: APIGatewayProxyEvent) => {
     isConnected = true;
   }
 
-  const archiveRepository = new ArchiveRepository();
-  const getFilesServices = new GetFilesServices(archiveRepository);
-
   const page = parseInt(event.queryStringParameters?.page || "1");
 
   const limit = parseInt(event.queryStringParameters?.limit || "20");
 
-  return await getFilesServices.getFiles({ page, limit });
+  return await service({ page, limit });
 };
