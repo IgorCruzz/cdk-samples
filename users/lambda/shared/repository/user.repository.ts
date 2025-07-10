@@ -7,24 +7,15 @@ export type Users = {
   password: string;
 };
 
-type UserRepositoryInput = Users;
-
-type GetUsersInput = {
-  page: number;
-  limit: number;
-};
-
-type GetUsersOutput = Promise<{
-  itens: Users[];
-  count: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}>;
-
 export interface IUserRepository {
-  getUsers: (input: GetUsersInput) => GetUsersOutput;
-  save: (item: UserRepositoryInput) => Promise<void>;
+  getUsers: (input: { page: number; limit: number }) => Promise<{
+    itens: Users[];
+    count: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }>;
+  save: (item: Users) => Promise<void>;
   update: (item: Users) => Promise<void>;
   delete: (id: { id: string }) => Promise<void>;
 }
