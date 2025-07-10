@@ -1,11 +1,7 @@
 import { userRepository, Users } from "../shared/repository/user.repository";
 import { APIGatewayProxyResult } from "aws-lambda";
 
-type UpdateUsersInput = Users;
-
-type UpdateUsersOutput = Promise<APIGatewayProxyResult>;
-
-export const service = async (data: UpdateUsersInput): UpdateUsersOutput => {
+export const service = async (data: Users): Promise<APIGatewayProxyResult> => {
   try {
     const files = await userRepository.update(data);
 
