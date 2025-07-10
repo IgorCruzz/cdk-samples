@@ -17,7 +17,7 @@ import { IFunction } from "aws-cdk-lib/aws-lambda";
 interface ApiConstructProps {
   updateUserFunction: IFunction;
   createUserFunction: IFunction;
-  getUserFunction: IFunction;
+  getUsersFunction: IFunction;
   deleteUserFunction: IFunction;
 }
 
@@ -142,7 +142,7 @@ export class ApiConstruct extends Construct {
   private getUserResouce() {
     this.api.root.addMethod(
       "GET",
-      new LambdaIntegration(this.props.getUserFunction),
+      new LambdaIntegration(this.props.getUsersFunction),
       {
         apiKeyRequired: true,
       }
