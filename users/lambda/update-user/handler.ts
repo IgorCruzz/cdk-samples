@@ -33,7 +33,18 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 
     const data = JSON.parse(event.body || "{}");
 
-    return await service(data);
+    await service(data);
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: "User updated successfully" }),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers":
+          "Content-Type, Authorization, X-Api-Key",
+        "Access-Control-Allow-Methods": "PUT, OPTIONS",
+      },
+    };
   } catch (error) {
     console.error("Error in handler:", error);
     return {
