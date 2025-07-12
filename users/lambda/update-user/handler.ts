@@ -33,7 +33,9 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 
     const data = JSON.parse(event.body || "{}");
 
-    await service(data);
+    const { id } = event.pathParameters as { id: string };
+
+    await service({ id, ...data });
 
     return {
       statusCode: 200,
