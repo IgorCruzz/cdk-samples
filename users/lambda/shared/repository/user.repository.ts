@@ -5,27 +5,29 @@ export type Users = {
   name: string;
   email: string;
   password: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export interface IUserRepository {
-  getUsers: (input: { page: number; limit: number }) => Promise<{
+  getUsers(input: { page: number; limit: number }): Promise<{
     itens: Users[];
     count: number;
     page: number;
     limit: number;
     totalPages: number;
   }>;
-  save: (item: Users) => Promise<void>;
-  update: (item: Users) => Promise<void>;
-  delete: (id: { id: string }) => Promise<void>;
+  save(item: Users): Promise<void>;
+  update(item: Users): Promise<void>;
+  delete(input: { id: string }): Promise<void>;
+  findByEmail(email: string): Promise<Users | null>;
 }
 
 export const userRepository: IUserRepository = {
-  async getUsers({ page, limit }) {
+  async getUsers({ page, limit }: { page: number; limit: number }) {
     const userCollection = dbHelper.getCollection("users");
-
     const skip = (page - 1) * limit;
-    const count = await userCollection.countDocuments({});
+    const count = await userCollection.countDocuments();
 
     const users = await userCollection
       .find({})
@@ -45,18 +47,16 @@ export const userRepository: IUserRepository = {
     };
   },
 
-  async save(data) {
+  async save(data: Users): Promise<void> {
     const users = dbHelper.getCollection("users");
-
     await users.insertOne({
       ...data,
       createdAt: new Date(),
     });
   },
 
-  async update(data) {
+  async update(data: Users): Promise<void> {
     const users = dbHelper.getCollection("users");
-
     const { id, ...updateData } = data;
 
     await users.updateOne(
@@ -70,9 +70,15 @@ export const userRepository: IUserRepository = {
     );
   },
 
-  async delete({ id }) {
+  async delete({ id }: { id: string }): Promise<void> {
     const users = dbHelper.getCollection("users");
-
     await users.deleteOne({ id });
+  },
+
+  async findByEmail(email: string): Promise<Users> {
+    const users = dbHelper.getCollection("users");
+    const user = await users.findOne({ email });
+
+    return user && dbHelper.map(user);
   },
 };
