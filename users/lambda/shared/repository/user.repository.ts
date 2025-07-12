@@ -90,7 +90,7 @@ export const userRepository: IUserRepository = {
       { projection: { password: 0 } }
     );
 
-    return user ? dbHelper.map(user) : null;
+    return user && dbHelper.map(user);
   },
 
   async findByEmail(email: string): Promise<Users> {
