@@ -5,6 +5,7 @@ import {
   SecretsManagerClient,
   GetSecretValueCommand,
 } from "@aws-sdk/client-secrets-manager";
+import { internal } from "../shared/http/500";
 
 import { dbHelper } from "../shared/repository/db-helper";
 
@@ -49,15 +50,6 @@ export const handler = async (event: APIGatewayProxyEvent) => {
     };
   } catch (error) {
     console.error("Error in handler:", error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ message: "Internal Server Error" }),
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers":
-          "Content-Type, Authorization, X-Api-Key",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-      },
-    };
+    return internal();
   }
 };

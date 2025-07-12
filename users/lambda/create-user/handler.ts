@@ -7,6 +7,7 @@ import {
 } from "@aws-sdk/client-secrets-manager";
 
 import { dbHelper } from "../shared/repository/db-helper";
+import { internal } from "../shared/http/500";
 
 const secretsManager = new SecretsManagerClient();
 
@@ -47,9 +48,6 @@ export const handler = async (event: APIGatewayProxyEvent) => {
     };
   } catch (error) {
     console.error("Error creating user:", error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ message: "Error creating user" }),
-    };
+    return internal();
   }
 };
