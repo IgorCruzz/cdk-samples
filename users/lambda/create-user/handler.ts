@@ -33,11 +33,11 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 
     const data = JSON.parse(event.body || "{}");
 
-    const { message } = await service(data);
+    const response = await service(data);
 
     return {
       statusCode: 201,
-      body: JSON.stringify({ message }),
+      body: JSON.stringify(response),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers":
