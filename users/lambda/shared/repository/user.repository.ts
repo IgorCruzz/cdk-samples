@@ -23,6 +23,7 @@ export interface IUserRepository {
   update(item: Users): Promise<void>;
   delete(input: { id: string }): Promise<void>;
   findByEmail(email: string): Promise<Users | null>;
+  findById(id: string): Promise<Users | null>;
 }
 
 export const userRepository: IUserRepository = {
@@ -79,6 +80,17 @@ export const userRepository: IUserRepository = {
   async delete({ id }: { id: string }): Promise<void> {
     const users = dbHelper.getCollection("users");
     await users.deleteOne({ _id: new ObjectId(id) });
+  },
+
+  async findById(id: string): Promise<Users | null> {
+    const users = dbHelper.getCollection("users");
+
+    const user = await users.findOne(
+      { _id: new ObjectId(id) },
+      { projection: { password: 0 } }
+    );
+
+    return user ? dbHelper.map(user) : null;
   },
 
   async findByEmail(email: string): Promise<Users> {
