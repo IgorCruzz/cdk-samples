@@ -10,6 +10,9 @@ import {
   UsagePlan,
   Period,
   ApiKey,
+  Model,
+  JsonSchemaType,
+  RequestValidator,
 } from "aws-cdk-lib/aws-apigateway";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
@@ -23,11 +26,13 @@ interface ApiConstructProps {
 
 export class ApiConstruct extends Construct {
   public readonly api: RestApi;
+  private readonly paramsResource: any;
 
   constructor(scope: Construct, id: string, readonly props: ApiConstructProps) {
     super(scope, id);
 
     this.api = this.userApi();
+    this.paramsResource = this.paramResource();
 
     this.basePathMapping();
     this.usagePlan();
@@ -130,11 +135,52 @@ export class ApiConstruct extends Construct {
   }
 
   private createUserResouce() {
+    const model = new Model(this, "model-user-request", {
+      restApi: this.api,
+      contentType: "application/json",
+      description: "Model for user create request",
+      schema: {
+        type: JsonSchemaType.OBJECT,
+        properties: {
+          name: {
+            type: JsonSchemaType.STRING,
+            minLength: 1,
+            maxLength: 100,
+          },
+          email: {
+            type: JsonSchemaType.STRING,
+            format: "email",
+            minLength: 5,
+            maxLength: 255,
+          },
+          password: {
+            type: JsonSchemaType.STRING,
+            minLength: 6,
+            maxLength: 128,
+          },
+        },
+        required: ["name", "email", "password"],
+      },
+    });
+
+    const validator = new RequestValidator(
+      this,
+      "notifications-Post-request-validator",
+      {
+        restApi: this.api,
+        validateRequestBody: true,
+      }
+    );
+
     this.api.root.addMethod(
       "POST",
       new LambdaIntegration(this.props.createUserFunction),
       {
+        requestModels: {
+          "application/json": model,
+        },
         apiKeyRequired: true,
+        requestValidator: validator,
       }
     );
   }
@@ -149,8 +195,12 @@ export class ApiConstruct extends Construct {
     );
   }
 
+  private paramResource() {
+    return this.api.root.addResource("{id}");
+  }
+
   private updateUserResouce() {
-    this.api.root.addMethod(
+    this.paramsResource.addMethod(
       "PUT",
       new LambdaIntegration(this.props.updateUserFunction),
       {
@@ -160,7 +210,7 @@ export class ApiConstruct extends Construct {
   }
 
   private deleteUserResouce() {
-    this.api.root.addMethod(
+    this.paramsResource.addMethod(
       "DELETE",
       new LambdaIntegration(this.props.deleteUserFunction),
       {
