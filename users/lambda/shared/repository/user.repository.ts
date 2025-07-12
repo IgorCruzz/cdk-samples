@@ -77,7 +77,10 @@ export const userRepository: IUserRepository = {
 
   async findByEmail(email: string): Promise<Users> {
     const users = dbHelper.getCollection("users");
-    const user = await users.findOne({ email });
+    const user = await users.findOne(
+      { email },
+      { projection: { password: 0 } }
+    );
 
     return user && dbHelper.map(user);
   },
