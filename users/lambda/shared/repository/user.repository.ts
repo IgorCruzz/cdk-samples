@@ -1,4 +1,5 @@
 import { dbHelper } from "./db-helper";
+import { hash } from "bcryptjs";
 
 export type Users = {
   id: string;
@@ -48,6 +49,10 @@ export const userRepository: IUserRepository = {
   },
 
   async save(data: Users): Promise<void> {
+    if (data.password) {
+      data.password = await hash(data.password, 10);
+    }
+
     const users = dbHelper.getCollection("users");
     await users.insertOne({
       ...data,
