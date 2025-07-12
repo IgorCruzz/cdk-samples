@@ -1,4 +1,5 @@
 import { userRepository, Users } from "../shared/repository/user.repository";
+import { Output } from "../shared/service/output";
 
 export const service = async ({
   page,
@@ -6,7 +7,7 @@ export const service = async ({
 }: {
   page: number;
   limit: number;
-}): Promise<{
+}): Output<{
   itens: Users[];
   count: number;
   page: number;
@@ -18,5 +19,9 @@ export const service = async ({
     limit,
   });
 
-  return files;
+  return {
+    message: "Users retrieved successfully",
+    data: files,
+    success: true,
+  };
 };
