@@ -66,6 +66,10 @@ export const userRepository: IUserRepository = {
     const users = dbHelper.getCollection("users");
     const { id, ...updateData } = data;
 
+    if (data.password) {
+      updateData.password = await hash(data.password, 10);
+    }
+
     await users.updateOne(
       { _id: new ObjectId(id) },
       {
