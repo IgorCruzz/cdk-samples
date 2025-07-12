@@ -35,11 +35,11 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 
     const { id } = event.pathParameters as { id: string };
 
-    const { message } = await service({ id, ...data });
+    const response = await service({ id, ...data });
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message }),
+      body: JSON.stringify(response),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers":
