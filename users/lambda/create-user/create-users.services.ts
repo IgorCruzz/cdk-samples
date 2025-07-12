@@ -7,7 +7,7 @@ export const service = async (
 ): Promise<{ message: string }> => {
   const existingUser = await userRepository.findByEmail(data.email);
   if (existingUser) {
-    throw new Error("Email is already in use");
+    return { message: "Email already exists" };
   }
 
   await userRepository.save(data);
