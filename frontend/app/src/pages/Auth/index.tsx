@@ -8,11 +8,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { toast } from "sonner";
+import { auth } from '@/services/endpoints/auth';
 
 export default function LoginPage() { 
   const {isPending, mutateAsync} = useMutation({
     mutationFn: async (input: AuthInput) => {
-      const { data } = await axios.post("/api/login", input);
+      const { data } = await auth.login(input);
       return data;
     }, 
   }); 
