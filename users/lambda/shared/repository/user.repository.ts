@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { dbHelper } from "./db-helper";
-import { hash } from "bcryptjs";
+import { hash, compare } from "bcryptjs";
 
 export type Users = {
   id: string;
