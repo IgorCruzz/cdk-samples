@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { dbHelper } from "./db-helper";
 import { hash } from "bcryptjs";
 
@@ -65,7 +66,7 @@ export const userRepository: IUserRepository = {
     const { id, ...updateData } = data;
 
     await users.updateOne(
-      { id },
+      { _id: new ObjectId(id) },
       {
         $set: {
           ...updateData,
@@ -77,7 +78,7 @@ export const userRepository: IUserRepository = {
 
   async delete({ id }: { id: string }): Promise<void> {
     const users = dbHelper.getCollection("users");
-    await users.deleteOne({ id });
+    await users.deleteOne({ _id: new ObjectId(id) });
   },
 
   async findByEmail(email: string): Promise<Users> {
