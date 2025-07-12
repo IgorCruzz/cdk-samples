@@ -30,7 +30,7 @@ export const userRepository: IUserRepository = {
     const count = await userCollection.countDocuments();
 
     const users = await userCollection
-      .find({})
+      .find({}, { projection: { password: 0 } })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
