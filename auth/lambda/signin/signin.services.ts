@@ -14,7 +14,7 @@ export const service = async (data: SigninInput): Output<{ accessToken: string }
     return { message: "Email or password is incorrect", success: false, data: null };
   }
 
-  const accessToken = jwt.sign({ email });
+  const tokens = jwt.sign({ email });
 
-  return { message: "Login successful", success: true, data: { accessToken } };
+  return { message: "Login successful", success: true, data: tokens };
 };
