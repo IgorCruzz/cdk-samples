@@ -1,9 +1,10 @@
 import { userRepository, Users } from "../shared/repository/user.repository";
 import { Output } from "../shared/service/output";
+import { jwt } from '../shared/infra/jwt';
 
 type SigninInput = Users;
 
-export const service = async (data: SigninInput): Output => {
+export const service = async (data: SigninInput): Output<{ accessToken: string }>  => {
   
   const { email, password } = data;
   
@@ -13,5 +14,7 @@ export const service = async (data: SigninInput): Output => {
     return { message: "Email or password is incorrect", success: false, data: null };
   }
 
-  return { message: "Login successful", success: true, data: null };
+  const accessToken = jwt.sign({ email });
+
+  return { message: "Login successful", success: true, data: { accessToken } };
 };
