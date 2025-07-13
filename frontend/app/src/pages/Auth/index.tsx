@@ -9,27 +9,59 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { toast } from "sonner";
 import { auth } from '@/services/endpoints/auth';
+import { useAuth } from "react-oidc-context";
 
-export default function LoginPage() { 
-  const {isPending, mutateAsync} = useMutation({
-    mutationFn: async (input: AuthInput) => {
-      const { data } = await auth.login(input);
-      return data;
-    }, 
-  }); 
+import {
+  CognitoIdentityProviderClient,
+  InitiateAuthCommand,
+} from "@aws-sdk/client-cognito-identity-provider";
+
+
+const REGION = "us-east-1"; 
+
+const client = new CognitoIdentityProviderClient({ region: REGION });
+
+
+export default function LoginPage() {   
 
   const form = useForm<{ email: string; password: string }>({
     resolver: zodResolver(authSchema), 
   }); 
 
-  const onSubmit = (data: AuthInput) => {
-    try { 
-    mutateAsync(data);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error('Oops! Something went wrong.');
-      }
-      console.error(error);   
+  const onSubmit = async (data: AuthInput) => {
+    try {
+    const params = {
+      AuthFlow: "USER_PASSWORD_AUTH",
+      ClientId: "5jt1ofjdv34b344lbiq1jj5av7",
+      AuthParameters: {
+        USERNAME: data.email,
+        PASSWORD: data.password,
+      },
+    };
+
+    const command = new InitiateAuthCommand(params);
+    const response = await client.send(command);
+
+    console.log({
+      response
+    });     
+    } catch (error) {  
+    switch (error.name) {
+    case "UserNotFoundException":
+      toast.error("Usuário não encontrado.");
+      break;
+    case "NotAuthorizedException":
+      toast.error("Usuário ou senha incorretos.");
+      break;
+    case "UserNotConfirmedException":
+      toast.error("Usuário não confirmado. Verifique seu e-mail.");
+      break;
+    case "PasswordResetRequiredException":
+      toast.error("Senha precisa ser redefinida.");
+      break;
+    default:
+      toast.error(error.message || "Erro desconhecido ao fazer login.");
+    } 
     }   
   };
 
@@ -55,8 +87,8 @@ export default function LoginPage() {
                 required
               />
             </div> 
-            <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? "Logging in..." : "Login"}
+            <Button type="submit" className="w-full">
+              Login
             </Button> 
           </form>
           </Form>
