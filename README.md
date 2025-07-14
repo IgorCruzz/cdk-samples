@@ -18,7 +18,7 @@ serverles.
 
 - [Frontend](./frontend/) - Aplicação web construída com Vite + React, responsável por permitir o upload de arquivos CSV e acompanhar o processamento dos dados. A infraestrutura é provisionada com AWS CDK, incluindo S3 para hospedagem estática e CloudFront
 
-- [users](./users/) [EM CONSTRUÇÃO] - Implementação do CRUD de usuários via API Gateway e Lambda
+- [users](./users/) - Implementação do CRUD de usuários via API Gateway e Lambda
 
 - [Infra](./infra/) - Projeto AWS CDK com recursos comuns e compartilhados para toda a arquitetura
 
