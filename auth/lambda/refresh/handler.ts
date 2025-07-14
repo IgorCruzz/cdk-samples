@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
-import { service } from "./signin.services";
+import { service } from "./refresh.services";
 
 import {
   SecretsManagerClient,
