@@ -4,7 +4,10 @@ import { jwt } from '../shared/infra/jwt';
 
 type SigninInput = Users;
 
-export const service = async (data: SigninInput): Output<{ accessToken: string }>  => {
+export const service = async (data: SigninInput): Output<{ 
+  accessToken: string; 
+  refreshToken: string; 
+ }>  => {
   
   const { email, password } = data;
   
@@ -14,7 +17,10 @@ export const service = async (data: SigninInput): Output<{ accessToken: string }
     return { message: "Email or password is incorrect", success: false, data: null };
   }
 
-  const tokens = jwt.sign({ email });
+  const tokens = await jwt.sign({ email });
 
-  return { message: "Login successful", success: true, data: tokens };
+  return { message: "Login successful", success: true, data: {
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken
+  } };
 };
