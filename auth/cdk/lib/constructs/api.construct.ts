@@ -15,7 +15,8 @@ import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
 
 interface ApiConstructProps { 
-  signinFunction: IFunction; 
+  signinFunction: IFunction;
+  refreshTokenFunction: IFunction;
 }
 
 export class ApiConstruct extends Construct {
@@ -135,5 +136,44 @@ export class ApiConstruct extends Construct {
         requestValidator: validator,
       }
     );
-  }   
+  } 
+  
+  private createRefreshTokenResource() {
+    const model = new Model(this, "model-refresh-token-request", {
+      restApi: this.api,
+      contentType: "application/json",
+      description: "Model for refresh token request",
+      schema: {
+        type: JsonSchemaType.OBJECT,
+        properties: {
+          refreshToken: {
+            type: JsonSchemaType.STRING, 
+          },
+        },
+        required: ["refreshToken"],
+      },
+    });
+
+    const validator = new RequestValidator(
+      this,
+      "refresh-token-request-validator",
+      {
+        restApi: this.api,
+        validateRequestBody: true,
+      }
+    );
+
+    const resource = this.api.root.addResource("refresh");
+
+    resource.addMethod(
+      "POST",
+      new LambdaIntegration(this.props.refreshTokenFunction),
+      {
+        requestModels: {
+          "application/json": model,
+        },
+        requestValidator: validator,
+      }
+    );
+  }
 }
