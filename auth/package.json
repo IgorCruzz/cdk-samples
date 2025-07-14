@@ -8,7 +8,9 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "local:api": "sam local start-api -t ./cdk.out/stack-auth.template.json --port 4000"
+
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.150",
