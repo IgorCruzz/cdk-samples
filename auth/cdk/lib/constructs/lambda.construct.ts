@@ -20,6 +20,41 @@ export class LambdaConstruct extends Construct {
     this.signinFunction = this.createSigninFunction();
   }
 
+  private refreshTokenFunction() {
+    const fn = new NodejsFunction(this, "function-refresh-token", {
+      memorySize: 128,
+      architecture: Architecture.X86_64,
+      runtime: Runtime.NODEJS_20_X,   
+      timeout: Duration.seconds(30),
+      description: "A Lambda function to handle token refresh",
+      entry: join(__dirname, "../../../lambda/refresh/handler.ts"),
+      handler: "handler",
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: "es2020",
+      },
+      loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
+      logRetention: RetentionDays.ONE_WEEK,
+    });
+
+    const region = Stack.of(this).region;
+    const account = Stack.of(this).account;
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
+          `arn:aws:secretsmanager:${region}:${account}:secret:jwt/secret-*`,
+        ],
+      })
+    );
+
+    return fn;
+  }
+
   private createSigninFunction() {
     const fn = new NodejsFunction(this, "function-signin", {
       memorySize: 128,
