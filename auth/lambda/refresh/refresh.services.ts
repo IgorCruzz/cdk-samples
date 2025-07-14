@@ -5,7 +5,7 @@ type RefreshTokenInput = {
   refreshToken: string;
 };
 
-export const refreshTokenService = async (data: RefreshTokenInput): Output<{ 
+export const service = async (data: RefreshTokenInput): Output<{ 
   accessToken: string; 
   refreshToken: string; 
 }> => {
