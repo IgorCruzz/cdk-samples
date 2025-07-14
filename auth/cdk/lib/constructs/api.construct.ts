@@ -28,6 +28,7 @@ export class ApiConstruct extends Construct {
     this.api = this.authApi();
     this.basePathMapping();  
     this.createSignInResource();
+    this.createRefreshTokenResource();
   }
 
   private authApi() {
