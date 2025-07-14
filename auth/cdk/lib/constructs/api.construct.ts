@@ -123,7 +123,9 @@ export class ApiConstruct extends Construct {
       }
     );
 
-    this.api.root.addMethod(
+    const resource = this.api.root.addResource("signin");
+
+    resource.addMethod(
       "POST",
       new LambdaIntegration(this.props.signinFunction),
       {
