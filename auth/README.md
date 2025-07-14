@@ -1,15 +1,24 @@
-# Welcome to your CDK TypeScript project
+🔐 Auth Service – Autenticação Serverless com MongoDB
+Esta aplicação serverless fornece um serviço de autenticação.
 
-You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`AuthStack`)
-which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
+🛠️ Arquitetura
+<p align="center"> <img src="https://github.com/IgorCruzz/cdk-samples/blob/main/diagrams/auth-service.png" alt="Arquitetura Auth Service" /> </p>
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+🚀 Principais Funcionalidades
 
-## Useful commands
+🔑 Login com autenticação baseada em JWT
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+🔄 Refresh Token para renovação de sessões
+
+📦 Tecnologias & Serviços
+Amazon API Gateway – Endpoint público para as rotas de autenticação
+
+AWS Lambda – Funções serverless responsáveis por: 
+
+Login e geração de tokens
+
+Validação de tokens
+
+MongoDB – Banco NoSQL para persistência de dados de usuários e sessões
+
+AWS CDK – Infraestrutura como código (IaC)
