@@ -47,6 +47,7 @@ export class LambdaConstruct extends Construct {
         actions: ["secretsmanager:GetSecretValue"],
         resources: [
           `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
+          `arn:aws:secretsmanager:${region}:${account}:secret:jwt/secret-*`,
         ],
       })
     );
