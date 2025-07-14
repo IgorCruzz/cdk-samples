@@ -10,6 +10,7 @@ export class AuthStack extends Stack {
 
     new ApiConstruct(this, 'construct-api', {
        signinFunction: lambdaContruct.signinFunction,
+       refreshTokenFunction: lambdaContruct.refreshTokenFunction
     });
   }
 }
