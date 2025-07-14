@@ -13,14 +13,16 @@ import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 
 export class LambdaConstruct extends Construct {
   public readonly signinFunction: NodejsFunction; 
+  public readonly refreshTokenFunction: NodejsFunction 
 
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
     this.signinFunction = this.createSigninFunction();
+    this.refreshTokenFunction = this.createRefreshTokenFunction();
   }
 
-  private refreshTokenFunction() {
+  private createRefreshTokenFunction() {
     const fn = new NodejsFunction(this, "function-refresh-token", {
       memorySize: 128,
       architecture: Architecture.X86_64,
