@@ -25,7 +25,7 @@ export const jwt = {
     });
 
     const refreshToken = sign(payload, await getJWTSecret(), {
-      expiresIn: '7d',
+      expiresIn: '1d',
     });
 
     return  { accessToken, refreshToken  };
