@@ -7,9 +7,6 @@ import {
   LambdaIntegration,
   BasePathMapping,
   DomainName,
-  UsagePlan,
-  Period,
-  ApiKey,
   Model,
   JsonSchemaType,
   RequestValidator,
@@ -28,40 +25,8 @@ export class ApiConstruct extends Construct {
     super(scope, id);
  
     this.api = this.authApi();
-    this.basePathMapping();
-    this.usagePlan();
-    this.createUserResouce();
-  }
-
-  private usagePlan() {
-    const usagePlan = new UsagePlan(this, "usage-plan", {
-      description:
-        "Permite 1000 requisições por dia (aproximadamente equivalente a 10 em 10h)",
-      throttle: {
-        rateLimit: 1,
-        burstLimit: 1,
-      },
-      quota: {
-        limit: 1000,
-        period: Period.DAY,
-      },
-    });
-
-    usagePlan.addApiStage({
-      stage: this.api.deploymentStage,
-    });
-
-    const apiKey = ApiKey.fromApiKeyId(
-      this,
-      "api-key",
-      StringParameter.fromStringParameterName(
-        this,
-        "parameter-api-key",
-        "/api/api-key"
-      ).stringValue
-    );
-
-    usagePlan.addApiKey(apiKey);
+    this.basePathMapping();  
+    this.createSignInResource();
   }
 
   private authApi() {
@@ -125,7 +90,7 @@ export class ApiConstruct extends Construct {
     });
   }
 
-  private createUserResouce() {
+  private createSignInResource() {
     const model = new Model(this, "model-auth-request", {
       restApi: this.api,
       contentType: "application/json",
@@ -165,7 +130,6 @@ export class ApiConstruct extends Construct {
         requestModels: {
           "application/json": model,
         },
-        apiKeyRequired: true,
         requestValidator: validator,
       }
     );
