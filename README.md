@@ -22,6 +22,8 @@ serverles.
 
 - [Infra](./infra/) - Projeto AWS CDK com recursos comuns e compartilhados para toda a arquitetura
 
+- [Auth](./auth/) - Serviço de autenticação (login, geração, validação de tokens e refresh token) com arquitetura serverless usando API Gateway, Lambda e MongoDB
+
 ## Como Utilizar os Exemplos
 
 Siga os passos abaixo para instalar e executar qualquer projeto CDK deste repositório:
