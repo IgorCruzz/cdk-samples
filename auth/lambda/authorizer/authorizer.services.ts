@@ -1,26 +1,38 @@
 import { jwt } from '../shared/infra/jwt';
 import { Output } from "../shared/service/output";
 
-type RefreshTokenInput = {
-  refreshToken: string;
+type AuthorizerInput = {
+  token: string;
 };
 
-export const service = async (data: RefreshTokenInput): Output<{ 
-  accessToken: string; 
-  refreshToken: string; 
+export const service = async (data: AuthorizerInput): Output<{ 
+  token: string;   
 }> => {
-  const { refreshToken } = data;
+  const { token } = data;
 
-  const payload = await jwt.verify(refreshToken, "refresh");
+  if (!token || !token.startsWith("Bearer ")) {
+      return {
+        message: "Invalid or missing token",
+        success: false,
+        data: null
+      }
+    }
 
-  if (!payload) {
-    return { message: "Invalid refresh token", success: false, data: null };
-  }
+    const jwtToken = token.split(" ")[1];
 
-  const tokens = await jwt.sign({ email: payload.email });
+    const decoded = jwt.verify(jwtToken, 'access');
 
-  return { message: "Token refreshed successfully", success: true, data: {
-    accessToken: tokens.accessToken,
-    refreshToken: tokens.refreshToken
-  } };
+    if (!decoded) {
+      return {
+        message: "Invalid or missing token",
+        success: false,
+        data: null
+      }
+    }
+
+    return {
+      message: "Token is valid",
+      success: true,
+      data: null,
+    }   
 };
