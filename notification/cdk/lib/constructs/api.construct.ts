@@ -13,9 +13,13 @@ import {
   UsagePlan,
   Period,
   ApiKey,
+  TokenAuthorizer,
+  AuthorizationType,
 } from "aws-cdk-lib/aws-apigateway";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
+import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
+import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
 
 interface ApiConstructProps {
   notificationFunction: IFunction;
@@ -23,12 +27,13 @@ interface ApiConstructProps {
 
 export class ApiConstruct extends Construct {
   public readonly api: RestApi;
+  private readonly authorizer: TokenAuthorizer;
 
   constructor(scope: Construct, id: string, readonly props: ApiConstructProps) {
     super(scope, id);
 
     this.api = this.notificationApi();
-
+    this.authorizer = this.authorizerService();
     this.notificationResouce();
     this.basePathMapping();
     this.usagePlan();
@@ -145,7 +150,8 @@ export class ApiConstruct extends Construct {
           "application/json": model,
         },
         requestValidator: validator,
-        apiKeyRequired: true,
+        authorizer: this.authorizer,
+        authorizationType: AuthorizationType.CUSTOM,
       }
     );
   }
@@ -184,5 +190,31 @@ export class ApiConstruct extends Construct {
       restApi: this.api,
       basePath: "notifications",
     });
+  }
+
+  private authorizerService() {
+    const fnParameter = StringParameter.fromStringParameterName(
+      this,
+      "parameter-authorizer-function",
+      "/auth/authorizer/function/arn"
+    );
+
+    const authorizerFn = NodejsFunction.fromFunctionAttributes(
+      this,
+      "function-authorizer",
+      {
+        functionArn: fnParameter.stringValue,
+        sameEnvironment: true,
+      }
+    );
+
+    const tokenAuthorizer = new TokenAuthorizer(this, "authorizer-token", {
+      handler: authorizerFn,
+      identitySource: "method.request.header.Authorization",
+    });
+
+    authorizerFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
+
+    return tokenAuthorizer;
   }
 }
