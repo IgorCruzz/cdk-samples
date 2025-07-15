@@ -14,6 +14,7 @@ import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import { Duration } from "aws-cdk-lib";
 
 interface ApiConstructProps {
   sheetParseFunction: IFunction;
@@ -148,6 +149,7 @@ export class ApiConstruct extends Construct {
     const tokenAuthorizer = new TokenAuthorizer(this, "authorizer-token", {
       handler: authorizerFn,
       identitySource: "method.request.header.Authorization",
+      resultsCacheTtl: Duration.minutes(0),
     });
 
     authorizerFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
