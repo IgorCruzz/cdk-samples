@@ -22,7 +22,7 @@ export const jwt = {
   }> => {
 
     const accessToken = sign(payload, await getJWTSecret(), {
-      expiresIn: '1h',
+      expiresIn: '5m',
     });
 
     const refreshToken = sign(payload, await getJWTSecret(), {
