@@ -30,41 +30,8 @@ export class ApiConstruct extends Construct {
 
     this.sheetParseResouce();
     this.basePathMapping();
-    this.usagePlan();
-
     this.getFilesDataResouce();
     this.getStatisticDataResouce();
-  }
-
-  private usagePlan() {
-    const usagePlan = new UsagePlan(this, "usage-plan", {
-      description:
-        "Permite 1000 requisições por dia (aproximadamente equivalente a 10 em 10h)",
-      throttle: {
-        rateLimit: 1,
-        burstLimit: 1,
-      },
-      quota: {
-        limit: 1000,
-        period: Period.DAY,
-      },
-    });
-
-    usagePlan.addApiStage({
-      stage: this.api.deploymentStage,
-    });
-
-    const apiKey = ApiKey.fromApiKeyId(
-      this,
-      "api-key",
-      StringParameter.fromStringParameterName(
-        this,
-        "parameter-api-key",
-        "/api/api-key"
-      ).stringValue
-    );
-
-    usagePlan.addApiKey(apiKey);
   }
 
   private sheetParseApi() {
@@ -96,9 +63,7 @@ export class ApiConstruct extends Construct {
     this.api.root.addMethod(
       "POST",
       new LambdaIntegration(this.props.sheetParseFunction),
-      {
-        apiKeyRequired: true,
-      }
+      {}
     );
   }
 
@@ -142,9 +107,7 @@ export class ApiConstruct extends Construct {
     this.api.root.addMethod(
       "GET",
       new LambdaIntegration(this.props.getFilesDataFunction),
-      {
-        apiKeyRequired: true,
-      }
+      {}
     );
   }
 
@@ -154,9 +117,7 @@ export class ApiConstruct extends Construct {
     resource.addMethod(
       "GET",
       new LambdaIntegration(this.props.getStatisticDataFunction),
-      {
-        apiKeyRequired: true,
-      }
+      {}
     );
   }
 }
