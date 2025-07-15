@@ -57,15 +57,11 @@ export class ApiConstruct extends Construct {
       stage: this.api.deploymentStage,
     });
 
-    const apiKey = ApiKey.fromApiKeyId(
-      this,
-      "api-key",
-      StringParameter.fromStringParameterName(
-        this,
-        "parameter-api-key",
-        "/api/api-key"
-      ).stringValue
-    );
+    const apiKey = new ApiKey(this, "api-key-notification", {
+      apiKeyName: "api-key-notification",
+      description: "API key for secure services",
+      enabled: true,
+    });
 
     usagePlan.addApiKey(apiKey);
   }
