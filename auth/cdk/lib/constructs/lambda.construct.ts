@@ -10,6 +10,7 @@ import {
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { join } from "node:path";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
 export class LambdaConstruct extends Construct {
   public readonly signinFunction: NodejsFunction; 
@@ -111,6 +112,11 @@ export class LambdaConstruct extends Construct {
       tracing: Tracing.ACTIVE,
       logRetention: RetentionDays.ONE_WEEK,
     });
+
+    new StringParameter(this, "function-authorizer-arn", {
+      parameterName: "/auth/authorizer/function/arn",
+      stringValue: fn.functionArn,
+    })
 
     return fn;
   }
