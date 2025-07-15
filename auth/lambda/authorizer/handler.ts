@@ -10,7 +10,7 @@ export const handler = async (
     const response = await service({ token });
 
     return {
-      principalId: "user",
+      principalId: "authorizer",
       policyDocument: {
         Version: "2012-10-17",
         Statement: [
@@ -25,7 +25,7 @@ export const handler = async (
   } catch (error) {
     console.error("Error:", error);
     return {
-      principalId: "user",
+      principalId: "authorizer",
       policyDocument: {
         Version: "2012-10-17",
         Statement: [
