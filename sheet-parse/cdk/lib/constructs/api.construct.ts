@@ -13,6 +13,7 @@ import {
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
+import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
 
 interface ApiConstructProps {
   sheetParseFunction: IFunction;
@@ -135,16 +136,21 @@ export class ApiConstruct extends Construct {
       "/auth/authorizer/function/arn"
     );
 
-    const authorizerFn = NodejsFunction.fromFunctionArn(
+    const authorizerFn = NodejsFunction.fromFunctionAttributes(
       this,
       "function-authorizer",
-      fnParameter.stringValue
+      {
+        functionArn: fnParameter.stringValue,
+        sameEnvironment: true,
+      }
     );
 
     const tokenAuthorizer = new TokenAuthorizer(this, "authorizer-token", {
       handler: authorizerFn,
       identitySource: "method.request.header.Authorization",
     });
+
+    authorizerFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
 
     return tokenAuthorizer;
   }
