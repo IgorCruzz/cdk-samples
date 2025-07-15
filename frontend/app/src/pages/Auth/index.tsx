@@ -1,4 +1,4 @@
- import { useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,21 +8,21 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { toast } from "sonner";
-import { auth } from '@/services/endpoints/auth';
-import { useAuth } from "react-oidc-context";
+import { auth } from '@/services/endpoints/auth'; 
+import { useAuthStore } from '@/store/use-auth';
+import { useNavigate } from "react-router-dom";
 
-import {
-  CognitoIdentityProviderClient,
-  InitiateAuthCommand,
-} from "@aws-sdk/client-cognito-identity-provider";
+export default function LoginPage() { 
+  const navigate = useNavigate();
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const setRefreshToken = useAuthStore((state) => state.setRefreshToken);
 
-
-const REGION = "us-east-1"; 
-
-const client = new CognitoIdentityProviderClient({ region: REGION });
-
-
-export default function LoginPage() {   
+  const {isPending, mutateAsync} = useMutation({
+    mutationFn: async (input: AuthInput) => {
+      const { data } = await auth.login(input);
+      return data;
+    }, 
+  }); 
 
   const form = useForm<{ email: string; password: string }>({
     resolver: zodResolver(authSchema), 
@@ -30,38 +30,17 @@ export default function LoginPage() {
 
   const onSubmit = async (data: AuthInput) => {
     try {
-    const params = {
-      AuthFlow: "USER_PASSWORD_AUTH",
-      ClientId: "5jt1ofjdv34b344lbiq1jj5av7",
-      AuthParameters: {
-        USERNAME: data.email,
-        PASSWORD: data.password,
-      },
-    };
+      const { data: {accessToken, refreshToken} } = await mutateAsync(data);
 
-    const command = new InitiateAuthCommand(params);
-    const response = await client.send(command);
+      setAccessToken({ accessToken });
+      setRefreshToken({ refreshToken });       
 
-    console.log({
-      response
-    });     
-    } catch (error) {  
-    switch (error.name) {
-    case "UserNotFoundException":
-      toast.error("Usuário não encontrado.");
-      break;
-    case "NotAuthorizedException":
-      toast.error("Usuário ou senha incorretos.");
-      break;
-    case "UserNotConfirmedException":
-      toast.error("Usuário não confirmado. Verifique seu e-mail.");
-      break;
-    case "PasswordResetRequiredException":
-      toast.error("Senha precisa ser redefinida.");
-      break;
-    default:
-      toast.error(error.message || "Erro desconhecido ao fazer login.");
-    } 
+      navigate("/home");
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error('Oops! Something went wrong.');
+      }
+      console.error(error);   
     }   
   };
 
@@ -87,8 +66,8 @@ export default function LoginPage() {
                 required
               />
             </div> 
-            <Button type="submit" className="w-full">
-              Login
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? "Logging in..." : "Login"}
             </Button> 
           </form>
           </Form>
