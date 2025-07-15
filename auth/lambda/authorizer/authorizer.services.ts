@@ -20,7 +20,7 @@ export const service = async (data: AuthorizerInput): Output<{
 
     const jwtToken = token.split(" ")[1];
 
-    const decoded = jwt.verify(jwtToken, 'access');
+    const decoded = await jwt.verify(jwtToken, 'access');
 
     if (!decoded) {
       return {
