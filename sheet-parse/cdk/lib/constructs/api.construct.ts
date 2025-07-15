@@ -7,12 +7,12 @@ import {
   LambdaIntegration,
   BasePathMapping,
   DomainName,
-  UsagePlan,
-  Period,
-  ApiKey,
+  TokenAuthorizer,
+  AuthorizationType,
 } from "aws-cdk-lib/aws-apigateway";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
+import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 
 interface ApiConstructProps {
   sheetParseFunction: IFunction;
@@ -22,12 +22,13 @@ interface ApiConstructProps {
 
 export class ApiConstruct extends Construct {
   public readonly api: RestApi;
+  private readonly authorizer: TokenAuthorizer;
 
   constructor(scope: Construct, id: string, readonly props: ApiConstructProps) {
     super(scope, id);
 
     this.api = this.sheetParseApi();
-
+    this.authorizer = this.authorizerService();
     this.sheetParseResouce();
     this.basePathMapping();
     this.getFilesDataResouce();
@@ -107,7 +108,10 @@ export class ApiConstruct extends Construct {
     this.api.root.addMethod(
       "GET",
       new LambdaIntegration(this.props.getFilesDataFunction),
-      {}
+      {
+        authorizer: this.authorizer,
+        authorizationType: AuthorizationType.CUSTOM,
+      }
     );
   }
 
@@ -117,7 +121,31 @@ export class ApiConstruct extends Construct {
     resource.addMethod(
       "GET",
       new LambdaIntegration(this.props.getStatisticDataFunction),
-      {}
+      {
+        authorizer: this.authorizer,
+        authorizationType: AuthorizationType.CUSTOM,
+      }
     );
+  }
+
+  private authorizerService() {
+    const fnParameter = StringParameter.fromStringParameterName(
+      this,
+      "parameter-authorizer-function",
+      "/auth/authorizer/function/arn"
+    );
+
+    const authorizerFn = NodejsFunction.fromFunctionArn(
+      this,
+      "function-authorizer",
+      fnParameter.stringValue
+    );
+
+    const tokenAuthorizer = new TokenAuthorizer(this, "authorizer-token", {
+      handler: authorizerFn,
+      identitySource: "method.request.header.Authorization",
+    });
+
+    return tokenAuthorizer;
   }
 }
