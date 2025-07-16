@@ -25,6 +25,7 @@ export class ApiConstruct extends Construct {
     this.api = this.createApi();
     this.createUserResource();
     this.createAuthResource();
+    this.createSheetParseResource();
   }
 
   private createApi() {
