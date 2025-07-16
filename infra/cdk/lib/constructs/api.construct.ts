@@ -72,8 +72,6 @@ export class ApiConstruct extends Construct {
       },
     });
 
-    api.node.addDependency(domainName);
-
     return api;
   }
 
