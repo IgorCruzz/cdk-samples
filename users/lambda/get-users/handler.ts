@@ -41,12 +41,6 @@ export const handler = async (event: APIGatewayProxyEvent) => {
     return {
       statusCode: 200,
       body: JSON.stringify(files),
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers":
-          "Content-Type, Authorization, X-Api-Key",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-      },
     };
   } catch (error) {
     console.error("Error in handler:", error);
