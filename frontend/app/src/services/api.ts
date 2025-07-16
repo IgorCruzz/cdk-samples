@@ -4,9 +4,6 @@ import { useAuthStore } from '@/store/use-auth';
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    'X-Api-Key': import.meta.env.VITE_API_KEY,
-  }
 })
 
  api.interceptors.request.use(function (config) {
@@ -24,9 +21,18 @@ export const api = axios.create({
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log({ response });
+    
+    
+    return response;
+  },
   async (error) => {
+
+    console.log({ status: error.response });
+
     const originalRequest = error.config;
+
     if (error.response?.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
 

@@ -27,7 +27,7 @@ export const History = () => {
       page: pagination.pageIndex + 1,
       limit: pagination.pageSize,
     }),
-    refetchInterval: 10000, 
+    // refetchInterval: 10000, 
   });  
 
   if(isSuccess) {
