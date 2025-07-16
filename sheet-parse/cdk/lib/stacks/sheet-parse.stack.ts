@@ -1,6 +1,6 @@
 import { Stack, StackProps, Tags } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { S3Construct, LambdaConstruct, ApiConstruct } from "../constructs";
+import { S3Construct, LambdaConstruct } from "../constructs";
 
 export class SheetParseStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -10,12 +10,6 @@ export class SheetParseStack extends Stack {
 
     const lambdaConstruct = new LambdaConstruct(this, "construct-lambda", {
       s3Construct,
-    });
-
-    const apiConstruct = new ApiConstruct(this, "construct-api", {
-      sheetParseFunction: lambdaConstruct.generatePreSignedUrlFunction,
-      getFilesDataFunction: lambdaConstruct.getFilesDataFunction,
-      getStatisticDataFunction: lambdaConstruct.getStatisticDataFunction,
     });
 
     Tags.of(s3Construct.bucket).add("Project", "sheet-parse");
@@ -35,8 +29,5 @@ export class SheetParseStack extends Stack {
       "Name",
       "extract-data-function"
     );
-
-    Tags.of(apiConstruct.api).add("Project", "sheet-parse");
-    Tags.of(apiConstruct.api).add("Name", "sheet-parse-api");
   }
 }
