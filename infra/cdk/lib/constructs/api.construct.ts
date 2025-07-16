@@ -190,4 +190,69 @@ export class ApiConstruct extends Construct {
       methods: [HttpMethod.POST],
     });
   }
+
+  private createSheetParseResource() {
+    const getStatisticDataArn = StringParameter.fromStringParameterName(
+      this,
+      "get-statistic-data-function-arn",
+      "/api/get-statistic-data"
+    );
+
+    const getStatisticDataFn = NodejsFunction.fromFunctionArn(
+      this,
+      "lambda-get-statistic-data",
+      getStatisticDataArn.stringValue
+    );
+
+    this.api.addRoutes({
+      path: "/v1/files/statistic",
+      integration: new HttpLambdaIntegration(
+        "integration-get-statistic-data",
+        getStatisticDataFn
+      ),
+      methods: [HttpMethod.GET],
+    });
+
+    const getFilesDataArn = StringParameter.fromStringParameterName(
+      this,
+      "get-files-data-function-arn",
+      "/api/get-files-data"
+    );
+
+    const getFilesDataFn = NodejsFunction.fromFunctionArn(
+      this,
+      "lambda-get-files-data",
+      getFilesDataArn.stringValue
+    );
+
+    this.api.addRoutes({
+      path: "/v1/files",
+      integration: new HttpLambdaIntegration(
+        "integration-get-files-data",
+        getFilesDataFn
+      ),
+      methods: [HttpMethod.GET],
+    });
+
+    const generatePreSignedUrlArn = StringParameter.fromStringParameterName(
+      this,
+      "generate-pre-signed-url-function-arn",
+      "/api/generate-pre-signed-url"
+    );
+
+    const generatePreSignedUrlFn = NodejsFunction.fromFunctionArn(
+      this,
+      "lambda-generate-pre-signed-url",
+      generatePreSignedUrlArn.stringValue
+    );
+
+    this.api.addRoutes({
+      path: "/v1/files/generate-pre-signed-url",
+      integration: new HttpLambdaIntegration(
+        "integration-generate-pre-signed-url",
+        generatePreSignedUrlFn
+      ),
+      methods: [HttpMethod.POST],
+    });
+  }
 }
