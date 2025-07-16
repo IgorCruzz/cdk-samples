@@ -10,6 +10,7 @@ import {
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { join } from "node:path";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
 export class LambdaConstruct extends Construct {
   public readonly getUsersFunction: NodejsFunction;
@@ -56,6 +57,12 @@ export class LambdaConstruct extends Construct {
         ],
       })
     );
+
+    new StringParameter(this, "parameter-delete-user-function", {
+      parameterName: "/lambda/delete-user-function-arn",
+      stringValue: fn.functionArn,
+    });
+
     return fn;
   }
 
@@ -88,6 +95,11 @@ export class LambdaConstruct extends Construct {
         ],
       })
     );
+
+    new StringParameter(this, "parameter-update-user-function", {
+      parameterName: "/lambda/update-user-function-arn",
+      stringValue: fn.functionArn,
+    });
 
     return fn;
   }
@@ -122,6 +134,11 @@ export class LambdaConstruct extends Construct {
       })
     );
 
+    new StringParameter(this, "parameter-create-user-function", {
+      parameterName: "/lambda/create-user-function-arn",
+      stringValue: fn.functionArn,
+    });
+
     return fn;
   }
 
@@ -155,6 +172,11 @@ export class LambdaConstruct extends Construct {
         ],
       })
     );
+
+    new StringParameter(this, "parameter-get-users-function", {
+      parameterName: "/lambda/get-users-function-arn",
+      stringValue: fn.functionArn,
+    });
 
     return fn;
   }
