@@ -8,9 +8,10 @@ import {
 } from "aws-cdk-lib/aws-apigatewayv2";
 import { ICertificate } from "aws-cdk-lib/aws-certificatemanager";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import { HostedZone } from "aws-cdk-lib/aws-route53";
+import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
+import { ApiGatewayv2DomainProperties } from "aws-cdk-lib/aws-route53-targets";
 
 export class ApiConstruct extends Construct {
   public readonly api: HttpApi;
@@ -30,23 +31,13 @@ export class ApiConstruct extends Construct {
   }
 
   private createApi() {
-    const domainName = new DomainName(this, "domain-nm", {
+    const domainName = new DomainName(this, "domain-name", {
       domainName: "api.igorcruz.space",
       certificate: this.props.certificate,
       endpointType: EndpointType.REGIONAL,
     });
 
-    const route53HostedZoneId = StringParameter.valueForStringParameter(
-      this,
-      "/route53/hosted-zone-id"
-    );
-
-    HostedZone.fromHostedZoneAttributes(this, "HostedZone", {
-      hostedZoneId: route53HostedZoneId,
-      zoneName: "igorcruz.space",
-    });
-
-    return new HttpApi(this, "http-api", {
+    const api = new HttpApi(this, "http-api", {
       createDefaultStage: true,
       disableExecuteApiEndpoint: true,
       corsPreflight: {
@@ -61,9 +52,12 @@ export class ApiConstruct extends Construct {
       },
       defaultDomainMapping: {
         domainName,
-        mappingKey: "v1",
       },
     });
+
+    api.node.addDependency(domainName);
+
+    return api;
   }
 
   private createUserResource() {
