@@ -1,11 +1,6 @@
 import { Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import {
-  LambdaConstruct,
-  SNSConstruct,
-  SQSConstruct,
-  ApiConstruct,
-} from "../constructs";
+import { LambdaConstruct, SNSConstruct, SQSConstruct } from "../constructs";
 
 export class NotifierStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -16,13 +11,9 @@ export class NotifierStack extends Stack {
       snsConstruct,
     });
 
-    const lambda = new LambdaConstruct(this, "construct-lambda", {
+    new LambdaConstruct(this, "construct-lambda", {
       snsConstruct,
       sqsConstruct,
-    });
-
-    new ApiConstruct(this, "construct-api", {
-      notificationFunction: lambda.sendFunction,
     });
   }
 }
