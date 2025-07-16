@@ -148,4 +148,45 @@ export class ApiConstruct extends Construct {
       methods: [HttpMethod.POST],
     });
   }
+
+  private createAuthResource() {
+    const signinArn = StringParameter.fromStringParameterName(
+      this,
+      "signin-function-arn",
+      "/auth/signin/function/arn"
+    );
+
+    const signinFn = NodejsFunction.fromFunctionArn(
+      this,
+      "lambda-signin",
+      signinArn.stringValue
+    );
+
+    const refreshTokenArn = StringParameter.fromStringParameterName(
+      this,
+      "refresh-token-function-arn",
+      "/auth/refresh-token/function/arn"
+    );
+
+    const refreshTokenFn = NodejsFunction.fromFunctionArn(
+      this,
+      "lambda-refresh-token",
+      refreshTokenArn.stringValue
+    );
+
+    this.api.addRoutes({
+      path: "/v1/auth/signin",
+      integration: new HttpLambdaIntegration("integration-signin", signinFn),
+      methods: [HttpMethod.POST],
+    });
+
+    this.api.addRoutes({
+      path: "/v1/auth/refresh-token",
+      integration: new HttpLambdaIntegration(
+        "integration-refresh-token",
+        refreshTokenFn
+      ),
+      methods: [HttpMethod.POST],
+    });
+  }
 }
