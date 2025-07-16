@@ -64,6 +64,7 @@ export class ApiConstruct extends Construct {
           CorsHttpMethod.DELETE,
           CorsHttpMethod.OPTIONS,
         ],
+        allowHeaders: ["*"],
       },
       defaultDomainMapping: {
         domainName,
