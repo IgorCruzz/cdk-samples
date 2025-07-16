@@ -4,7 +4,4 @@ export const internal = () => ({
     message: "Internal Server Error",
     error: "An unexpected error occurred. Please try again later.",
   },
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
