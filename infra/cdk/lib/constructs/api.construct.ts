@@ -172,6 +172,11 @@ export class ApiConstruct extends Construct {
       ),
       methods: [HttpMethod.POST],
     });
+
+    createUserFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
+    getUsersFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
+    updateUserFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
+    deleteUserFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
   }
 
   private createAuthResource() {
