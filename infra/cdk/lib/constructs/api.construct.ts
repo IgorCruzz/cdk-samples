@@ -4,10 +4,13 @@ import {
   HttpApi,
   DomainName,
   EndpointType,
+  HttpMethod,
 } from "aws-cdk-lib/aws-apigatewayv2";
 import { ICertificate } from "aws-cdk-lib/aws-certificatemanager";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { HostedZone } from "aws-cdk-lib/aws-route53";
+import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
+import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 
 export class ApiConstruct extends Construct {
   public readonly api: HttpApi;
@@ -56,6 +59,92 @@ export class ApiConstruct extends Construct {
         domainName,
         mappingKey: "v1",
       },
+    });
+  }
+
+  private createUserResource() {
+    const createUserArn = StringParameter.fromStringParameterName(
+      this,
+      "create-user-function-arn",
+      "/lambda/create-user-function-arn"
+    );
+
+    const createUserFn = NodejsFunction.fromFunctionArn(
+      this,
+      "lambda-create-user",
+      createUserArn.stringValue
+    );
+
+    const getUsersArn = StringParameter.fromStringParameterName(
+      this,
+      "get-users-function-arn",
+      "/lambda/get-users-function-arn"
+    );
+
+    const getUsersFn = NodejsFunction.fromFunctionArn(
+      this,
+      "lambda-get-users",
+      getUsersArn.stringValue
+    );
+
+    const updateUserArn = StringParameter.fromStringParameterName(
+      this,
+      "update-user-function-arn",
+      "/lambda/update-user-function-arn"
+    );
+
+    const updateUserFn = NodejsFunction.fromFunctionArn(
+      this,
+      "lambda-update-user",
+      updateUserArn.stringValue
+    );
+
+    const deleteUserArn = StringParameter.fromStringParameterName(
+      this,
+      "delete-user-function-arn",
+      "/lambda/delete-user-function-arn"
+    );
+
+    const deleteUserFn = NodejsFunction.fromFunctionArn(
+      this,
+      "lambda-delete-user",
+      deleteUserArn.stringValue
+    );
+
+    this.api.addRoutes({
+      path: "/v1/users/{id}",
+      integration: new HttpLambdaIntegration(
+        "integration-delete-user",
+        deleteUserFn
+      ),
+      methods: [HttpMethod.DELETE],
+    });
+
+    this.api.addRoutes({
+      path: "/v1/users/{id}",
+      integration: new HttpLambdaIntegration(
+        "integration-update-user",
+        updateUserFn
+      ),
+      methods: [HttpMethod.PUT],
+    });
+
+    this.api.addRoutes({
+      path: "/v1/users",
+      integration: new HttpLambdaIntegration(
+        "integration-get-users",
+        getUsersFn
+      ),
+      methods: [HttpMethod.GET],
+    });
+
+    this.api.addRoutes({
+      path: "/v1/users",
+      integration: new HttpLambdaIntegration(
+        "integration-create-user",
+        createUserFn
+      ),
+      methods: [HttpMethod.POST],
     });
   }
 }
