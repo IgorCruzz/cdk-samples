@@ -1,62 +1,62 @@
 import { Construct } from "constructs";
 import {
-  RestApi,
-  EndpointType,
-  MethodLoggingLevel,
-  Cors,
-  LambdaIntegration,
-  BasePathMapping,
+  HttpApi,
+  HttpMethod,
   DomainName,
-  Model,
-  JsonSchemaType,
-  RequestValidator,
-} from "aws-cdk-lib/aws-apigateway";
+  HttpStage,
+  HttpRouteIntegrationConfig,
+  HttpRoute,
+  HttpRouteAuthorizer,
+} from "aws-cdk-lib/aws-apigatewayv2";
+import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
 
-interface ApiConstructProps { 
+interface ApiConstructProps {
   signinFunction: IFunction;
   refreshTokenFunction: IFunction;
 }
 
 export class ApiConstruct extends Construct {
-  public readonly api: RestApi;
+  public readonly api: HttpApi;
 
   constructor(scope: Construct, id: string, readonly props: ApiConstructProps) {
     super(scope, id);
- 
+
     this.api = this.authApi();
-    this.basePathMapping();  
-    this.createSignInResource();
-    this.createRefreshTokenResource();
+    this.createRoutes();
+
+    this.customDomainMapping();
   }
 
   private authApi() {
-    const xyzApi = new RestApi(this, "api-auth", {
-      endpointConfiguration: {
-        types: [EndpointType.REGIONAL],
-      },
-
-      cloudWatchRole: true,
-      deployOptions: {
-        loggingLevel: MethodLoggingLevel.INFO,
-        metricsEnabled: true,
-        tracingEnabled: true,
-        dataTraceEnabled: true,
-        stageName: "prod",
-      },
-      defaultCorsPreflightOptions: {
-        allowOrigins: Cors.ALL_ORIGINS,
-        allowMethods: ["OPTIONS", "POST", "GET", "PUT", "DELETE"],
+    return new HttpApi(this, "api-auth-http", {
+      corsPreflight: {
         allowHeaders: ["Content-Type", "Authorization", "X-Api-Key"],
+        allowMethods: [HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.OPTIONS],
+        allowOrigins: ["*"],
       },
-      disableExecuteApiEndpoint: true,
     });
-
-    return xyzApi;
   }
 
-  private basePathMapping() {
+  private createRoutes() {
+    const signinIntegration = new HttpLambdaIntegration("signin-integration", this.props.signinFunction);
+    const refreshIntegration = new HttpLambdaIntegration("refresh-integration", this.props.refreshTokenFunction);
+
+    this.api.addRoutes({
+      path: "/signin",
+      methods: [HttpMethod.POST],
+      integration: signinIntegration,
+    });
+
+    this.api.addRoutes({
+      path: "/refresh",
+      methods: [HttpMethod.POST],
+      integration: refreshIntegration,
+    });
+  }
+
+  private customDomainMapping() {
     const domainName = StringParameter.fromStringParameterName(
       this,
       "parameter-domain",
@@ -75,106 +75,10 @@ export class ApiConstruct extends Construct {
       "/api/domain-name-hosted-zone-id"
     );
 
-    const domain = DomainName.fromDomainNameAttributes(
-      this,
-      "domain-name-attributes",
-      {
-        domainName: domainName.stringValue,
-        domainNameAliasTarget: domainNameAlias.stringValue,
-        domainNameAliasHostedZoneId: domainHostZoneId.stringValue,
-      }
-    );
-
-    new BasePathMapping(this, "auth-mapping", {
-      domainName: domain,
-      restApi: this.api,
-      basePath: "auth",
+    DomainName.fromDomainNameAttributes(this, "domain-name-attributes", {
+      name: domainName.stringValue,
+      regionalDomainName: domainNameAlias.stringValue,
+      regionalHostedZoneId: domainHostZoneId.stringValue,
     });
-  }
-
-  private createSignInResource() {
-    const model = new Model(this, "model-auth-request", {
-      restApi: this.api,
-      contentType: "application/json",
-      description: "Model for auth create request",
-      schema: {
-        type: JsonSchemaType.OBJECT,
-        properties: {  
-          email: {
-            type: JsonSchemaType.STRING,
-            format: "email",
-            minLength: 5,
-            maxLength: 255,
-          },
-          password: {
-            type: JsonSchemaType.STRING,
-            minLength: 6,
-            maxLength: 128,
-          },
-        },
-        required: ["email", "password"],
-      },
-    });
-
-    const validator = new RequestValidator(
-      this,
-      "notifications-Post-request-validator",
-      {
-        restApi: this.api,
-        validateRequestBody: true,
-      }
-    );
-
-    const resource = this.api.root.addResource("signin");
-
-    resource.addMethod(
-      "POST",
-      new LambdaIntegration(this.props.signinFunction),
-      {
-        requestModels: {
-          "application/json": model,
-        },
-        requestValidator: validator,
-      }
-    );
-  } 
-  
-  private createRefreshTokenResource() {
-    const model = new Model(this, "model-refresh-token-request", {
-      restApi: this.api,
-      contentType: "application/json",
-      description: "Model for refresh token request",
-      schema: {
-        type: JsonSchemaType.OBJECT,
-        properties: {
-          refreshToken: {
-            type: JsonSchemaType.STRING, 
-          },
-        },
-        required: ["refreshToken"],
-      },
-    });
-
-    const validator = new RequestValidator(
-      this,
-      "refresh-token-request-validator",
-      {
-        restApi: this.api,
-        validateRequestBody: true,
-      }
-    );
-
-    const resource = this.api.root.addResource("refresh");
-
-    resource.addMethod(
-      "POST",
-      new LambdaIntegration(this.props.refreshTokenFunction),
-      {
-        requestModels: {
-          "application/json": model,
-        },
-        requestValidator: validator,
-      }
-    );
   }
 }
