@@ -13,12 +13,6 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       body: JSON.stringify({
         message: "Notifications sent successfully",
       }),
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers":
-          "Content-Type, Authorization, X-Api-Key",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-      },
     };
   } catch (error) {
     console.error("Error generating presigned URL:", error);
@@ -27,12 +21,6 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       body: JSON.stringify({
         message: "Internal Server Error",
       }),
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers":
-          "Content-Type, Authorization, X-Api-Key",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-      },
     };
   }
 };
