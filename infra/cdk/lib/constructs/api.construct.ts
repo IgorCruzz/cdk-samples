@@ -30,7 +30,7 @@ export class ApiConstruct extends Construct {
   }
 
   private createApi() {
-    const domainName = new DomainName(this, "domain-name", {
+    const domainName = new DomainName(this, "domain-nm", {
       domainName: "api.igorcruz.space",
       certificate: this.props.certificate,
       endpointType: EndpointType.REGIONAL,
