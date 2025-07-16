@@ -26,6 +26,7 @@ export class ApiConstruct extends Construct {
     this.createUserResource();
     this.createAuthResource();
     this.createSheetParseResource();
+    this.createNotificationResource();
   }
 
   private createApi() {
@@ -252,6 +253,29 @@ export class ApiConstruct extends Construct {
       integration: new HttpLambdaIntegration(
         "integration-generate-pre-signed-url",
         generatePreSignedUrlFn
+      ),
+      methods: [HttpMethod.POST],
+    });
+  }
+
+  private createNotificationResource() {
+    const sendNotificationArn = StringParameter.fromStringParameterName(
+      this,
+      "send-notification-function-arn",
+      "/api/send-notification"
+    );
+
+    const sendNotificationFn = NodejsFunction.fromFunctionArn(
+      this,
+      "lambda-send-notification",
+      sendNotificationArn.stringValue
+    );
+
+    this.api.addRoutes({
+      path: "/v1/notifications",
+      integration: new HttpLambdaIntegration(
+        "integration-send-notification",
+        sendNotificationFn
       ),
       methods: [HttpMethod.POST],
     });
