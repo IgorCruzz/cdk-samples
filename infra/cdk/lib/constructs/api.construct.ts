@@ -12,6 +12,7 @@ import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { ApiGatewayv2DomainProperties } from "aws-cdk-lib/aws-route53-targets";
+import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
 
 export class ApiConstruct extends Construct {
   public readonly api: HttpApi;
@@ -265,6 +266,16 @@ export class ApiConstruct extends Construct {
       ),
       methods: [HttpMethod.POST],
     });
+
+    getStatisticDataFn.grantInvoke(
+      new ServicePrincipal("apigateway.amazonaws.com")
+    );
+    getFilesDataFn.grantInvoke(
+      new ServicePrincipal("apigateway.amazonaws.com")
+    );
+    generatePreSignedUrlFn.grantInvoke(
+      new ServicePrincipal("apigateway.amazonaws.com")
+    );
   }
 
   private createNotificationResource() {
