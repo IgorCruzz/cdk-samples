@@ -23,6 +23,7 @@ export class ApiConstruct extends Construct {
     super(scope, id);
 
     this.createApi();
+    this.createUserResource();
   }
 
   private createApi() {
