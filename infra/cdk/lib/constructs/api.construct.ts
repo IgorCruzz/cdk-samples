@@ -83,10 +83,13 @@ export class ApiConstruct extends Construct {
       "/lambda/create-user-function-arn"
     );
 
-    const createUserFn = NodejsFunction.fromFunctionArn(
+    const createUserFn = NodejsFunction.fromFunctionAttributes(
       this,
       "lambda-create-user",
-      createUserArn.stringValue
+      {
+        functionArn: createUserArn.stringValue,
+        sameEnvironment: true,
+      }
     );
 
     const getUsersArn = StringParameter.fromStringParameterName(
@@ -95,10 +98,13 @@ export class ApiConstruct extends Construct {
       "/lambda/get-users-function-arn"
     );
 
-    const getUsersFn = NodejsFunction.fromFunctionArn(
+    const getUsersFn = NodejsFunction.fromFunctionAttributes(
       this,
       "lambda-get-users",
-      getUsersArn.stringValue
+      {
+        functionArn: getUsersArn.stringValue,
+        sameEnvironment: true,
+      }
     );
 
     const updateUserArn = StringParameter.fromStringParameterName(
@@ -107,10 +113,13 @@ export class ApiConstruct extends Construct {
       "/lambda/update-user-function-arn"
     );
 
-    const updateUserFn = NodejsFunction.fromFunctionArn(
+    const updateUserFn = NodejsFunction.fromFunctionAttributes(
       this,
       "lambda-update-user",
-      updateUserArn.stringValue
+      {
+        functionArn: updateUserArn.stringValue,
+        sameEnvironment: true,
+      }
     );
 
     const deleteUserArn = StringParameter.fromStringParameterName(
@@ -119,10 +128,13 @@ export class ApiConstruct extends Construct {
       "/lambda/delete-user-function-arn"
     );
 
-    const deleteUserFn = NodejsFunction.fromFunctionArn(
+    const deleteUserFn = NodejsFunction.fromFunctionAttributes(
       this,
       "lambda-delete-user",
-      deleteUserArn.stringValue
+      {
+        functionArn: deleteUserArn.stringValue,
+        sameEnvironment: true,
+      }
     );
 
     this.api.addRoutes({
@@ -169,10 +181,13 @@ export class ApiConstruct extends Construct {
       "/auth/signin/function/arn"
     );
 
-    const signinFn = NodejsFunction.fromFunctionArn(
+    const signinFn = NodejsFunction.fromFunctionAttributes(
       this,
       "lambda-signin",
-      signinArn.stringValue
+      {
+        functionArn: signinArn.stringValue,
+        sameEnvironment: true,
+      }
     );
 
     const refreshTokenArn = StringParameter.fromStringParameterName(
@@ -181,10 +196,13 @@ export class ApiConstruct extends Construct {
       "/auth/refresh-token/function/arn"
     );
 
-    const refreshTokenFn = NodejsFunction.fromFunctionArn(
+    const refreshTokenFn = NodejsFunction.fromFunctionAttributes(
       this,
       "lambda-refresh-token",
-      refreshTokenArn.stringValue
+      {
+        functionArn: refreshTokenArn.stringValue,
+        sameEnvironment: true,
+      }
     );
 
     this.api.addRoutes({
@@ -210,10 +228,13 @@ export class ApiConstruct extends Construct {
       "/api/get-statistic-data"
     );
 
-    const getStatisticDataFn = NodejsFunction.fromFunctionArn(
+    const getStatisticDataFn = NodejsFunction.fromFunctionAttributes(
       this,
       "lambda-get-statistic-data",
-      getStatisticDataArn.stringValue
+      {
+        functionArn: getStatisticDataArn.stringValue,
+        sameEnvironment: true,
+      }
     );
 
     this.api.addRoutes({
@@ -231,10 +252,13 @@ export class ApiConstruct extends Construct {
       "/api/get-files-data"
     );
 
-    const getFilesDataFn = NodejsFunction.fromFunctionArn(
+    const getFilesDataFn = NodejsFunction.fromFunctionAttributes(
       this,
       "lambda-get-files-data",
-      getFilesDataArn.stringValue
+      {
+        functionArn: getFilesDataArn.stringValue,
+        sameEnvironment: true,
+      }
     );
 
     this.api.addRoutes({
@@ -252,10 +276,13 @@ export class ApiConstruct extends Construct {
       "/api/generate-pre-signed-url"
     );
 
-    const generatePreSignedUrlFn = NodejsFunction.fromFunctionArn(
+    const generatePreSignedUrlFn = NodejsFunction.fromFunctionAttributes(
       this,
       "lambda-generate-pre-signed-url",
-      generatePreSignedUrlArn.stringValue
+      {
+        functionArn: generatePreSignedUrlArn.stringValue,
+        sameEnvironment: true,
+      }
     );
 
     this.api.addRoutes({
@@ -285,10 +312,13 @@ export class ApiConstruct extends Construct {
       "/api/send-notification"
     );
 
-    const sendNotificationFn = NodejsFunction.fromFunctionArn(
+    const sendNotificationFn = NodejsFunction.fromFunctionAttributes(
       this,
       "lambda-send-notification",
-      sendNotificationArn.stringValue
+      {
+        functionArn: sendNotificationArn.stringValue,
+        sameEnvironment: true,
+      }
     );
 
     this.api.addRoutes({
