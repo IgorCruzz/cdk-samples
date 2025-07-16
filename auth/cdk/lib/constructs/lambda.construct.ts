@@ -56,6 +56,11 @@ export class LambdaConstruct extends Construct {
       })
     );
 
+    new StringParameter(this, "function-refresh-token-arn", {
+      parameterName: "/auth/refresh-token/function/arn",
+      stringValue: fn.functionArn,
+    });
+
     return fn;
   }
 
@@ -90,6 +95,11 @@ export class LambdaConstruct extends Construct {
         ],
       })
     );
+
+    new StringParameter(this, "function-signin-arn", {
+      parameterName: "/auth/signin/function/arn",
+      stringValue: fn.functionArn,
+    });
 
     return fn;  
   } 
