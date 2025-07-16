@@ -219,6 +219,11 @@ export class ApiConstruct extends Construct {
       ),
       methods: [HttpMethod.POST],
     });
+
+    signinFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
+    refreshTokenFn.grantInvoke(
+      new ServicePrincipal("apigateway.amazonaws.com")
+    );
   }
 
   private createSheetParseResource() {
