@@ -66,6 +66,7 @@ export class ApiConstruct extends Construct {
       },
       defaultDomainMapping: {
         domainName,
+        mappingKey: "v2",
       },
     });
 
@@ -124,7 +125,7 @@ export class ApiConstruct extends Construct {
     );
 
     this.api.addRoutes({
-      path: "/v1/users/{id}",
+      path: "/users/{id}",
       integration: new HttpLambdaIntegration(
         "integration-delete-user",
         deleteUserFn
@@ -133,7 +134,7 @@ export class ApiConstruct extends Construct {
     });
 
     this.api.addRoutes({
-      path: "/v1/users/{id}",
+      path: "/users/{id}",
       integration: new HttpLambdaIntegration(
         "integration-update-user",
         updateUserFn
@@ -142,7 +143,7 @@ export class ApiConstruct extends Construct {
     });
 
     this.api.addRoutes({
-      path: "/v1/users",
+      path: "/users",
       integration: new HttpLambdaIntegration(
         "integration-get-users",
         getUsersFn
@@ -151,7 +152,7 @@ export class ApiConstruct extends Construct {
     });
 
     this.api.addRoutes({
-      path: "/v1/users",
+      path: "/users",
       integration: new HttpLambdaIntegration(
         "integration-create-user",
         createUserFn
@@ -186,13 +187,13 @@ export class ApiConstruct extends Construct {
     );
 
     this.api.addRoutes({
-      path: "/v1/auth/signin",
+      path: "/auth/signin",
       integration: new HttpLambdaIntegration("integration-signin", signinFn),
       methods: [HttpMethod.POST],
     });
 
     this.api.addRoutes({
-      path: "/v1/auth/refresh-token",
+      path: "/auth/refresh-token",
       integration: new HttpLambdaIntegration(
         "integration-refresh-token",
         refreshTokenFn
@@ -215,7 +216,7 @@ export class ApiConstruct extends Construct {
     );
 
     this.api.addRoutes({
-      path: "/v1/files/statistic",
+      path: "/files/statistic",
       integration: new HttpLambdaIntegration(
         "integration-get-statistic-data",
         getStatisticDataFn
@@ -236,7 +237,7 @@ export class ApiConstruct extends Construct {
     );
 
     this.api.addRoutes({
-      path: "/v1/files",
+      path: "/files",
       integration: new HttpLambdaIntegration(
         "integration-get-files-data",
         getFilesDataFn
@@ -257,7 +258,7 @@ export class ApiConstruct extends Construct {
     );
 
     this.api.addRoutes({
-      path: "/v1/files/generate-pre-signed-url",
+      path: "/files/generate-pre-signed-url",
       integration: new HttpLambdaIntegration(
         "integration-generate-pre-signed-url",
         generatePreSignedUrlFn
@@ -280,7 +281,7 @@ export class ApiConstruct extends Construct {
     );
 
     this.api.addRoutes({
-      path: "/v1/notifications",
+      path: "/notifications",
       integration: new HttpLambdaIntegration(
         "integration-send-notification",
         sendNotificationFn
