@@ -67,7 +67,7 @@ export class ApiConstruct extends Construct {
       },
       defaultDomainMapping: {
         domainName,
-        mappingKey: "v2",
+        mappingKey: "v1",
       },
     });
 
