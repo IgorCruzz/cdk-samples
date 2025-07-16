@@ -247,7 +247,7 @@ export class ApiConstruct extends Construct {
     );
 
     this.api.addRoutes({
-      path: "/files/statistic",
+      path: "/files/statistics",
       integration: new HttpLambdaIntegration(
         "integration-get-statistic-data",
         getStatisticDataFn
