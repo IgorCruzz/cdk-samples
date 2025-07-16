@@ -63,6 +63,12 @@ export class LambdaConstruct extends Construct {
     });
 
     notifierSNSTopic.grantPublish(fn);
+
+    new StringParameter(this, "parameter-send-function-arn", {
+      parameterName: "/api/send-notification",
+      stringValue: fn.functionArn,
+    });
+
     return fn;
   }
 
