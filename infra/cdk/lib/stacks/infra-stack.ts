@@ -1,6 +1,6 @@
 import { Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { CertificateConstruct, DomainNameConstruct } from "../constructs";
+import { CertificateConstruct, ApiConstruct } from "../constructs";
 
 export class InfraStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -10,7 +10,8 @@ export class InfraStack extends Stack {
       this,
       "construct-certificate"
     );
-    new DomainNameConstruct(this, "construct-domain-Name", {
+
+    new ApiConstruct(this, "construct-api", {
       certificate,
     });
   }
