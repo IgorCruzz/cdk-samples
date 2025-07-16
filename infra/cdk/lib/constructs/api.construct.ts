@@ -37,6 +37,20 @@ export class ApiConstruct extends Construct {
       endpointType: EndpointType.REGIONAL,
     });
 
+    new ARecord(this, "api-domain-record", {
+      zone: HostedZone.fromLookup(this, "zone", {
+        domainName: "igorcruz.space",
+      }),
+      recordName: "api",
+
+      target: RecordTarget.fromAlias(
+        new ApiGatewayv2DomainProperties(
+          domainName.regionalDomainName,
+          domainName.regionalHostedZoneId
+        )
+      ),
+    });
+
     const api = new HttpApi(this, "http-api", {
       createDefaultStage: true,
       disableExecuteApiEndpoint: true,
