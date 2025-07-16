@@ -66,6 +66,12 @@ export class LambdaConstruct extends Construct {
 
     bucket.grantPut(fn);
 
+    new StringParameter(this, "parameter-generate-pre-signed-url", {
+      parameterName: "/api/generate-pre-signed-url",
+      stringValue: fn.functionArn,
+      description: "Lambda function ARN for generate pre-signed URL",
+    });
+
     return fn;
   }
 
@@ -99,6 +105,12 @@ export class LambdaConstruct extends Construct {
         ],
       })
     );
+
+    new StringParameter(this, "parameter-get-files-data", {
+      parameterName: "/api/get-files-data",
+      stringValue: fn.functionArn,
+      description: "Lambda function ARN for get files data",
+    });
 
     return fn;
   }
@@ -195,6 +207,12 @@ export class LambdaConstruct extends Construct {
         ],
       })
     );
+
+    new StringParameter(this, "parameter-get-statistic-data", {
+      parameterName: "/api/get-statistic-data",
+      stringValue: fn.functionArn,
+      description: "Lambda function ARN for get statistic data",
+    });
 
     return fn;
   }
