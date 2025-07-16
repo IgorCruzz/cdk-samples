@@ -329,5 +329,9 @@ export class ApiConstruct extends Construct {
       ),
       methods: [HttpMethod.POST],
     });
+
+    sendNotificationFn.grantInvoke(
+      new ServicePrincipal("apigateway.amazonaws.com")
+    );
   }
 }
