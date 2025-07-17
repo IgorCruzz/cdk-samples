@@ -141,6 +141,11 @@ export class LambdaConstruct extends Construct {
       })
     );
 
+    new StringParameter(this, "function-authorizer-arn", {
+      parameterName: "/auth/authorizer/function/arn",
+      stringValue: fn.functionArn,
+    });
+
     return fn;
   }
 }
