@@ -21,35 +21,32 @@ export const api = axios.create({
 });
 
 api.interceptors.response.use(
-  (response) => {
-    console.log({ response });
-    
-    
-    return response;
-  },
-  async (error) => {
-
-    console.log({ status: error.response });
+  (response) => response,
+  async (error) => { 
 
     const originalRequest = error.config;
 
-    if (error.response?.status === 403 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+
+      
 
       try {
         const { refreshToken, setAccessToken, setRefreshToken } =
           useAuthStore.getState();
 
-        if (!refreshToken) return Promise.reject(error);
+        console.log({ refreshToken });
+
+        if (!refreshToken) return Promise.reject(error); 
 
         const response = await auth.refresh({
-          token: refreshToken,
-        });
+          refreshToken,
+        });         
 
-        setAccessToken({ accessToken: response.data.accessToken });
-        setRefreshToken({ refreshToken: response.data.refreshToken });
+        setAccessToken({ accessToken: response.data.data.accessToken });
+        setRefreshToken({ refreshToken: response.data.data.refreshToken });
 
-        error.config.headers.Authorization = `Bearer ${response.data.accessToken}`;
+        error.config.headers.Authorization = `Bearer ${response.data.data.accessToken}`;
 
         return api(error.config);
       } catch (refreshError) {
