@@ -1,6 +1,5 @@
 import { ObjectId } from "mongodb";
 import { dbHelper } from "./db-helper";
-import { hash } from "bcryptjs";
 
 export type Users = {
   id: string;
@@ -9,6 +8,7 @@ export type Users = {
   password: string;
   createdAt?: Date;
   updatedAt?: Date;
+  sub?: string;
 };
 
 export interface IUserRepository {
@@ -33,7 +33,7 @@ export const userRepository: IUserRepository = {
     const count = await userCollection.countDocuments();
 
     const users = await userCollection
-      .find({}, { projection: { password: 0 } })
+      .find({})
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
@@ -51,10 +51,6 @@ export const userRepository: IUserRepository = {
   },
 
   async save(data: Users): Promise<void> {
-    if (data.password) {
-      data.password = await hash(data.password, 10);
-    }
-
     const users = dbHelper.getCollection("users");
     await users.insertOne({
       ...data,
@@ -65,10 +61,6 @@ export const userRepository: IUserRepository = {
   async update(data: Users): Promise<void> {
     const users = dbHelper.getCollection("users");
     const { id, ...updateData } = data;
-
-    if (data.password) {
-      updateData.password = await hash(data.password, 10);
-    }
 
     await users.updateOne(
       { _id: new ObjectId(id) },
@@ -89,20 +81,14 @@ export const userRepository: IUserRepository = {
   async findById(id: string): Promise<Users | null> {
     const users = dbHelper.getCollection("users");
 
-    const user = await users.findOne(
-      { _id: new ObjectId(id) },
-      { projection: { password: 0 } }
-    );
+    const user = await users.findOne({ _id: new ObjectId(id) });
 
     return user && dbHelper.map(user);
   },
 
   async findByEmail(email: string): Promise<Users> {
     const users = dbHelper.getCollection("users");
-    const user = await users.findOne(
-      { email },
-      { projection: { password: 0 } }
-    );
+    const user = await users.findOne({ email });
 
     return user && dbHelper.map(user);
   },
