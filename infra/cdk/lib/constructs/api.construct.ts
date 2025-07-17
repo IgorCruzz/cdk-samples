@@ -374,6 +374,10 @@ export class ApiConstruct extends Construct {
       }
     );
 
+    sendAuthorizerFn.grantInvoke(
+      new ServicePrincipal("apigateway.amazonaws.com")
+    );
+
     return new HttpLambdaAuthorizer("authorizer", sendAuthorizerFn, {
       identitySource: ["$request.header.Authorization"],
       responseTypes: [HttpLambdaResponseType.SIMPLE],
