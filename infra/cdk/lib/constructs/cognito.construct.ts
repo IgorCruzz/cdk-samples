@@ -4,6 +4,7 @@ import {
   UserPool,
   UserPoolClient,
 } from "aws-cdk-lib/aws-cognito";
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
 export class CognitoConstruct extends Construct {
   constructor(scope: Construct, id: string) {
@@ -33,12 +34,17 @@ export class CognitoConstruct extends Construct {
       accountRecovery: AccountRecovery.EMAIL_ONLY,
     });
 
-    new UserPoolClient(this, "user-pool-client", {
+    const client = new UserPoolClient(this, "user-pool-client", {
       userPool,
       authFlows: {
         userPassword: true,
       },
       generateSecret: false,
+    });
+
+    new StringParameter(this, "user-pool-client-id", {
+      parameterName: "/cognito/user-pool-client-id",
+      stringValue: client.userPoolClientId,
     });
   }
 }
