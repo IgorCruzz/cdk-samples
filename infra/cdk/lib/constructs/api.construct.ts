@@ -380,7 +380,6 @@ export class ApiConstruct extends Construct {
     );
 
     return new HttpLambdaAuthorizer("authorizer", sendAuthorizerFn, {
-      identitySource: ["$request.header.Authorization"],
       responseTypes: [HttpLambdaResponseType.SIMPLE],
       resultsCacheTtl: Duration.seconds(0),
     });
