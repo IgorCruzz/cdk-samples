@@ -17,6 +17,7 @@ import {
   HttpLambdaAuthorizer,
   HttpLambdaResponseType,
 } from "aws-cdk-lib/aws-apigatewayv2-authorizers";
+import { Duration } from "aws-cdk-lib";
 
 export class ApiConstruct extends Construct {
   public readonly api: HttpApi;
@@ -381,6 +382,7 @@ export class ApiConstruct extends Construct {
     return new HttpLambdaAuthorizer("authorizer", sendAuthorizerFn, {
       identitySource: ["$request.header.Authorization"],
       responseTypes: [HttpLambdaResponseType.SIMPLE],
+      resultsCacheTtl: Duration.seconds(0),
     });
   }
 }
