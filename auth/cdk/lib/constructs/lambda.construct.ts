@@ -139,12 +139,7 @@ export class LambdaConstruct extends Construct {
           `arn:aws:secretsmanager:${region}:${account}:secret:jwt/secret-*`,
         ],
       })
-    );
-
-    new StringParameter(this, "function-authorizer-arn", {
-      parameterName: "/auth/authorizer/function/arn",
-      stringValue: fn.functionArn,
-    });
+    ); 
 
     return fn;
   }
