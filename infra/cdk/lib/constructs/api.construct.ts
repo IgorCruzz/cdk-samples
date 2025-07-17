@@ -13,9 +13,14 @@ import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { ApiGatewayv2DomainProperties } from "aws-cdk-lib/aws-route53-targets";
 import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import {
+  HttpLambdaAuthorizer,
+  HttpLambdaResponseType,
+} from "aws-cdk-lib/aws-apigatewayv2-authorizers";
 
 export class ApiConstruct extends Construct {
   public readonly api: HttpApi;
+  private readonly authorizer: HttpLambdaAuthorizer;
 
   constructor(
     scope: Construct,
@@ -25,6 +30,7 @@ export class ApiConstruct extends Construct {
     super(scope, id);
 
     this.api = this.createApi();
+    this.authorizer = this.createAuthorizer();
     this.createUserResource();
     this.createAuthResource();
     this.createSheetParseResource();
@@ -143,6 +149,7 @@ export class ApiConstruct extends Construct {
         deleteUserFn
       ),
       methods: [HttpMethod.DELETE],
+      authorizer: this.authorizer,
     });
 
     this.api.addRoutes({
@@ -152,6 +159,7 @@ export class ApiConstruct extends Construct {
         updateUserFn
       ),
       methods: [HttpMethod.PUT],
+      authorizer: this.authorizer,
     });
 
     this.api.addRoutes({
@@ -161,6 +169,7 @@ export class ApiConstruct extends Construct {
         getUsersFn
       ),
       methods: [HttpMethod.GET],
+      authorizer: this.authorizer,
     });
 
     this.api.addRoutes({
@@ -170,6 +179,7 @@ export class ApiConstruct extends Construct {
         createUserFn
       ),
       methods: [HttpMethod.POST],
+      authorizer: this.authorizer,
     });
 
     createUserFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
@@ -301,6 +311,7 @@ export class ApiConstruct extends Construct {
         generatePreSignedUrlFn
       ),
       methods: [HttpMethod.POST],
+      authorizer: this.authorizer,
     });
 
     getStatisticDataFn.grantInvoke(
@@ -337,10 +348,33 @@ export class ApiConstruct extends Construct {
         sendNotificationFn
       ),
       methods: [HttpMethod.POST],
+      authorizer: this.authorizer,
     });
 
     sendNotificationFn.grantInvoke(
       new ServicePrincipal("apigateway.amazonaws.com")
     );
+  }
+
+  private createAuthorizer() {
+    const sendAuthorizerArn = StringParameter.fromStringParameterName(
+      this,
+      "send-authorizer-function-arn",
+      "/auth/authorizer/function/arn"
+    );
+
+    const sendAuthorizerFn = NodejsFunction.fromFunctionAttributes(
+      this,
+      "lambda-send-authorizer",
+      {
+        functionArn: sendAuthorizerArn.stringValue,
+        sameEnvironment: true,
+      }
+    );
+
+    return new HttpLambdaAuthorizer("authorizer", sendAuthorizerFn, {
+      identitySource: ["$request.header.Authorization"],
+      responseTypes: [HttpLambdaResponseType.SIMPLE],
+    });
   }
 }
