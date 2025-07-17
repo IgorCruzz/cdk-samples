@@ -52,8 +52,11 @@ export const userRepository: IUserRepository = {
 
   async save(data: Users): Promise<void> {
     const users = dbHelper.getCollection("users");
+
+    const { password, ...userData } = data;
+
     await users.insertOne({
-      ...data,
+      ...userData,
       createdAt: new Date(),
     });
   },
