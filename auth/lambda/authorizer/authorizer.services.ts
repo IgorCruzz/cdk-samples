@@ -2,7 +2,7 @@ import { jwt } from '../shared/infra/jwt';
 import { Output } from "../shared/service/output";
 
 type AuthorizerInput = {
-  token: string;
+  token?: string;
 };
 
 export const service = async (data: AuthorizerInput): Output<{ 
