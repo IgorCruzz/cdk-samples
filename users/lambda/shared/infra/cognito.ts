@@ -17,16 +17,18 @@ async function getUserPoolClientId(): Promise<string> {
   return resultado.Parameter?.Value || "";
 }
 
-export const createAuthUser = async (email: string, password: string) => {
-  const clientId = await getUserPoolClientId();
+export const cognito = {
+  createAuthUser: async (email: string, password: string) => {
+    const clientId = await getUserPoolClientId();
 
-  const params: SignUpCommandInput = {
-    ClientId: clientId,
-    Username: email,
-    Password: password,
-    UserAttributes: [{ Name: "email", Value: email }],
-  };
+    const params: SignUpCommandInput = {
+      ClientId: clientId,
+      Username: email,
+      Password: password,
+      UserAttributes: [{ Name: "email", Value: email }],
+    };
 
-  const command = new SignUpCommand(params);
-  await cognitoClient.send(command);
+    const command = new SignUpCommand(params);
+    await cognitoClient.send(command);
+  },
 };
