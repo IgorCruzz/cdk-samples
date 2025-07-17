@@ -9,7 +9,7 @@ export const handler = async (
   context?: Record<string, any>;  
 }> => {
   try {  
-    const token = event.headers?.Authorization  
+    const token = event.headers?.authorization || event.headers?.Authorization; 
     
     const response = await service({ token });
 
