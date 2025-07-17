@@ -7,9 +7,9 @@ export const auth = {
       password: data.password,
     })
   },
-  refresh: async (data: { token: string }) => {
-    return await api.post("auth/refresh", {
-      token: data.token,
+  refresh: async (data: { refreshToken: string }) => {
+    return await api.post("auth/refresh-token", {
+      refreshToken: data.refreshToken,
     })
   }
 }
