@@ -263,6 +263,7 @@ export class ApiConstruct extends Construct {
         getStatisticDataFn
       ),
       methods: [HttpMethod.GET],
+      authorizer: this.authorizer,
     });
 
     const getFilesDataArn = StringParameter.fromStringParameterName(
@@ -287,6 +288,7 @@ export class ApiConstruct extends Construct {
         getFilesDataFn
       ),
       methods: [HttpMethod.GET],
+      authorizer: this.authorizer,
     });
 
     const generatePreSignedUrlArn = StringParameter.fromStringParameterName(
