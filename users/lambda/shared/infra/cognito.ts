@@ -2,6 +2,7 @@ import {
   CognitoIdentityProviderClient,
   SignUpCommand,
   SignUpCommandInput,
+  SignUpCommandOutput,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
 
@@ -18,7 +19,10 @@ async function getUserPoolClientId(): Promise<string> {
 }
 
 export const cognito = {
-  createAuthUser: async (email: string, password: string) => {
+  createAuthUser: async (
+    email: string,
+    password: string
+  ): Promise<SignUpCommandOutput> => {
     const clientId = await getUserPoolClientId();
 
     const params: SignUpCommandInput = {
@@ -29,6 +33,6 @@ export const cognito = {
     };
 
     const command = new SignUpCommand(params);
-    await cognitoClient.send(command);
+    return (await cognitoClient.send(command)) as SignUpCommandOutput;
   },
 };
