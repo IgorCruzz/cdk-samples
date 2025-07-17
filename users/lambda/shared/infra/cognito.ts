@@ -17,7 +17,7 @@ async function getUserPoolClientId(): Promise<string> {
   return resultado.Parameter?.Value || "";
 }
 
-export const createUser = async (email: string, password: string) => {
+export const createAuthUser = async (email: string, password: string) => {
   const clientId = await getUserPoolClientId();
 
   const params: SignUpCommandInput = {
