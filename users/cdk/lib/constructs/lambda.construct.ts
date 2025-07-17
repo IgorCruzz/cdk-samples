@@ -134,6 +134,22 @@ export class LambdaConstruct extends Construct {
       })
     );
 
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["cognito-idp:SignUp"],
+        resources: [`arn:aws:cognito-idp:${region}:${account}:userpool/*`],
+      })
+    );
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["ssm:GetParameter"],
+        resources: [
+          `arn:aws:ssm:${region}:${account}:parameter/cognito/user-pool-client-id`,
+        ],
+      })
+    );
+
     new StringParameter(this, "parameter-create-user-function", {
       parameterName: "/lambda/create-user-function-arn",
       stringValue: fn.functionArn,
