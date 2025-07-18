@@ -136,7 +136,7 @@ export class LambdaConstruct extends Construct {
 
     fn.addToRolePolicy(
       new PolicyStatement({
-        actions: ["cognito-idp:SignUp"],
+        actions: ["cognito-idp:AdminCreateUser"],
         resources: [`arn:aws:cognito-idp:${region}:${account}:userpool/*`],
       })
     );
@@ -144,9 +144,7 @@ export class LambdaConstruct extends Construct {
     fn.addToRolePolicy(
       new PolicyStatement({
         actions: ["ssm:GetParameter"],
-        resources: [
-          `arn:aws:ssm:${region}:${account}:parameter/cognito/user-pool-client-id`,
-        ],
+        resources: [`arn:aws:ssm:${region}:${account}:parameter/cognito/*`],
       })
     );
 
