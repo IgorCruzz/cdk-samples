@@ -1,10 +1,12 @@
 import {
   AuthFlowType,
-  CognitoIdentityProviderClient, 
-  CognitoIdentityProviderServiceException, 
+  CognitoIdentityProviderClient,  
   InitiateAuthCommand,
   InitiateAuthCommandInput,
-  InitiateAuthCommandOutput
+  InitiateAuthCommandOutput,
+  RespondToAuthChallengeCommand,
+  RespondToAuthChallengeCommandInput,
+  RespondToAuthChallengeCommandOutput,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
 
@@ -21,14 +23,36 @@ async function getUserPoolClientId(): Promise<string> {
 }
 
 export const cognito = {
+  authChallenge: async ({ email, password, session }: { email: string; password: string; session?: string }) => {
+    const clientId = await getUserPoolClientId();
+
+    const params: RespondToAuthChallengeCommandInput = {
+      ClientId: clientId,
+      ChallengeName: "NEW_PASSWORD_REQUIRED",
+      Session: session,
+      ChallengeResponses: {
+        USERNAME: email,
+        NEW_PASSWORD: password,
+      },
+    }
+
+    const command = new RespondToAuthChallengeCommand(params);
+    const res: RespondToAuthChallengeCommandOutput = await cognitoClient.send(command);
+
+    if (!res.AuthenticationResult) {
+      return { error: "Failed to respond to auth challenge" };
+    }
+
+  return { accessToken: res.AuthenticationResult.AccessToken!, refreshToken: res.AuthenticationResult.RefreshToken! }; 
+  },
+
   auth: async ({ email, password }: { email: string; password: string }): Promise<
   {
     accessToken?: string;
     refreshToken?: string;
     error?: string;
     session?: string;
-  }> => {
-    try {
+  }> => { 
       const clientId = await getUserPoolClientId();
 
       const params: InitiateAuthCommandInput = {
@@ -53,8 +77,6 @@ export const cognito = {
     if (!authResult ) return { error:"Invalid credentials" }; 
 
     return { accessToken: authResult.AccessToken!, refreshToken: authResult.RefreshToken! };
-    } catch (error) {      
-      return { error:"Invalid credentials" };
-    }    
+      
   },
 };
