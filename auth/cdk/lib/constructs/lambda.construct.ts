@@ -200,11 +200,6 @@ export class LambdaConstruct extends Construct {
       })
     );
 
-    new StringParameter(this, "parameter-function-password-arn", {
-      parameterName: "/auth/password/function/arn",
-      stringValue: fn.functionArn,
-    });
-
     return fn;
   }
 }
