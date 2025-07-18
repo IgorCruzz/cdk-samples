@@ -2,9 +2,9 @@ import { Users } from "../shared/repository/user.repository";
 import { Output } from "../shared/service/output"; 
 import { cognito } from '../shared/infra/cognito';
 
-type SigninInput = Users;
+type Input = Users;
 
-export const service = async (data: SigninInput): Output<{ 
+export const service = async (data: Input): Output<{ 
   accessToken?: string; 
   refreshToken?: string;  
   session?: string;
