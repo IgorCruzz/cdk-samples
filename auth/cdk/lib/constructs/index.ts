@@ -1,1 +1,1 @@
-export { LambdaConstruct } from './lambda.construct';
+export { LambdaConstruct } from "./lambda.construct";

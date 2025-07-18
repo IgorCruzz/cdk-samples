@@ -1,13 +1,15 @@
-import { jwt } from '../shared/infra/jwt';
+import { jwt } from "../shared/infra/jwt";
 import { Output } from "../shared/service/output";
 
 type RefreshTokenInput = {
   refreshToken: string;
 };
 
-export const service = async (data: RefreshTokenInput): Output<{ 
-  accessToken: string; 
-  refreshToken: string; 
+export const service = async (
+  data: RefreshTokenInput
+): Output<{
+  accessToken: string;
+  refreshToken: string;
 }> => {
   const { refreshToken } = data;
 
@@ -19,8 +21,12 @@ export const service = async (data: RefreshTokenInput): Output<{
 
   const tokens = await jwt.sign({ email: payload.email });
 
-  return { message: "Token refreshed successfully", success: true, data: {
-    accessToken: tokens.accessToken,
-    refreshToken: tokens.refreshToken
-  } };
+  return {
+    message: "Token refreshed successfully",
+    success: true,
+    data: {
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    },
+  };
 };

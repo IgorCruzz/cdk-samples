@@ -13,8 +13,8 @@ import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
 export class LambdaConstruct extends Construct {
-  public readonly signinFunction: NodejsFunction; 
-  public readonly refreshTokenFunction: NodejsFunction 
+  public readonly signinFunction: NodejsFunction;
+  public readonly refreshTokenFunction: NodejsFunction;
 
   constructor(scope: Construct, id: string) {
     super(scope, id);
@@ -29,7 +29,7 @@ export class LambdaConstruct extends Construct {
     const fn = new NodejsFunction(this, "function-refresh-token", {
       memorySize: 128,
       architecture: Architecture.X86_64,
-      runtime: Runtime.NODEJS_20_X,   
+      runtime: Runtime.NODEJS_20_X,
       timeout: Duration.seconds(30),
       description: "A Lambda function to handle token refresh",
       entry: join(__dirname, "../../../lambda/refresh/handler.ts"),
@@ -92,10 +92,10 @@ export class LambdaConstruct extends Construct {
         actions: ["secretsmanager:GetSecretValue"],
         resources: [
           `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
-          `arn:aws:secretsmanager:${region}:${account}:secret:jwt/secret-*`,  
+          `arn:aws:secretsmanager:${region}:${account}:secret:jwt/secret-*`,
         ],
       })
-    );    
+    );
 
     fn.addToRolePolicy(
       new PolicyStatement({
@@ -104,7 +104,7 @@ export class LambdaConstruct extends Construct {
       })
     );
 
-     fn.addToRolePolicy(
+    fn.addToRolePolicy(
       new PolicyStatement({
         actions: ["cognito-idp:InitiateAuth"],
         resources: [`arn:aws:cognito-idp:${region}:${account}:userpool/*`],
@@ -116,8 +116,8 @@ export class LambdaConstruct extends Construct {
       stringValue: fn.functionArn,
     });
 
-    return fn;  
-  } 
+    return fn;
+  }
 
   private authorizerFunction() {
     const fn = new NodejsFunction(this, "function-authorizer", {
@@ -141,7 +141,7 @@ export class LambdaConstruct extends Construct {
     new StringParameter(this, "function-authorizer-arn", {
       parameterName: "/auth/authorizer/function/arn",
       stringValue: fn.functionArn,
-    })
+    });
 
     const region = Stack.of(this).region;
     const account = Stack.of(this).account;
@@ -154,7 +154,7 @@ export class LambdaConstruct extends Construct {
           `arn:aws:secretsmanager:${region}:${account}:secret:jwt/secret-*`,
         ],
       })
-    ); 
+    );
 
     return fn;
   }
@@ -186,14 +186,14 @@ export class LambdaConstruct extends Construct {
       stringValue: fn.functionArn,
     });
 
-      fn.addToRolePolicy(
+    fn.addToRolePolicy(
       new PolicyStatement({
         actions: ["ssm:GetParameter"],
         resources: [`arn:aws:ssm:${region}:${account}:parameter/cognito/*`],
       })
     );
 
-     fn.addToRolePolicy(
+    fn.addToRolePolicy(
       new PolicyStatement({
         actions: ["cognito-idp:RespondToAuthChallenge"],
         resources: [`arn:aws:cognito-idp:${region}:${account}:userpool/*`],
