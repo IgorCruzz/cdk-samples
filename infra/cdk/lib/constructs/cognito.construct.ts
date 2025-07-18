@@ -42,6 +42,11 @@ export class CognitoConstruct extends Construct {
       generateSecret: false,
     });
 
+    new StringParameter(this, "user-pool-id", {
+      parameterName: "/cognito/user-pool-id",
+      stringValue: userPool.userPoolId,
+    });
+
     new StringParameter(this, "user-pool-client-id", {
       parameterName: "/cognito/user-pool-client-id",
       stringValue: client.userPoolClientId,
