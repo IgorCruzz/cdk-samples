@@ -26,8 +26,7 @@ export const cognito = {
     accessToken?: string;
     refreshToken?: string;
     error?: string;
-  }
-  | undefined> => {
+  }> => {
     try {
       const clientId = await getUserPoolClientId();
 
@@ -46,21 +45,18 @@ export const cognito = {
 
     const authResult = res.AuthenticationResult;
 
-    if (!authResult ) return undefined;    
+    if (!authResult ) return { error:"Invalid credentials" };;    
 
     return { accessToken: authResult.AccessToken!, refreshToken: authResult.RefreshToken! };
     } catch (error) {
        if (
-        error instanceof CognitoIdentityProviderServiceException &&
-        (error.name === "NotAuthorizedException" ||
-          error.name === "UserNotConfirmedException" ||
-          error.name === "PasswordResetRequiredException")
+        error instanceof CognitoIdentityProviderServiceException && 
+          error.name === "PasswordResetRequiredException"  
       ) {
         return { error: error.message };
       }
- 
-      if (error instanceof Error) throw error;
-      throw new Error("Erro inesperado: " + String(error));   
+      
+      return { error:"Invalid credentials" };
     }    
   },
 };
