@@ -50,7 +50,7 @@ export const cognito = {
     );
 
     if (!res.AuthenticationResult) {
-      return { error: "Failed to respond to auth challenge" };
+      return { error: "Invalid credentials" };
     }
 
     return {
