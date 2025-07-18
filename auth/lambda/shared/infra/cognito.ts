@@ -41,23 +41,18 @@ export const cognito = {
 
     const command = new InitiateAuthCommand(params);
 
-    const res: InitiateAuthCommandOutput = await cognitoClient.send(command);  
+    const res: InitiateAuthCommandOutput = await cognitoClient.send(command);
 
-    const authResult = res.AuthenticationResult;
+    if (res.ChallengeName === "NEW_PASSWORD_REQUIRED") {
+      return { error: "New password required" };
+    }
 
-    if (!authResult ) return { error:"Invalid credentials" };;    
+    const authResult = res.AuthenticationResult; 
+
+    if (!authResult ) return { error:"Invalid credentials" }; 
 
     return { accessToken: authResult.AccessToken!, refreshToken: authResult.RefreshToken! };
-    } catch (error) {
-      console.log({ error });
-      
-       if (
-        error instanceof CognitoIdentityProviderServiceException && 
-          error.name === "PasswordResetRequiredException"  
-      ) {
-        return { error: error.message };
-      }
-      
+    } catch (error) {      
       return { error:"Invalid credentials" };
     }    
   },
