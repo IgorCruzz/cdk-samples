@@ -26,6 +26,7 @@ export const cognito = {
     accessToken?: string;
     refreshToken?: string;
     error?: string;
+    session?: string;
   }> => {
     try {
       const clientId = await getUserPoolClientId();
@@ -44,7 +45,7 @@ export const cognito = {
     const res: InitiateAuthCommandOutput = await cognitoClient.send(command);
 
     if (res.ChallengeName === "NEW_PASSWORD_REQUIRED") {
-      return { error: "New password required" };
+      return { error: "New password required", session: res.Session };
     }
 
     const authResult = res.AuthenticationResult; 
