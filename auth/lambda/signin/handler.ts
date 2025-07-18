@@ -39,9 +39,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
     if (!response.success) {
       return {
         statusCode: 400,
-        body: JSON.stringify({
-          message: response.message, 
-        }),
+        body: JSON.stringify(response),
       };
     }
 
