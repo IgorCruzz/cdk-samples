@@ -220,6 +220,30 @@ export class ApiConstruct extends Construct {
       }
     );
 
+    const sendPasswordArn = StringParameter.fromStringParameterName(
+      this,
+      "send-password-function-arn",
+      "/auth/password/function/arn"
+    );
+
+    const sendPasswordFn = NodejsFunction.fromFunctionAttributes(
+      this,
+      "lambda-send-password",
+      {
+        functionArn: sendPasswordArn.stringValue,
+        sameEnvironment: true,
+      }
+    );
+
+    this.api.addRoutes({
+      path: "/auth/password",
+      integration: new HttpLambdaIntegration(
+        "integration-new-password",
+        sendPasswordFn
+      ),
+      methods: [HttpMethod.POST],
+    });
+
     this.api.addRoutes({
       path: "/auth/signin",
       integration: new HttpLambdaIntegration("integration-signin", signinFn),
@@ -235,6 +259,9 @@ export class ApiConstruct extends Construct {
       methods: [HttpMethod.POST],
     });
 
+    sendPasswordFn.grantInvoke(
+      new ServicePrincipal("apigateway.amazonaws.com")
+    );
     signinFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
     refreshTokenFn.grantInvoke(
       new ServicePrincipal("apigateway.amazonaws.com")
