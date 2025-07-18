@@ -49,6 +49,8 @@ export const cognito = {
 
     return { accessToken: authResult.AccessToken!, refreshToken: authResult.RefreshToken! };
     } catch (error) {
+      console.log({ error });
+      
        if (
         error instanceof CognitoIdentityProviderServiceException && 
           error.name === "PasswordResetRequiredException"  
