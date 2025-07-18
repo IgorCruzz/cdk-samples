@@ -91,8 +91,22 @@ export class LambdaConstruct extends Construct {
         actions: ["secretsmanager:GetSecretValue"],
         resources: [
           `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
-          `arn:aws:secretsmanager:${region}:${account}:secret:jwt/secret-*`,
+          `arn:aws:secretsmanager:${region}:${account}:secret:jwt/secret-*`,  
         ],
+      })
+    );    
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["ssm:GetParameter"],
+        resources: [`arn:aws:ssm:${region}:${account}:parameter/cognito/*`],
+      })
+    );
+
+     fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["cognito-idp:InitiateAuth"],
+        resources: [`arn:aws:cognito-idp:${region}:${account}:userpool/*`],
       })
     );
 
