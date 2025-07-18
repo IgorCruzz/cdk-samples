@@ -7,6 +7,7 @@ type SigninInput = Users;
 export const service = async (data: SigninInput): Output<{ 
   accessToken?: string; 
   refreshToken?: string;  
+  session?: string;
  }>  => {
   
   const { email, password } = data; 
@@ -17,7 +18,7 @@ export const service = async (data: SigninInput): Output<{
   })
 
   if (auth.error) {
-    return { message: auth.error, success: false, data:  null }; 
+    return { message: auth.error, success: false, data: auth.session ? { session: auth?.session } : null   }; 
   } 
 
   return { message: "Login successful", success: true, data: auth };
