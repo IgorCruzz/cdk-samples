@@ -1,6 +1,7 @@
 import {
   AuthFlowType,
   CognitoIdentityProviderClient, 
+  CognitoIdentityProviderServiceException, 
   InitiateAuthCommand,
   InitiateAuthCommandInput,
   InitiateAuthCommandOutput
@@ -22,8 +23,9 @@ async function getUserPoolClientId(): Promise<string> {
 export const cognito = {
   auth: async ({ email, password }: { email: string; password: string }): Promise<
   {
-    accessToken: string;
-    refreshToken: string;
+    accessToken?: string;
+    refreshToken?: string;
+    error?: string;
   }
   | undefined> => {
     try {
@@ -48,7 +50,17 @@ export const cognito = {
 
     return { accessToken: authResult.AccessToken!, refreshToken: authResult.RefreshToken! };
     } catch (error) {
-      return undefined; 
+       if (
+        error instanceof CognitoIdentityProviderServiceException &&
+        (error.name === "NotAuthorizedException" ||
+          error.name === "UserNotConfirmedException" ||
+          error.name === "PasswordResetRequiredException")
+      ) {
+        return { error: error.message };
+      }
+ 
+      if (error instanceof Error) throw error;
+      throw new Error("Erro inesperado: " + String(error));   
     }    
   },
 };
