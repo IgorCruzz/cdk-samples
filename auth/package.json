@@ -9,7 +9,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "local:api": "sam local start-api -t ./cdk.out/stack-auth.template.json --port 4000"
+    "signin:local": "sam local invoke function-signin -e events/signin.json -t ./cdk.out/stack-auth.template.json"
 
   },
   "devDependencies": {
@@ -24,7 +24,9 @@
     "typescript": "~5.6.3"
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.848.0",
     "@aws-sdk/client-secrets-manager": "^3.844.0",
+    "@aws-sdk/client-ssm": "^3.848.0",
     "aws-cdk-lib": "2.186.0",
     "aws-lambda": "^1.0.7",
     "bcryptjs": "^3.0.2",
