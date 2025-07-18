@@ -22,6 +22,7 @@ export class LambdaConstruct extends Construct {
     this.signinFunction = this.createSigninFunction();
     this.refreshTokenFunction = this.createRefreshTokenFunction();
     this.authorizerFunction();
+    this.createPasswordFunction();
   }
 
   private createRefreshTokenFunction() {
@@ -154,6 +155,55 @@ export class LambdaConstruct extends Construct {
         ],
       })
     ); 
+
+    return fn;
+  }
+
+  private createPasswordFunction() {
+    const fn = new NodejsFunction(this, "function-password", {
+      memorySize: 128,
+      architecture: Architecture.X86_64,
+      runtime: Runtime.NODEJS_20_X,
+      timeout: Duration.seconds(30),
+      description: "A Lambda function to handle password management",
+      entry: join(__dirname, "../../../lambda/password/handler.ts"),
+      handler: "handler",
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: "es2020",
+      },
+      loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
+      logRetention: RetentionDays.ONE_WEEK,
+    });
+
+    const region = Stack.of(this).region;
+    const account = Stack.of(this).account;
+
+    new StringParameter(this, "function-password-arn", {
+      parameterName: "/auth/password/function/arn",
+      stringValue: fn.functionArn,
+    });
+
+      fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["ssm:GetParameter"],
+        resources: [`arn:aws:ssm:${region}:${account}:parameter/cognito/*`],
+      })
+    );
+
+     fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["cognito-idp:RespondToAuthChallenge"],
+        resources: [`arn:aws:cognito-idp:${region}:${account}:userpool/*`],
+      })
+    );
+
+    new StringParameter(this, "function-signin-arn", {
+      parameterName: "/auth/signin/function/arn",
+      stringValue: fn.functionArn,
+    });
 
     return fn;
   }
