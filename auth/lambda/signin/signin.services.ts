@@ -5,8 +5,8 @@ import { cognito } from '../shared/infra/cognito';
 type SigninInput = Users;
 
 export const service = async (data: SigninInput): Output<{ 
-  accessToken: string; 
-  refreshToken: string; 
+  accessToken?: string; 
+  refreshToken?: string;  
  }>  => {
   
   const { email, password } = data; 
@@ -16,8 +16,8 @@ export const service = async (data: SigninInput): Output<{
     password
   })
 
-  if (!auth) {
-    return { message: "Invalid credentials", success: false, data: null }; 
+  if (auth.error) {
+    return { message: auth.error, success: false, data:  null }; 
   } 
 
   return { message: "Login successful", success: true, data: auth };
