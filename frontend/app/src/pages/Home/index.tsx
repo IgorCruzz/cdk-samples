@@ -1,14 +1,16 @@
+
 import { Upload, History, Graphic } from './components';
+ 
 
 export default function Home() { 
   return (
-    <div className="min-h-screen flex flex-col gap-8 lg:flex-row">
-      <div className="flex flex-col w-full gap-8 lg:w-1/2">
-        <Upload />
+    <div className="flex flex-col gap-8">
+      <div className="flex justify-between items-center"> 
         <Graphic />
+        <Upload />
       </div>
 
-      <div className="w-full lg:w-1/2">
+      <div className="w-full">
         <History />
       </div>
     </div>
