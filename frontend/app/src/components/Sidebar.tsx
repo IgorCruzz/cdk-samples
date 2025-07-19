@@ -25,7 +25,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="items-center justify-center gap-5">
         <img src={Logo} alt="Logo" width={100} />
-        <p>Bem vindo, Igor {location.pathname}</p>
+        <p>Bem vindo</p>
       </SidebarHeader>
 
       <SidebarContent>
