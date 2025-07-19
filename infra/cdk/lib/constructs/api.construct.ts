@@ -5,7 +5,6 @@ import {
   DomainName,
   EndpointType,
   HttpMethod,
-  HttpAuthorizerType,
 } from "aws-cdk-lib/aws-apigatewayv2";
 import { ICertificate } from "aws-cdk-lib/aws-certificatemanager";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
