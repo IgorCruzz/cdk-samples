@@ -29,6 +29,7 @@ export const cognito = {
     refreshToken: string;
   }): Promise<{
     accessToken?: string;
+    refreshToken?: string;
     error?: string;
   }> => {
     const clientId = await getUserPoolClientId();
@@ -44,12 +45,17 @@ export const cognito = {
     const command = new InitiateAuthCommand(params);
     const res: InitiateAuthCommandOutput = await cognitoClient.send(command);
 
-    if (!res.AuthenticationResult) {
+    if (
+      !res.AuthenticationResult ||
+      !res.AuthenticationResult.AccessToken ||
+      !res.AuthenticationResult.RefreshToken
+    ) {
       return { error: "Invalid refresh token" };
     }
 
     return {
-      accessToken: res.AuthenticationResult.AccessToken!,
+      accessToken: res.AuthenticationResult.AccessToken,
+      refreshToken: res.AuthenticationResult.RefreshToken,
     };
   },
 
@@ -79,13 +85,17 @@ export const cognito = {
       command
     );
 
-    if (!res.AuthenticationResult) {
+    if (
+      !res.AuthenticationResult ||
+      !res.AuthenticationResult.AccessToken ||
+      !res.AuthenticationResult.RefreshToken
+    ) {
       return { error: "Invalid credentials" };
     }
 
     return {
-      accessToken: res.AuthenticationResult.AccessToken!,
-      refreshToken: res.AuthenticationResult.RefreshToken!,
+      accessToken: res.AuthenticationResult.AccessToken,
+      refreshToken: res.AuthenticationResult.RefreshToken,
     };
   },
 
@@ -120,13 +130,17 @@ export const cognito = {
       return { error: "New password required", session: res.Session };
     }
 
-    const authResult = res.AuthenticationResult;
-
-    if (!authResult) return { error: "Invalid credentials" };
+    if (
+      !res.AuthenticationResult ||
+      !res.AuthenticationResult.AccessToken ||
+      !res.AuthenticationResult.RefreshToken
+    ) {
+      return { error: "Invalid credentials" };
+    }
 
     return {
-      accessToken: authResult.AccessToken!,
-      refreshToken: authResult.RefreshToken!,
+      accessToken: res.AuthenticationResult.AccessToken,
+      refreshToken: res.AuthenticationResult.RefreshToken,
     };
   },
 };
