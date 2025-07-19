@@ -7,9 +7,8 @@ import {
 } from "@/components/ui/sidebar"
 import Logo from '@/assets/logo.png';
 import { useAuthStore } from "@/store/use-auth";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
-import { useLocation } from 'react-router-dom';
 
 export function AppSidebar() {
   const location = useLocation();
@@ -18,8 +17,15 @@ export function AppSidebar() {
   const handleLogout = () => {
     logout();
   };
- 
+
   const isActive = (path: string) => location.pathname === path;
+
+  const linkClass = (path: string) =>
+    `block text-white p-2 rounded transition-colors duration-300 ${
+      isActive(path)
+        ? 'bg-gradient-to-r from-green-300/70 to-green-500/70 hover:from-green-600/70 hover:to-green-800/70'
+        : 'hover:bg-green-900/30'
+    }`;
 
   return (
     <Sidebar>
@@ -29,25 +35,16 @@ export function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <ul className="mt-2 space-y-2 w-full">
-            <li
-              className={`text-white p-2 rounded transition-colors duration-300 cursor-pointer ${
-                isActive('/home')
-                  ? 'bg-gradient-to-r from-green-300/70 to-green-500/70 hover:from-green-600/70 hover:to-green-800/70'
-                  : 'hover:bg-green-900/30'
-              }`}
-            >
-              <Link to="/home">Home</Link>
+          <ul className="w-full space-y-2">
+            <li>
+              <Link to="/home" className={linkClass('/home')}>
+                Home
+              </Link>
             </li>
-
-            <li
-              className={`text-white p-2 rounded transition-colors duration-300 cursor-pointer ${
-                isActive('/upload')
-                  ? 'bg-gradient-to-r from-green-300/70 to-green-500/70 hover:from-green-600/70 hover:to-green-800/70'
-                  : 'hover:bg-green-900/30'
-              }`}
-            >
-              <Link to="/upload">Upload</Link>
+            <li>
+              <Link to="/upload" className={linkClass('/upload')}>
+                Upload
+              </Link>
             </li>
           </ul>
         </SidebarGroup>
