@@ -27,15 +27,11 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      
+      originalRequest._retry = true; 
 
       try {
-        const { refreshToken, setAccessToken, setRefreshToken } =
-          useAuthStore.getState();
-
-        console.log({ refreshToken });
+        const { refreshToken, setAccessToken  } =
+          useAuthStore.getState(); 
 
         if (!refreshToken) return Promise.reject(error); 
 
@@ -43,8 +39,7 @@ api.interceptors.response.use(
           refreshToken,
         });         
 
-        setAccessToken({ accessToken: response.data.data.accessToken });
-        setRefreshToken({ refreshToken: response.data.data.refreshToken });
+        setAccessToken({ accessToken: response.data.data.accessToken }); 
 
         error.config.headers.Authorization = `Bearer ${response.data.data.accessToken}`;
 
