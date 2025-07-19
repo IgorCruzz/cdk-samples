@@ -23,6 +23,36 @@ async function getUserPoolClientId(): Promise<string> {
 }
 
 export const cognito = {
+  refreshToken: async ({
+    refreshToken,
+  }: {
+    refreshToken: string;
+  }): Promise<{
+    accessToken?: string;
+    error?: string;
+  }> => {
+    const clientId = await getUserPoolClientId();
+
+    const params = {
+      ClientId: clientId,
+      AuthFlow: AuthFlowType.REFRESH_TOKEN_AUTH,
+      AuthParameters: {
+        REFRESH_TOKEN: refreshToken,
+      },
+    };
+
+    const command = new InitiateAuthCommand(params);
+    const res: InitiateAuthCommandOutput = await cognitoClient.send(command);
+
+    if (!res.AuthenticationResult) {
+      return { error: "Invalid refresh token" };
+    }
+
+    return {
+      accessToken: res.AuthenticationResult.AccessToken!,
+    };
+  },
+
   authChallenge: async ({
     email,
     password,
