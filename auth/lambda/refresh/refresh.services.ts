@@ -1,4 +1,4 @@
-import { jwt } from "../shared/infra/jwt";
+import { cognito } from "../shared/infra/cognito";
 import { Output } from "../shared/service/output";
 
 type RefreshTokenInput = {
@@ -13,13 +13,15 @@ export const service = async (
 }> => {
   const { refreshToken } = data;
 
-  const payload = await jwt.verify(refreshToken, "refresh");
+  const tokens = await cognito.refreshToken({ refreshToken });
 
-  if (!payload) {
-    return { message: "Invalid refresh token", success: false, data: null };
+  if (tokens.error || !tokens.accessToken || !tokens.refreshToken) {
+    return {
+      message: tokens.error || "Failed to refresh token",
+      success: false,
+      data: null,
+    };
   }
-
-  const tokens = await jwt.sign({ email: payload.email });
 
   return {
     message: "Token refreshed successfully",
