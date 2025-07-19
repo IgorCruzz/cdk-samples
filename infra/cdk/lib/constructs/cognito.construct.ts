@@ -44,7 +44,7 @@ export class CognitoConstruct extends Construct {
         userPassword: true,
       },
       generateSecret: false,
-      accessTokenValidity: Duration.minutes(5),
+      accessTokenValidity: Duration.hours(1),
       refreshTokenValidity: Duration.hours(8),
     });
 
