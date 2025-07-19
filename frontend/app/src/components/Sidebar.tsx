@@ -46,6 +46,11 @@ export function AppSidebar() {
                 Upload
               </Link>
             </li>
+            <li>
+              <Link to="/customers" className={linkClass('/customers')}>
+                Customers
+              </Link>
+            </li>
           </ul>
         </SidebarGroup>
       </SidebarContent>
