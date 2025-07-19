@@ -1,8 +1,10 @@
-import { Users } from "../shared/repository/user.repository";
 import { Output } from "../shared/service/output";
 import { cognito } from "../shared/infra/cognito";
 
-type Input = Users;
+type Input = {
+  email: string;
+  password: string;
+};
 
 export const service = async (
   data: Input
