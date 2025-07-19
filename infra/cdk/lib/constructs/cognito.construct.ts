@@ -5,6 +5,7 @@ import {
   UserPoolClient,
 } from "aws-cdk-lib/aws-cognito";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
+import { Duration } from "aws-cdk-lib";
 
 export class CognitoConstruct extends Construct {
   public readonly userPool: UserPool;
@@ -43,6 +44,8 @@ export class CognitoConstruct extends Construct {
         userPassword: true,
       },
       generateSecret: false,
+      accessTokenValidity: Duration.minutes(5),
+      refreshTokenValidity: Duration.hours(8),
     });
 
     new StringParameter(this, "user-pool-id", {
