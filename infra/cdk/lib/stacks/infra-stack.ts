@@ -14,11 +14,15 @@ export class InfraStack extends Stack {
       this,
       "construct-certificate"
     );
+    const { userPool, userPoolClient } = new CognitoConstruct(
+      this,
+      "construct-cognito"
+    );
 
     new ApiConstruct(this, "construct-api", {
       certificate,
+      userPool,
+      userPoolClient,
     });
-
-    new CognitoConstruct(this, "construct-cognito");
   }
 }
