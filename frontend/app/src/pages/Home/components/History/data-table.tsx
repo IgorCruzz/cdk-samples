@@ -13,9 +13,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-
-import { ScrollArea } from "@/components/ui/scroll-area" 
+} from "@/components/ui/table" 
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -55,8 +53,7 @@ export function DataTable<TData, TValue>({
   })
 
   return ( 
-      <Table>
-        <ScrollArea>
+      <Table> 
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -96,8 +93,7 @@ export function DataTable<TData, TValue>({
               </TableCell>
             </TableRow>
           )}
-        </TableBody>
-        </ScrollArea>      
+        </TableBody>     
       </Table> 
   )
 }
