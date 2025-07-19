@@ -12,6 +12,15 @@ import { fileSchema } from '@/schemas/file';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AxiosError } from 'axios';
 import { SendHorizontal } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Upload as UploadIcn } from 'lucide-react';
 
 export function Upload()  {
   const form = useForm<{ file: File }>({
@@ -65,7 +74,14 @@ export function Upload()  {
   };
 
   return ( 
-      <Card className="h-1/2 rounded-tl-4xl rounded-br-4xl border-t-green-500 border-t-4 ">
+    <Dialog>
+        <DialogTrigger className="btn"><UploadIcn /></DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Upload file</DialogTitle>
+
+
+      <DialogDescription>
 
         <CardHeader className="text-center">
           <CardTitle>Upload a File</CardTitle>
@@ -84,6 +100,10 @@ export function Upload()  {
             </form>
           </Form>
         </CardContent>
-      </Card> 
+      </DialogDescription> 
+
+        </DialogHeader>
+    </DialogContent>
+  </Dialog>
   );
 }
