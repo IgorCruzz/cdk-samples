@@ -192,21 +192,6 @@ export class ApiConstruct extends Construct {
   }
 
   private createAuthResource() {
-    const signinArn = StringParameter.fromStringParameterName(
-      this,
-      "signin-function-arn",
-      "/auth/signin/function/arn"
-    );
-
-    const signinFn = NodejsFunction.fromFunctionAttributes(
-      this,
-      "lambda-signin",
-      {
-        functionArn: signinArn.stringValue,
-        sameEnvironment: true,
-      }
-    );
-
     const refreshTokenArn = StringParameter.fromStringParameterName(
       this,
       "refresh-token-function-arn",
@@ -218,6 +203,21 @@ export class ApiConstruct extends Construct {
       "lambda-refresh-token",
       {
         functionArn: refreshTokenArn.stringValue,
+        sameEnvironment: true,
+      }
+    );
+
+    const signinArn = StringParameter.fromStringParameterName(
+      this,
+      "signin-function-arn",
+      "/auth/signin/function/arn"
+    );
+
+    const signinFn = NodejsFunction.fromFunctionAttributes(
+      this,
+      "lambda-signin",
+      {
+        functionArn: signinArn.stringValue,
         sameEnvironment: true,
       }
     );
