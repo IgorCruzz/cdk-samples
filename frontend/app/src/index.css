@@ -43,9 +43,7 @@
   --sidebar-border: hsl(240 3.7% 15.9%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
 } 
-button {
-  @apply bg-green-900 cursor-pointer text-white
-}
+
 
 button {
   @apply text-white p-2 rounded bg-gradient-to-r from-green-300/70 to-green-500/70 hover:from-green-600/70 hover:to-green-800/70 cursor-pointer transition-colors duration-300;
