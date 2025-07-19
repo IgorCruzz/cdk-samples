@@ -39,6 +39,10 @@ api.interceptors.response.use(
           refreshToken,
         });         
 
+        if (response.status !== 200) {
+          return Promise.reject(error);
+        }
+
         setAccessToken({ accessToken: response.data.data.accessToken }); 
 
         error.config.headers.Authorization = `Bearer ${response.data.data.accessToken}`;
