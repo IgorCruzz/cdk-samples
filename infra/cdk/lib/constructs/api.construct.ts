@@ -5,7 +5,6 @@ import {
   DomainName,
   EndpointType,
   HttpMethod,
-  HttpAuthorizer,
   HttpAuthorizerType,
 } from "aws-cdk-lib/aws-apigatewayv2";
 import { ICertificate } from "aws-cdk-lib/aws-certificatemanager";
@@ -17,10 +16,11 @@ import { ApiGatewayv2DomainProperties } from "aws-cdk-lib/aws-route53-targets";
 import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import { IUserPool, IUserPoolClient } from "aws-cdk-lib/aws-cognito";
 import { Stack } from "aws-cdk-lib";
+import { HttpJwtAuthorizer } from "aws-cdk-lib/aws-apigatewayv2-authorizers";
 
 export class ApiConstruct extends Construct {
   public readonly api: HttpApi;
-  private readonly authorizer: HttpAuthorizer;
+  private readonly authorizer: HttpJwtAuthorizer;
 
   constructor(
     scope: Construct,
@@ -153,6 +153,7 @@ export class ApiConstruct extends Construct {
         deleteUserFn
       ),
       methods: [HttpMethod.DELETE],
+      authorizer: this.authorizer,
     });
 
     this.api.addRoutes({
@@ -384,12 +385,13 @@ export class ApiConstruct extends Construct {
   private createAuthorizer() {
     const region = Stack.of(this).region;
 
-    return new HttpAuthorizer(this, "http-authorizer", {
-      httpApi: this.api,
-      identitySource: ["$request.header.Authorization"],
-      type: HttpAuthorizerType.JWT,
-      jwtIssuer: `https://cognito-idp.${region}.amazonaws.com/${this.props.userPool.userPoolId}`,
-      jwtAudience: [this.props.userPoolClient.userPoolClientId],
-    });
+    return new HttpJwtAuthorizer(
+      "authorizer-jwt",
+      `https://cognito-idp.${region}.amazonaws.com/${this.props.userPool.userPoolId}`,
+      {
+        jwtAudience: [this.props.userPoolClient.userPoolClientId],
+        identitySource: ["$request.header.Authorization"],
+      }
+    );
   }
 }
