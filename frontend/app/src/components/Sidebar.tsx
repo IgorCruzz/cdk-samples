@@ -4,7 +4,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 import Logo from '@/assets/logo.png';
 import { useAuthStore } from "@/store/use-auth";
 import { Link, useLocation } from "react-router-dom";
@@ -22,7 +22,7 @@ export function AppSidebar() {
   const isActive = (path: string) => location.pathname === path;
 
   const linkClass = (path: string) =>
-    `flex items-center gap-2 text-white p-2 rounded transition-colors duration-300 ${
+    `flex items-center gap-2 text-gray-200 p-2 rounded transition-colors duration-300 ${
       isActive(path)
         ? 'bg-gradient-to-r from-green-300/70 to-green-500/70 hover:from-green-600/70 hover:to-green-800/70'
         : 'hover:bg-green-900/30'
@@ -30,8 +30,8 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="items-center justify-center gap-5">
-        <img src={Logo} alt="Logo" width={120} />
+      <SidebarHeader>
+        <img src={Logo} alt="Logo" width={100} />
       </SidebarHeader>
 
       <SidebarContent>
@@ -39,16 +39,17 @@ export function AppSidebar() {
           <ul className="w-full space-y-2 text-sm">
             <li>
               <Link to="/home" className={linkClass('/home')}>
-                <House />  Home
+                <House /> Home
               </Link>
             </li>
             <li>
               <Link to="/upload" className={linkClass('/upload')}>
-                <Upload />  Upload
-              </Link>           </li>
+                <Upload /> Upload
+              </Link>
+            </li>
             <li>
               <Link to="/customers" className={linkClass('/customers')}>
-                <PersonStanding />  Customers
+                <PersonStanding /> Customers
               </Link>
             </li>
           </ul>
@@ -58,7 +59,7 @@ export function AppSidebar() {
       <SidebarFooter>
         <Button
           onClick={handleLogout}
-          className="bg-transparent w-full text-white p-2 rounded"
+          className="bg-transparent w-full text-gray-200 p-2 rounded"
         >
           Logout
         </Button>
