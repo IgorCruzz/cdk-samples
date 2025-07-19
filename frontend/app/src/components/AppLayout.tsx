@@ -1,15 +1,13 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Logo from '@/assets/logo.png';
 import { Button } from './ui/button'
 import { useAuthStore } from '@/store/use-auth'; 
 
-const AppLayout = () => {
-  const navigate = useNavigate();
+const AppLayout = () => { 
   const logout = useAuthStore((state) => state.logout);
 
   const handleLogout = () => {
-    logout();
-    navigate("/");
+    logout(); 
   };
 
   return (
