@@ -45,17 +45,12 @@ export const cognito = {
     const command = new InitiateAuthCommand(params);
     const res: InitiateAuthCommandOutput = await cognitoClient.send(command);
 
-    if (
-      !res.AuthenticationResult ||
-      !res.AuthenticationResult.AccessToken ||
-      !res.AuthenticationResult.RefreshToken
-    ) {
+    if (!res.AuthenticationResult || !res.AuthenticationResult.AccessToken) {
       return { error: "Invalid refresh token" };
     }
 
     return {
       accessToken: res.AuthenticationResult.AccessToken,
-      refreshToken: res.AuthenticationResult.RefreshToken,
     };
   },
 

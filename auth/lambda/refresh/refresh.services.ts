@@ -9,13 +9,12 @@ export const service = async (
   data: Input
 ): Output<{
   accessToken: string;
-  refreshToken: string;
 }> => {
   const { refreshToken } = data;
 
   const tokens = await cognito.refreshToken({ refreshToken });
 
-  if (tokens.error || !tokens.accessToken || !tokens.refreshToken) {
+  if (tokens.error || !tokens.accessToken) {
     return {
       message: tokens.error || "Failed to refresh token",
       success: false,
@@ -28,7 +27,6 @@ export const service = async (
     success: true,
     data: {
       accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
     },
   };
 };
