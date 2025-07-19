@@ -380,6 +380,7 @@ export class ApiConstruct extends Construct {
         sendNotificationFn
       ),
       methods: [HttpMethod.POST],
+      authorizer: this.authorizer,
     });
 
     sendNotificationFn.grantInvoke(
