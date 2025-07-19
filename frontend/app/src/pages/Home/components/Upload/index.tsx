@@ -75,35 +75,31 @@ export function Upload()  {
 
   return ( 
     <Dialog>
-        <DialogTrigger className="btn"><UploadIcn /></DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Upload file</DialogTitle>
-
-
+  <DialogTrigger className="btn">
+    <UploadIcn />
+  </DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Upload file</DialogTitle>
       <DialogDescription>
+        Select a file to upload and click the submit button.
+      </DialogDescription>
+    </DialogHeader>
 
-        <CardHeader className="text-center">
-          <CardTitle>Upload a File</CardTitle>
-          <CardDescription>
-            Select a file to upload and click the submit button.
-          </CardDescription>
-        </CardHeader>
+    <Card>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 h-full">
+            <DropField name="file" />
+            <Button type="submit" disabled={!form.formState.isValid || loading}>
+              {loading ? `${uploadProgress}%` : <SendHorizontal />}
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
+  </DialogContent>
+</Dialog>
 
-        <CardContent className="flex-1">
-          <Form {...form} >
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 h-full">
-              <DropField name="file" />
-              <Button type="submit" disabled={!form.formState.isValid || loading}>
-                {loading ? `${uploadProgress}%` : <SendHorizontal />}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </DialogDescription> 
-
-        </DialogHeader>
-    </DialogContent>
-  </Dialog>
   );
 }
