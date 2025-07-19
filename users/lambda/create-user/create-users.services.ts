@@ -10,7 +10,7 @@ export const service = async (data: CreateUserInput): Output => {
     return { message: "Email already exists", success: false, data: null };
   }
 
-  const authUser = await cognito.createAuthUser(data.email, data.password);
+  const authUser = await cognito.createAuthUser(data.email);
 
   await userRepository.save({ ...data, sub: authUser.UserSub });
 
