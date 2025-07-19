@@ -8,6 +8,7 @@ import {
 import Logo from '@/assets/logo.png';
 import { useAuthStore } from "@/store/use-auth";
 import { Link } from "react-router-dom"; 
+import { Button } from "./ui/button";
 
 export function AppSidebar() {
   const logout = useAuthStore((state) => state.logout);
@@ -26,17 +27,19 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup> 
           <ul className="mt-2 space-y-2">
-            <li className="text-white p-2  bg-gray-800 hover:bg-gray-700 cursor-pointer">
-              <Link to="/home">Home</Link>
-            </li> 
+            <li className="text-white p-2 bg-gradient-to-r from-green-300/70 to-green-500/70 hover:from-green-600/70 hover:to-green-800/70 cursor-pointer transition-colors duration-300 rounded">
+  <Link to="/home">Home</Link>
+</li>
+
+
           </ul>
         </SidebarGroup> 
       </SidebarContent> 
 
-      <SidebarFooter>
-        <button onClick={handleLogout} className="w-ful text-white p-2 rounded">
+      <SidebarFooter>        
+        <Button onClick={handleLogout} className="bg-transparent w-full text-white p-2 rounded">
           Logout
-        </button>
+        </Button>
       </SidebarFooter>  
     </Sidebar>
   )
