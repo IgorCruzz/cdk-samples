@@ -37,7 +37,7 @@ export const History = () => {
   return ( 
       <Card className="flex flex-col h-full">
         <CardHeader className="flex items-center justify-center gap-4">
-          <CardTitle className="text-center">History</CardTitle>
+          <CardTitle className="text-center">Files</CardTitle>
            <Button onClick={() => refetch()}><RefreshCw /></Button>
         </CardHeader>
 
