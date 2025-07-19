@@ -6,6 +6,8 @@ const AppLayout = () => {
   return (
   <div className="min-h-screen flex flex-col justify-between">
 
+    
+
   <SidebarProvider>
   <AppSidebar />
     <SidebarTrigger />
