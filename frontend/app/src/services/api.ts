@@ -40,6 +40,7 @@ api.interceptors.response.use(
         });         
 
         if (response.status !== 200) {
+          window.location.href = '/';
           return Promise.reject(error);
         }
 
