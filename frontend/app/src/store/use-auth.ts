@@ -21,11 +21,14 @@ export const useAuthStore = create<AuthState>()(
         }),
       setRefreshToken: ({ refreshToken }) => set({ refreshToken }),
       getAccessToken: () => get().accessToken,   
-      logout: () =>
-        set({
+      logout: () => {
+        window.location.href = '/'
+
+        return set({
           accessToken: null,
           refreshToken: null, 
-        }),
+        })  
+      }        
     }),
     {
       name: 'auth-storage',   
