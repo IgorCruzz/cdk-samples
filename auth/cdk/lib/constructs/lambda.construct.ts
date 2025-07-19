@@ -13,15 +13,11 @@ import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
 export class LambdaConstruct extends Construct {
-  public readonly signinFunction: NodejsFunction;
-  public readonly refreshTokenFunction: NodejsFunction;
-
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    this.signinFunction = this.createSigninFunction();
-    this.refreshTokenFunction = this.createRefreshTokenFunction();
-    this.authorizerFunction();
+    this.createSigninFunction();
+    this.createRefreshTokenFunction();
     this.createPasswordFunction();
   }
 
@@ -115,46 +111,6 @@ export class LambdaConstruct extends Construct {
       parameterName: "/auth/signin/function/arn",
       stringValue: fn.functionArn,
     });
-
-    return fn;
-  }
-
-  private authorizerFunction() {
-    const fn = new NodejsFunction(this, "function-authorizer", {
-      memorySize: 128,
-      architecture: Architecture.X86_64,
-      runtime: Runtime.NODEJS_20_X,
-      timeout: Duration.seconds(30),
-      description: "A Lambda function to handle authorizer logic",
-      entry: join(__dirname, "../../../lambda/authorizer/handler.ts"),
-      handler: "handler",
-      bundling: {
-        minify: true,
-        sourceMap: true,
-        target: "es2020",
-      },
-      loggingFormat: LoggingFormat.JSON,
-      tracing: Tracing.ACTIVE,
-      logRetention: RetentionDays.ONE_WEEK,
-    });
-
-    new StringParameter(this, "function-authorizer-arn", {
-      parameterName: "/auth/authorizer/function/arn",
-      stringValue: fn.functionArn,
-    });
-
-    const region = Stack.of(this).region;
-    const account = Stack.of(this).account;
-
-    fn.addToRolePolicy(
-      new PolicyStatement({
-        actions: ["secretsmanager:GetSecretValue"],
-        resources: [
-          `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
-          `arn:aws:secretsmanager:${region}:${account}:secret:jwt/secret-*`,
-        ],
-      })
-    );
 
     return fn;
   }
