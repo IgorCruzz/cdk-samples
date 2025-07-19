@@ -7,10 +7,13 @@ import {
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
 export class CognitoConstruct extends Construct {
+  public readonly userPool: UserPool;
+  public readonly userPoolClient: UserPoolClient;
+
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    const userPool = new UserPool(this, "user-pool", {
+    this.userPool = new UserPool(this, "user-pool", {
       selfSignUpEnabled: true,
       signInAliases: {
         email: true,
@@ -34,8 +37,8 @@ export class CognitoConstruct extends Construct {
       accountRecovery: AccountRecovery.EMAIL_ONLY,
     });
 
-    const client = new UserPoolClient(this, "user-pool-client", {
-      userPool,
+    this.userPoolClient = new UserPoolClient(this, "user-pool-client", {
+      userPool: this.userPool,
       authFlows: {
         userPassword: true,
       },
@@ -44,12 +47,12 @@ export class CognitoConstruct extends Construct {
 
     new StringParameter(this, "user-pool-id", {
       parameterName: "/cognito/user-pool-id",
-      stringValue: userPool.userPoolId,
+      stringValue: this.userPool.userPoolId,
     });
 
     new StringParameter(this, "user-pool-client-id", {
       parameterName: "/cognito/user-pool-client-id",
-      stringValue: client.userPoolClientId,
+      stringValue: this.userPoolClient.userPoolClientId,
     });
   }
 }

@@ -5,6 +5,8 @@ import {
   DomainName,
   EndpointType,
   HttpMethod,
+  HttpAuthorizer,
+  HttpAuthorizerType,
 } from "aws-cdk-lib/aws-apigatewayv2";
 import { ICertificate } from "aws-cdk-lib/aws-certificatemanager";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
@@ -13,18 +15,26 @@ import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { ApiGatewayv2DomainProperties } from "aws-cdk-lib/aws-route53-targets";
 import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import { IUserPool, IUserPoolClient } from "aws-cdk-lib/aws-cognito";
+import { Stack } from "aws-cdk-lib";
 
 export class ApiConstruct extends Construct {
   public readonly api: HttpApi;
+  private readonly authorizer: HttpAuthorizer;
 
   constructor(
     scope: Construct,
     id: string,
-    private readonly props: { certificate: ICertificate }
+    private readonly props: {
+      certificate: ICertificate;
+      userPool: IUserPool;
+      userPoolClient: IUserPoolClient;
+    }
   ) {
     super(scope, id);
 
     this.api = this.createApi();
+    this.authorizer = this.createAuthorizer();
     this.createUserResource();
     this.createAuthResource();
     this.createSheetParseResource();
@@ -369,5 +379,17 @@ export class ApiConstruct extends Construct {
     sendNotificationFn.grantInvoke(
       new ServicePrincipal("apigateway.amazonaws.com")
     );
+  }
+
+  private createAuthorizer() {
+    const region = Stack.of(this).region;
+
+    return new HttpAuthorizer(this, "http-authorizer", {
+      httpApi: this.api,
+      identitySource: ["$request.header.Authorization"],
+      type: HttpAuthorizerType.JWT,
+      jwtIssuer: `https://cognito-idp.${region}.amazonaws.com/${this.props.userPool.userPoolId}`,
+      jwtAudience: [this.props.userPoolClient.userPoolClientId],
+    });
   }
 }
