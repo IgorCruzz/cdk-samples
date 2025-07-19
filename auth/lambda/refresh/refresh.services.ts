@@ -1,12 +1,12 @@
 import { cognito } from "../shared/infra/cognito";
 import { Output } from "../shared/service/output";
 
-type RefreshTokenInput = {
+type Input = {
   refreshToken: string;
 };
 
 export const service = async (
-  data: RefreshTokenInput
+  data: Input
 ): Output<{
   accessToken: string;
   refreshToken: string;
