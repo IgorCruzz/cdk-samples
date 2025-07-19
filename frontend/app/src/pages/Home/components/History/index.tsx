@@ -35,35 +35,29 @@ export const History = () => {
   }
 
   return ( 
-      <Card className="flex flex-col h-full rounded-tl-4xl rounded-br-4xl border-t-green-500 border-t-4">
+      <Card className="flex flex-col h-full">
         <CardHeader className="flex items-center justify-center gap-4">
           <CardTitle className="text-center">History</CardTitle>
            <Button onClick={() => refetch()}><RefreshCw /></Button>
         </CardHeader>
 
         <CardContent className="h-full flex items-center justify-center">
-          {isLoading ? (
-            <div>
-              <span>Loading...</span>
-            </div>
-          ) : (
-            <div className="flex flex-col justify-between w-full h-full">
+          <div className="flex flex-col justify-between w-full h-full">
             <DataTable
             pagination={pagination}
             setPagination={setPagination}
             columns={columns}
             data={data?.data.itens || []} 
             total={data?.data.count || 0}
+            isLoading={isLoading}
             />
-
          
             <Pagination
               pagination={pagination}
               setPagination={setPagination}
               total={data?.data.count || 0}
             />
-          </div>
-          )}        
+          </div>     
         </CardContent>
       </Card> 
   );
