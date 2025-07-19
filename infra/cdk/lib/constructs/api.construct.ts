@@ -162,6 +162,7 @@ export class ApiConstruct extends Construct {
         updateUserFn
       ),
       methods: [HttpMethod.PUT],
+      authorizer: this.authorizer,
     });
 
     this.api.addRoutes({
@@ -171,6 +172,7 @@ export class ApiConstruct extends Construct {
         getUsersFn
       ),
       methods: [HttpMethod.GET],
+      authorizer: this.authorizer,
     });
 
     this.api.addRoutes({
@@ -180,6 +182,7 @@ export class ApiConstruct extends Construct {
         createUserFn
       ),
       methods: [HttpMethod.POST],
+      authorizer: this.authorizer,
     });
 
     createUserFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
@@ -290,6 +293,7 @@ export class ApiConstruct extends Construct {
         getStatisticDataFn
       ),
       methods: [HttpMethod.GET],
+      authorizer: this.authorizer,
     });
 
     const getFilesDataArn = StringParameter.fromStringParameterName(
@@ -314,6 +318,7 @@ export class ApiConstruct extends Construct {
         getFilesDataFn
       ),
       methods: [HttpMethod.GET],
+      authorizer: this.authorizer,
     });
 
     const generatePreSignedUrlArn = StringParameter.fromStringParameterName(
@@ -338,6 +343,7 @@ export class ApiConstruct extends Construct {
         generatePreSignedUrlFn
       ),
       methods: [HttpMethod.POST],
+      authorizer: this.authorizer,
     });
 
     getStatisticDataFn.grantInvoke(
