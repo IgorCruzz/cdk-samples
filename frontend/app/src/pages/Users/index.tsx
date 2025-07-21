@@ -5,7 +5,7 @@ export default function Users() {
   return ( 
         <div className="flex flex-col gap-8">
           <div className="flex justify-end items-center">  
-            <AddOrUpdate /> 
+            <AddOrUpdate  type='add'/> 
           </div>
     
           <div className="w-full">
