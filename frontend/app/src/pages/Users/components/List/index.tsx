@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
-import { customers } from '@/services/endpoints/customers';
+import { users } from '@/services/endpoints/users';
 import { DataTable } from './data-table';
 import { columns } from './columns';
 import { useState } from 'react';
@@ -21,20 +21,18 @@ export const List = () => {
   });
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['customers', pagination],
-    queryFn: () => customers.getCustomers({
+    queryKey: ['users', pagination],
+    queryFn: () => users.get({
       page: pagination.pageIndex + 1,
       limit: pagination.pageSize,
     }), 
-  });   
-
-  console.log({ data: data?.data.data.itens });
+  });    
   
 
   return ( 
       <Card className="flex flex-col h-full">
         <CardHeader className="flex items-center justify-center gap-4">
-          <CardTitle className="text-center">Customers</CardTitle>
+          <CardTitle className="text-center">Users</CardTitle>
            <Button onClick={() => refetch()}><RefreshCw /></Button>
         </CardHeader>
 
