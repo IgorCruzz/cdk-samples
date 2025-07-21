@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { Home, User, Upload, Users } from "lucide-react"
 
 import {
   Sidebar,
@@ -22,12 +22,12 @@ const applicationRoutes = [
   {
     title: "Upload",
     url: "/upload",
-    icon: Inbox,
+    icon: Upload,
   },
   {
     title: "Customers",
     url: "/customers",
-    icon: Calendar,
+    icon: Users,
   }, 
 ]
 
@@ -35,7 +35,7 @@ const administratorRoutes =[
   {
     title: "Users",
     url: "/users",
-    icon: Home,
+    icon: User,
   }, 
 ]
 
