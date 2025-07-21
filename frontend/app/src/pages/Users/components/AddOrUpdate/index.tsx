@@ -20,7 +20,12 @@ import {
 import { Plus } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 
-export function AddOrUpdate()  {
+type AddOrUpdateProps = {
+  type: 'add' | 'update';
+  user: UserInput;
+}
+
+export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
   const form = useForm({
     resolver: zodResolver(userSchema),
     mode: "onChange",
@@ -54,11 +59,11 @@ export function AddOrUpdate()  {
   return ( 
     <Dialog>
   <DialogTrigger className="btn">
-    <Plus />
+    {type === 'update' ? 'Update User' : <Plus />}    
   </DialogTrigger>
   <DialogContent>
     <DialogHeader>
-      <DialogTitle>Add</DialogTitle>
+      <DialogTitle>{type === 'add' ? 'Add User' : `Update  ${user.name}`}</DialogTitle>
     </DialogHeader>
 
     <Card>
