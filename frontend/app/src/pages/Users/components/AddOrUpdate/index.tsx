@@ -39,11 +39,11 @@ export function AddOrUpdate()  {
       const { data } = await mutateAsync(user);      
 
       toast.success(data.message); 
-      
+
       form.reset();
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast.error('Oops! Something went wrong while uploading the file.');
+        toast.error('Oops! Something went wrong.');
       }
       console.error(error);
     } finally { 
