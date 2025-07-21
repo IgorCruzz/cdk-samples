@@ -1,5 +1,5 @@
 
-import { Upload, History, Graphic } from './components';
+import { Upload, List, Graphic } from './components';
  
 
 export default function File() { 
@@ -11,7 +11,7 @@ export default function File() {
       </div>
 
       <div className="w-full">
-        <History />
+        <List />
       </div>
     </div>
   );

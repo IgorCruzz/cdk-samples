@@ -1,3 +1,3 @@
 export  { Upload } from './Upload';
-export { History } from './History';
+export { List } from './List';
 export { Graphic } from './Graphic';

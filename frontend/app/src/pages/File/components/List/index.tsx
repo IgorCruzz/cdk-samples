@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
 import { queryClient } from '@/lib/query-client';
 
-export const History = () => {
+export const List = () => {
  
   const [pagination, setPagination] = useState<
   {
