@@ -1,13 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
-import { files } from '@/services/endpoints/files';
+import { customers } from '@/services/endpoints/customers';
 import { DataTable } from './data-table';
 import { columns } from './columns';
 import { useState } from 'react';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
-import { queryClient } from '@/lib/query-client';
 
 export const List = () => {
  
@@ -21,18 +20,16 @@ export const List = () => {
     pageSize: 20, 
   });
 
-  const { data, isLoading, refetch, isSuccess } = useQuery({
-    queryKey: ['files', pagination],
-    queryFn: () => files.getFiles({
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['customers', pagination],
+    queryFn: () => customers.getCustomers({
       page: pagination.pageIndex + 1,
       limit: pagination.pageSize,
-    }),
-    // refetchInterval: 10000, 
-  });  
+    }), 
+  });   
 
-  if(isSuccess) {
-    queryClient.invalidateQueries({ queryKey: ['files-statistics'] });
-  }
+  console.log({ data: data?.data.data.itens });
+  
 
   return ( 
       <Card className="flex flex-col h-full">
@@ -47,15 +44,15 @@ export const List = () => {
             pagination={pagination}
             setPagination={setPagination}
             columns={columns}
-            data={data?.data.itens || []} 
-            total={data?.data.count || 0}
+            data={data?.data.data.itens || []} 
+            total={data?.data.data.count || 0}
             isLoading={isLoading}
             />
          
             <Pagination
               pagination={pagination}
               setPagination={setPagination}
-              total={data?.data.count || 0}
+              total={data?.data.data.count || 0}
             />
           </div>     
         </CardContent>

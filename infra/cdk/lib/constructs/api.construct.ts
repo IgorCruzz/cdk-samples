@@ -38,6 +38,7 @@ export class ApiConstruct extends Construct {
     this.createAuthResource();
     this.createSheetParseResource();
     this.createNotificationResource();
+    this.createCustomerResource();
   }
 
   private createApi() {
@@ -384,6 +385,37 @@ export class ApiConstruct extends Construct {
     });
 
     sendNotificationFn.grantInvoke(
+      new ServicePrincipal("apigateway.amazonaws.com")
+    );
+  }
+
+  private createCustomerResource() {
+    const getCustomersArn = StringParameter.fromStringParameterName(
+      this,
+      "get-customers-function-arn",
+      "/lambda/get-customers-function-arn"
+    );
+
+    const getCustomersFn = NodejsFunction.fromFunctionAttributes(
+      this,
+      "lambda-get-customers",
+      {
+        functionArn: getCustomersArn.stringValue,
+        sameEnvironment: true,
+      }
+    );
+
+    this.api.addRoutes({
+      path: "/customers",
+      integration: new HttpLambdaIntegration(
+        "integration-get-customers",
+        getCustomersFn
+      ),
+      methods: [HttpMethod.GET],
+      authorizer: this.authorizer,
+    });
+
+    getCustomersFn.grantInvoke(
       new ServicePrincipal("apigateway.amazonaws.com")
     );
   }
