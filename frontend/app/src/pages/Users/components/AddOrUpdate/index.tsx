@@ -32,13 +32,14 @@ export function AddOrUpdate()  {
     mutationFn: users.post
   });
 
-  const onSubmit = async (data: UserInput) => {
+  const onSubmit = async (user: UserInput) => {
     try {
       setLoading(true); 
 
-      await mutateAsync(data);     
+      const { data } = await mutateAsync(user);      
 
-      toast.success('User added successfully!'); 
+      toast.success(data.message); 
+      
       form.reset();
     } catch (error) {
       if (error instanceof AxiosError) {
