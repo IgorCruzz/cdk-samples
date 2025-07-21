@@ -71,6 +71,15 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 h-full">
             <div>
+              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <Input
+                {...form.register("email")}
+                type="email"  
+                required
+              />
+            </div>
+            
+            <div>
               <label className="block text-sm font-medium text-gray-700">Name</label>
               <Input
                 {...form.register("name")}
@@ -79,14 +88,6 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
-              <Input
-                {...form.register("email")}
-                type="email"  
-                required
-              />
-            </div>
             <Button type="submit" disabled={!form.formState.isValid || loading}>
               {loading ? `loading...` : <SendHorizontal />}
             </Button>
