@@ -1,3 +1,4 @@
+import { UserInput } from '@/schemas/users';
 import { api } from '../api'
 
 export const users = { 
@@ -9,10 +10,10 @@ export const users = {
       }
     });
   },
-  post: async (data: any) => {
+  post: async (data: UserInput) => {
     return await api.post('users', data);
   },
-  put: async (id: string, data: any) => {
+  put: async (id: string, data: UserInput) => {
     return await api.put(`users/${id}`, data);
   },
   delete: async (id: string) => {
