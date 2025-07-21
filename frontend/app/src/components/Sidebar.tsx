@@ -52,6 +52,11 @@ export function AppSidebar() {
                 <PersonStanding /> Customers
               </Link>
             </li>
+            <li>
+              <Link to="/users" className={linkClass('/users')}>
+                <PersonStanding /> Users
+              </Link>
+            </li>
           </ul>
         </SidebarGroup>
       </SidebarContent>
