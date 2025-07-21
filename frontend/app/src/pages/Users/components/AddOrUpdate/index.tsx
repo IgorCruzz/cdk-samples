@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input";
 
 type AddOrUpdateProps = {
   type: 'add' | 'update';
-  user: UserInput;
+  user?: UserInput;
 }
 
 export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
@@ -63,7 +63,7 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
   </DialogTrigger>
   <DialogContent>
     <DialogHeader>
-      <DialogTitle>{type === 'add' ? 'Add User' : `Update  ${user.name}`}</DialogTitle>
+      <DialogTitle>{type === 'add' ? 'Add User' : `Update  ${user?.name}`}</DialogTitle>
     </DialogHeader>
 
     <Card>
