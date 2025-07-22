@@ -29,6 +29,10 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
   const form = useForm({
     resolver: zodResolver(userSchema),
     mode: "onChange",
+    defaultValues: {
+      email: user?.email || '',
+      name: user?.name || ''
+    }
   });
 
   const [loading, setLoading] = useState(false);  
