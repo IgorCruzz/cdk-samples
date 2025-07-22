@@ -44,7 +44,7 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
 
   const onSubmit = async (input: UserInput) => {
     try {
-      setLoading(true);        
+      setLoading(true);   
  
       const { data } = await mutateAsync(input);      
 
@@ -63,8 +63,10 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
 
   return ( 
     <Dialog>
-  <DialogTrigger className="btn">
-    {type === 'update' ? <Pencil /> : <Plus />}    
+  <DialogTrigger asChild>
+    <Button variant="outline" size="icon">
+    {type === 'update' ? <Pencil /> : <Plus />} 
+    </Button>       
   </DialogTrigger>
   <DialogContent>
     <DialogHeader>
