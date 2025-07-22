@@ -17,7 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Plus } from 'lucide-react';
+import { Plus, Pencil } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 
 type AddOrUpdateProps = {
@@ -59,11 +59,14 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
   return ( 
     <Dialog>
   <DialogTrigger className="btn">
-    {type === 'update' ? 'Update User' : <Plus />}    
+    {type === 'update' ? <Pencil /> : <Plus />}    
   </DialogTrigger>
   <DialogContent>
     <DialogHeader>
-      <DialogTitle>{type === 'add' ? 'Add User' : `Update  ${user?.name}`}</DialogTitle>
+      <DialogTitle>{type === 'add' ?
+      <p className="flex items-center justify-center gap-2"><Plus /> Add</p> : 
+      <p className="flex items-center justify-center gap-2"><Pencil /> {user?.name}</p>
+      }</DialogTitle>
     </DialogHeader>
 
     <Card>
@@ -78,7 +81,7 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
                 required
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700">Name</label>
               <Input
