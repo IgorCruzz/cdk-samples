@@ -12,6 +12,7 @@
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.844.0",
     "@hookform/resolvers": "^5.1.1",
+    "@radix-ui/react-alert-dialog": "^1.1.14",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-form": "^0.1.7",
     "@radix-ui/react-label": "^2.1.7",
