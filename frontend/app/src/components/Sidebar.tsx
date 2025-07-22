@@ -45,7 +45,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarHeader>
+          <SidebarHeader className="mb-14">
             <Link to="/home">
               <img src={Logo} alt="Logo"  width={120} />
             </Link>
