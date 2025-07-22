@@ -13,11 +13,7 @@ export const users = {
   post: async (data: UserInput) => {
     return await api.post('users', data);
   },
-  put: async (data: UserInput) => {
-
-    console.log({ data});
-    
-
+  put: async (data: UserInput) => { 
     return await api.put(`users/${data.id}`, data);
   },
   delete: async (id: string) => {
