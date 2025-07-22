@@ -35,7 +35,7 @@ export function Delete({ user }: DeleteProps) {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast.error("Erro ao apagar o usuário.");
+        toast.error(error.response?.data.message);
       }
       console.error(error);
     }
