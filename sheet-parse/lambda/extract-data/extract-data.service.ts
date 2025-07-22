@@ -150,5 +150,10 @@ export const service = async ({
         error instanceof Error ? error.message : String(error)
       }`
     );
+  } finally {
+    await s3.removeObject({
+      Key: s3Record.s3.object.key,
+      Bucket: s3Record.s3.bucket.name,
+    });
   }
 };
