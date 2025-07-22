@@ -271,6 +271,31 @@ export class ApiConstruct extends Construct {
   }
 
   private createSheetParseResource() {
+    const getDataArn = StringParameter.fromStringParameterName(
+      this,
+      "get-data-function-arn",
+      "/api/get-data"
+    );
+
+    const getDataFn = NodejsFunction.fromFunctionAttributes(
+      this,
+      "lambda-get-data",
+      {
+        functionArn: getDataArn.stringValue,
+        sameEnvironment: true,
+      }
+    );
+
+    this.api.addRoutes({
+      path: "/{archiveId}",
+      integration: new HttpLambdaIntegration(
+        "integration-get-files-data",
+        getDataFn
+      ),
+      methods: [HttpMethod.GET],
+      authorizer: this.authorizer,
+    });
+
     const getFilesDataArn = StringParameter.fromStringParameterName(
       this,
       "get-files-data-function-arn",
@@ -320,6 +345,8 @@ export class ApiConstruct extends Construct {
       methods: [HttpMethod.POST],
       authorizer: this.authorizer,
     });
+
+    getDataFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
 
     getFilesDataFn.grantInvoke(
       new ServicePrincipal("apigateway.amazonaws.com")
