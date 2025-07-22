@@ -22,8 +22,6 @@ export class LambdaConstruct extends Construct {
   public readonly generatePreSignedUrlFunction: NodejsFunction;
   public readonly extractDataFunction: NodejsFunction;
   public readonly getFilesDataFunction: NodejsFunction;
-  public readonly getStatisticDataFunction: NodejsFunction;
-
   constructor(
     scope: Construct,
     id: string,
@@ -34,7 +32,6 @@ export class LambdaConstruct extends Construct {
     this.generatePreSignedUrlFunction = this.createGenerateUrlFunction();
     this.extractDataFunction = this.createExtractDataFunction();
     this.getFilesDataFunction = this.createGetFilesDataFunction();
-    this.getStatisticDataFunction = this.createGetStatisticDataFunction();
   }
 
   private createGenerateUrlFunction() {
@@ -185,46 +182,6 @@ export class LambdaConstruct extends Construct {
     bucket.grantRead(fn);
 
     bucket.grantDelete(fn);
-
-    return fn;
-  }
-
-  private createGetStatisticDataFunction() {
-    const fn = new NodejsFunction(this, "function-get-statistic-data", {
-      memorySize: 128,
-      architecture: Architecture.X86_64,
-      runtime: Runtime.NODEJS_20_X,
-      timeout: Duration.seconds(30),
-      description: "A Lambda function to get statistic data",
-      entry: join(__dirname, "../../../lambda/get-statistic/handler.ts"),
-      handler: "handler",
-      bundling: {
-        minify: true,
-        sourceMap: true,
-        target: "es2020",
-      },
-      loggingFormat: LoggingFormat.JSON,
-      tracing: Tracing.ACTIVE,
-      logRetention: RetentionDays.ONE_WEEK,
-    });
-
-    const region = Stack.of(this).region;
-    const account = Stack.of(this).account;
-
-    fn.addToRolePolicy(
-      new PolicyStatement({
-        actions: ["secretsmanager:GetSecretValue"],
-        resources: [
-          `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
-        ],
-      })
-    );
-
-    new StringParameter(this, "parameter-get-statistic-data", {
-      parameterName: "/api/get-statistic-data",
-      stringValue: fn.functionArn,
-      description: "Lambda function ARN for get statistic data",
-    });
 
     return fn;
   }
