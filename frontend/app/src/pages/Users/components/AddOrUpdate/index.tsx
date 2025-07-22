@@ -38,7 +38,7 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
   const [loading, setLoading] = useState(false);  
 
   const { mutateAsync } = useMutation({
-    mutationFn: users.post
+    mutationFn:  type === 'add' ? users.post : users.put 
   });
 
   const onSubmit = async (user: UserInput) => {
