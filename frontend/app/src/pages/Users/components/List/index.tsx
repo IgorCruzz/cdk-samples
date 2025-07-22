@@ -26,8 +26,7 @@ export const List = () => {
       page: pagination.pageIndex + 1,
       limit: pagination.pageSize,
     }), 
-  });    
-  
+  });      
 
   return ( 
       <Card className="flex flex-col h-full">
