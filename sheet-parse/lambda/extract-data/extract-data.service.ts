@@ -1,10 +1,11 @@
 import { S3EventRecord } from "aws-lambda";
 import { s3 } from "../shared/infra/s3";
 import { parse } from "csv-parse";
-import { customerSchema } from "../shared/schema/customer.schema";
 import { archiveRepository } from "../shared/repository/archive.repository";
-import { customerRepository } from "../shared/repository/customer.repository";
+import { dataRepository } from "../shared/repository/data.repository";
 import { sendNotification } from "../shared/infra/send-notification";
+import { normalizeRow } from "../shared/utils/normalize.util";
+import { ObjectId } from "mongodb";
 
 export const service = async ({
   s3Record,
@@ -22,67 +23,33 @@ export const service = async ({
 
     const chunk = [];
 
+    const file = await archiveRepository.getFileByKey(s3Record.s3.object.key);
+
     await archiveRepository.updateStatus({
       key: s3Record.s3.object.key,
       message: ``,
       status: "PROCESSING",
     });
 
-    for await (const customer of stream.pipe(
+    for await (const row of stream.pipe(
       parse({
         skipEmptyLines: true,
-        columns: (header) => {
-          const allowedHeaders = [
-            "Nome",
-            "CNPJ",
-            "Email",
-            "Telefone",
-            "Endereço",
-            "Cidade",
-            "Estado",
-            "CEP",
-          ];
-
-          const verifyHeaders = header.every((h: string) =>
-            allowedHeaders.includes(h)
-          );
-
-          if (!verifyHeaders) {
-            throw new Error(
-              `Invalid headers in CSV file. Expected: ${allowedHeaders.join(
-                ", "
-              )}`
-            );
-          }
-
-          return header;
-        },
         trim: true,
+        columns: true,
       })
     )) {
       try {
+        const normalizedRow = normalizeRow(row);
+
         const data = {
-          name: customer["Nome"],
-          cnpj: customer["CNPJ"],
-          email: customer["Email"],
-          phone: customer["Telefone"],
-          address: customer["Endereço"],
-          city: customer["Cidade"],
-          state: customer["Estado"],
-          zipCode: customer["CEP"],
+          ...normalizedRow,
+          archiveId: new ObjectId(file?.id),
         };
-
-        const validation = customerSchema.safeParse(data);
-
-        if (!validation.success) {
-          failure += 1;
-          continue;
-        }
 
         chunk.push(data);
 
-        if (chunk.length === 25) {
-          await customerRepository.save({ data: chunk });
+        if (chunk.length === 10000) {
+          await dataRepository.save(chunk);
 
           success += chunk.length;
           chunk.length = 0;
@@ -96,7 +63,7 @@ export const service = async ({
 
     if (chunk.length) {
       try {
-        await customerRepository.save({ data: chunk });
+        await dataRepository.save(chunk);
 
         success += chunk.length;
         chunk.length = 0;
