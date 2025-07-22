@@ -72,6 +72,18 @@ export class LambdaConstruct extends Construct {
       description: "Lambda function ARN for generate pre-signed URL",
     });
 
+    const region = Stack.of(this).region;
+    const account = Stack.of(this).account;
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
+        ],
+      })
+    );
+
     return fn;
   }
 
