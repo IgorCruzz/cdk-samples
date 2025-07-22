@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { Form } from "@/components/ui/form";
@@ -55,7 +55,10 @@ export function Upload()  {
     try {
       setLoading(true);
 
-      const { data } = await PreSignedUrlMutateAsync();
+      const { data } = await PreSignedUrlMutateAsync({
+        size: file.size,
+        filename: file.name,
+      });
 
       await UploadMutateAsync({
         url: data.url,
