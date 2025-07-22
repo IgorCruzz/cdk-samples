@@ -5,9 +5,10 @@ export type Files = {
   key: string;
   size: number;
   message: string;
-  status: "PROCESSING" | "COMPLETED" | "FAILED";
+  status: "PROCESSING" | "COMPLETED" | "FAILED" | "PENDING";
   successLines?: number;
   failedLines?: number;
+  userId?: string;
 };
 
 type ArchiveRepositoryInput = Files;
