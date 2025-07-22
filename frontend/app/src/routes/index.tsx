@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Auth from '@/pages/Auth';
-import Home from '@/pages/Home';
-import File from '@/pages/File';
+import Home from '@/pages/Public/Home';
+import File from '@/Private/pages/File';
 import Users from '@/pages/Users';
 import Customers from '@/pages/Customers';
 import PrivateLayout from '@/components/AppLayout';
