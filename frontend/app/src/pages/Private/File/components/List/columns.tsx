@@ -49,7 +49,7 @@ export const columns: ColumnDef<File>[] = [
 
     {info.getValue() === 'FAILED' && (<ThumbsDown color="red" />)}
 
-    {info.getValue() === 'PROCESSING' && (<CircleEllipsis />)}
+    {info.getValue() === 'PROCESSING' || info.getValue() === 'PENDING' && (<CircleEllipsis />)}
     </>     
   )
   }
