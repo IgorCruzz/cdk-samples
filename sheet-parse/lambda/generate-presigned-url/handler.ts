@@ -33,7 +33,9 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 
     const userId = event.requestContext.authorizer?.jwt.claims?.sub;
 
-    const preSignedUrl = await service(userId);
+    const body = JSON.parse(event.body || "{}");
+
+    const preSignedUrl = await service(userId, body.size, body.filename);
 
     return {
       statusCode: 200,
