@@ -56,7 +56,7 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
       queryClient.invalidateQueries({ queryKey: ['users'] });
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast.error('Oops! Something went wrong.');
+        toast.error(error.response?.data.message);
       }
       console.error(error);
     } finally { 
