@@ -272,31 +272,6 @@ export class ApiConstruct extends Construct {
   }
 
   private createSheetParseResource() {
-    const getStatisticDataArn = StringParameter.fromStringParameterName(
-      this,
-      "get-statistic-data-function-arn",
-      "/api/get-statistic-data"
-    );
-
-    const getStatisticDataFn = NodejsFunction.fromFunctionAttributes(
-      this,
-      "lambda-get-statistic-data",
-      {
-        functionArn: getStatisticDataArn.stringValue,
-        sameEnvironment: true,
-      }
-    );
-
-    this.api.addRoutes({
-      path: "/files/statistics",
-      integration: new HttpLambdaIntegration(
-        "integration-get-statistic-data",
-        getStatisticDataFn
-      ),
-      methods: [HttpMethod.GET],
-      authorizer: this.authorizer,
-    });
-
     const getFilesDataArn = StringParameter.fromStringParameterName(
       this,
       "get-files-data-function-arn",
@@ -347,9 +322,6 @@ export class ApiConstruct extends Construct {
       authorizer: this.authorizer,
     });
 
-    getStatisticDataFn.grantInvoke(
-      new ServicePrincipal("apigateway.amazonaws.com")
-    );
     getFilesDataFn.grantInvoke(
       new ServicePrincipal("apigateway.amazonaws.com")
     );
