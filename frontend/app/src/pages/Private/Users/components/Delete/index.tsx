@@ -16,6 +16,7 @@ import {
   AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
 import { UserInput } from "@/schemas/users";
+import { queryClient } from "@/lib/query-client";
 
 type DeleteProps = {
   user: Required<Pick<UserInput, "id" | "name">>;
@@ -30,6 +31,8 @@ export function Delete({ user }: DeleteProps) {
     try {
       const { data } = await mutateAsync(user.id);
       toast.success(data.message);
+
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error("Erro ao apagar o usuário.");
