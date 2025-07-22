@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
-import Auth from '@/pages/Auth';
-import Home from '@/pages/Public/Home';
-import File from '@/Private/pages/File';
-import Users from '@/pages/Users';
-import Customers from '@/pages/Customers';
+import Auth from '@/pages/Public/Auth';
+import Home from '@/pages/Private/Home';
+import File from '@/pages/Private/File';
+import Users from '@/pages/Private/Users';
+import Customers from '@/pages/Private/Customers';
 import PrivateLayout from '@/components/AppLayout';
 import PublicLayout from '@/components/PublicLayout'; 
 import {PublicRoute} from './public-route';
