@@ -31,7 +31,8 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
     mode: "onChange",
     defaultValues: {
       email: user?.email || '',
-      name: user?.name || ''
+      name: user?.name || '',
+      id: user?.id || ''
     }
   });
 
@@ -41,11 +42,11 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
     mutationFn:  type === 'add' ? users.post : users.put 
   });
 
-  const onSubmit = async (user: UserInput) => {
+  const onSubmit = async (input: UserInput) => {
     try {
-      setLoading(true); 
-
-      const { data } = await mutateAsync(user);      
+      setLoading(true);        
+ 
+      const { data } = await mutateAsync(input);      
 
       toast.success(data.message); 
 
