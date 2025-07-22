@@ -1,9 +1,8 @@
-import { Button } from "@/components/ui/button";
+
 import { type ColumnDef } from "@tanstack/react-table"
-import { Delete } from 'lucide-react';
 import { AddOrUpdate } from '../AddOrUpdate'
 import { UserInput } from '@/schemas/users'
- 
+import { Delete } from '../Delete'
 
 export const columns: ColumnDef<UserInput>[] = [ 
   {
@@ -23,7 +22,12 @@ export const columns: ColumnDef<UserInput>[] = [
       return (
       <div className="flex items-center gap-2"> 
         <AddOrUpdate type="update" user={row.original}/> 
-        <Button variant="destructive" size="sm" className="bg-amber-800"><Delete /></Button>
+        <Delete user={
+          {
+            id: row.original.id!,
+            name: row.original.name
+          }
+        } />
       </div>
     )
     },
