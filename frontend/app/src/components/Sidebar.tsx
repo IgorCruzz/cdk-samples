@@ -1,4 +1,4 @@
-import { Home, User, Upload, Users } from "lucide-react"
+import { Home, User, Upload } from "lucide-react"
 
 import {
   Sidebar,
@@ -24,11 +24,6 @@ const applicationRoutes = [
     title: "Upload",
     url: "/upload",
     icon: Upload,
-  },
-  {
-    title: "Customers",
-    url: "/customers",
-    icon: Users,
   }, 
 ]
 

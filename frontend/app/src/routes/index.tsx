@@ -2,8 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Auth from '@/pages/Public/Auth';
 import Home from '@/pages/Private/Home';
 import File from '@/pages/Private/File';
-import Users from '@/pages/Private/Users';
-import Customers from '@/pages/Private/Customers';
+import Users from '@/pages/Private/Users'; 
 import PrivateLayout from '@/components/AppLayout';
 import PublicLayout from '@/components/PublicLayout'; 
 import {PublicRoute} from './public-route';
@@ -28,8 +27,7 @@ export const router = createBrowserRouter([
         element: <PrivateLayout />,
         children: [
           { path: "home", element: <Home /> }, 
-          { path: "upload", element: <File /> },
-          { path: "customers", element: <Customers /> },
+          { path: "upload", element: <File /> }, 
           { path: "users", element: <Users /> },
         ],
       },
