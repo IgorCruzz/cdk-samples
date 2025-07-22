@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { actualDate } from "../utils/locale-date.util";
 import { dbHelper } from "./db-helper";
 
@@ -8,7 +9,9 @@ export type Files = {
   status: "PROCESSING" | "COMPLETED" | "FAILED" | "PENDING";
   successLines?: number;
   failedLines?: number;
-  userId?: string;
+  userId: string;
+  id?: string;
+  filename?: string;
 };
 
 type ArchiveRepositoryInput = Files;
@@ -43,9 +46,17 @@ export interface IArchiveRepository {
     >
   ): Promise<void>;
   getStatistics(): GetStatisticOutput;
+  getFileByKey: (key: string) => Promise<Files | null>;
 }
 
 export const archiveRepository: IArchiveRepository = {
+  async getFileByKey(key: string): Promise<Files | null> {
+    const archiveCollection = dbHelper.getCollection("archives");
+    const file = await archiveCollection.findOne({ key });
+
+    return file ? dbHelper.map(file) : null;
+  },
+
   async getStatistics(): GetStatisticOutput {
     const archiveCollection = dbHelper.getCollection("archives");
 
@@ -92,6 +103,7 @@ export const archiveRepository: IArchiveRepository = {
 
     await archives.insertOne({
       ...item,
+      userId: new ObjectId(item.userId),
       successLines: 0,
       failedLines: 0,
       createdAt: actualDate,
