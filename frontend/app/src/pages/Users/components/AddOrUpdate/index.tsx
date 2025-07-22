@@ -83,6 +83,7 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
                 {...form.register("email")}
                 type="email"  
                 required
+                readOnly={type === 'update'}  
               />
             </div>
 
