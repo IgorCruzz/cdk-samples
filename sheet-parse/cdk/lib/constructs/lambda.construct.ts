@@ -19,9 +19,6 @@ interface LambdaStackProps {
 }
 
 export class LambdaConstruct extends Construct {
-  public readonly generatePreSignedUrlFunction: NodejsFunction;
-  public readonly extractDataFunction: NodejsFunction;
-  public readonly getFilesDataFunction: NodejsFunction;
   constructor(
     scope: Construct,
     id: string,
@@ -29,9 +26,10 @@ export class LambdaConstruct extends Construct {
   ) {
     super(scope, id);
 
-    this.generatePreSignedUrlFunction = this.createGenerateUrlFunction();
-    this.extractDataFunction = this.createExtractDataFunction();
-    this.getFilesDataFunction = this.createGetFilesDataFunction();
+    this.createGenerateUrlFunction();
+    this.createExtractDataFunction();
+    this.createGetFilesDataFunction();
+    this.createGetDataFunction();
   }
 
   private createGenerateUrlFunction() {
@@ -182,6 +180,46 @@ export class LambdaConstruct extends Construct {
     bucket.grantRead(fn);
 
     bucket.grantDelete(fn);
+
+    return fn;
+  }
+
+  private createGetDataFunction() {
+    const fn = new NodejsFunction(this, "function-get-data", {
+      memorySize: 128,
+      architecture: Architecture.X86_64,
+      runtime: Runtime.NODEJS_20_X,
+      timeout: Duration.seconds(30),
+      description: "A Lambda function to get data",
+      entry: join(__dirname, "../../../lambda/get-data/handler.ts"),
+      handler: "handler",
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: "es2020",
+      },
+      loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
+      logRetention: RetentionDays.ONE_WEEK,
+    });
+
+    new StringParameter(this, "parameter-get-data", {
+      parameterName: "/api/get-data",
+      stringValue: fn.functionArn,
+      description: "Lambda function ARN for get data",
+    });
+
+    const region = Stack.of(this).region;
+    const account = Stack.of(this).account;
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
+        ],
+      })
+    );
 
     return fn;
   }
