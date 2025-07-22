@@ -3,7 +3,9 @@ import { archiveRepository } from "../shared/repository/archive.repository";
 import { userRepository } from "../shared/repository/user.repository";
 
 export const service = async (
-  userId: string
+  userId: string,
+  size: number,
+  filename: string
 ): Promise<{
   url: string;
   key: string;
@@ -20,10 +22,11 @@ export const service = async (
 
   await archiveRepository.save({
     key: preSignedUrl.key,
-    size: 0,
+    size,
     message: ``,
     status: "PENDING",
     userId: findUser.id,
+    filename,
   });
 
   return {
