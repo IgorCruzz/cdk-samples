@@ -14,6 +14,10 @@ export const users = {
     return await api.post('users', data);
   },
   put: async (data: UserInput) => {
+
+    console.log({ data});
+    
+
     return await api.put(`users/${data.id}`, data);
   },
   delete: async (id: string) => {
