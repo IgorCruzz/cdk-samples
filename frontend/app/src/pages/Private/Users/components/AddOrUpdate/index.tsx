@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog"
 import { Plus, Pencil } from 'lucide-react';
 import { Input } from "@/components/ui/input";
+import { queryClient } from "@/lib/query-client";
 
 type AddOrUpdateProps = {
   type: 'add' | 'update';
@@ -51,6 +52,8 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
       toast.success(data.message); 
 
       form.reset();
+
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error('Oops! Something went wrong.');
