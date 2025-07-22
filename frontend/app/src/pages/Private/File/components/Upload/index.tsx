@@ -21,6 +21,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Upload as UploadIcn } from 'lucide-react';
+import { queryClient } from "@/lib/query-client";
 
 export function Upload()  {
   const form = useForm<{ file: File }>({
@@ -63,6 +64,8 @@ export function Upload()  {
 
       toast.success('File uploaded successfully!');
       form.reset();
+
+      queryClient.invalidateQueries({ queryKey: ['files'] });
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error('Oops! Something went wrong while uploading the file.');
