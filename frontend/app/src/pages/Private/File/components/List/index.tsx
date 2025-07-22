@@ -7,8 +7,7 @@ import { useState } from 'react';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
-import { queryClient } from '@/lib/query-client';
-
+ 
 export const List = () => {
  
   const [pagination, setPagination] = useState<
@@ -21,18 +20,14 @@ export const List = () => {
     pageSize: 10, 
   });
 
-  const { data, isLoading, refetch, isSuccess } = useQuery({
+  const { data, isLoading, refetch  } = useQuery({
     queryKey: ['files', pagination],
     queryFn: () => files.getFiles({
       page: pagination.pageIndex + 1,
       limit: pagination.pageSize,
     }),
-    // refetchInterval: 10000, 
-  });  
-
-  if(isSuccess) {
-    queryClient.invalidateQueries({ queryKey: ['files-statistics'] });
-  }
+    refetchInterval: 10000, 
+  });   
 
   return ( 
       <Card className="flex flex-col h-full">
