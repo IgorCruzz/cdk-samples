@@ -58,6 +58,13 @@ export class LambdaConstruct extends Construct {
       })
     );
 
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["cognito-idp:AdminDeleteUser"],
+        resources: [`arn:aws:cognito-idp:${region}:${account}:userpool/*`],
+      })
+    );
+
     new StringParameter(this, "parameter-delete-user-function", {
       parameterName: "/lambda/delete-user-function-arn",
       stringValue: fn.functionArn,
