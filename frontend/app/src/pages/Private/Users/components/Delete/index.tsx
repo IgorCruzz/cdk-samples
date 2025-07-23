@@ -64,7 +64,7 @@ export function Delete({ user }: DeleteProps) {
             disabled={isPending}
             className="bg-destructive text-white hover:bg-destructive/90"
           >
-            {isPending ? "Apagando..." : "Sim, apagar"}
+            {isPending ? "Deleting..." : "Yes, delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
