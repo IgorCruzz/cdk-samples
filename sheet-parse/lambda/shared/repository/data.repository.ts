@@ -38,7 +38,9 @@ export const dataRepository: IDataRepository = {
     const { page, limit } = input;
 
     const skip = (page - 1) * limit;
-    const count = await dataCollection.countDocuments({});
+    const count = await dataCollection.countDocuments({
+      archiveId: new ObjectId(input.archiveId),
+    });
 
     const data = await dataCollection
       .find({
