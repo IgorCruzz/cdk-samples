@@ -71,7 +71,7 @@ export const Pagination = ({
         <span className="font-semibold m-0">
           {Math.min((pagination.pageIndex + 1) * pagination.pageSize, total)}
         </span>
-        from <span className="font-semibold m-0">{total}</span> archives
+        from <span className="font-semibold m-0">{total}</span>
       </CardContent>
 
       <CardContent className="flex items-center gap-4 py-2 px-4">
