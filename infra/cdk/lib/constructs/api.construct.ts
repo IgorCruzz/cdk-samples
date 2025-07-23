@@ -293,7 +293,6 @@ export class ApiConstruct extends Construct {
         getDataFn
       ),
       methods: [HttpMethod.GET],
-      authorizer: this.authorizer,
     });
 
     const getFilesDataArn = StringParameter.fromStringParameterName(
