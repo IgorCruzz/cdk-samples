@@ -1,7 +1,7 @@
 import { CopyButton } from "@/components/CopyButton"
 import { formatBytes } from "@/utils/formatByes"
 import { type ColumnDef } from "@tanstack/react-table"
-import { CircleEllipsis, ThumbsDown, ThumbsUp, CopyIcon } from "lucide-react"
+import { CircleEllipsis, ThumbsDown, ThumbsUp } from "lucide-react"
 
 export type File = {
   size: number
