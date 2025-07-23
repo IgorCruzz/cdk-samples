@@ -13,7 +13,7 @@ export type File = {
 export const columns: ColumnDef<File>[] = [
   {
     accessorKey: "filename",
-    header: "Key",
+    header: "Filename",
     cell: (info) => info.getValue(),
   },
   {
