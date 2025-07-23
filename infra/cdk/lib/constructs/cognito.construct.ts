@@ -1,6 +1,7 @@
 import { Construct } from "constructs";
 import {
   AccountRecovery,
+  CfnUserPoolGroup,
   UserPool,
   UserPoolClient,
 } from "aws-cdk-lib/aws-cognito";
@@ -37,6 +38,17 @@ export class CognitoConstruct extends Construct {
       },
       accountRecovery: AccountRecovery.EMAIL_ONLY,
     });
+
+    const groups = ["admin", "user"];
+
+    for (const [index, name] of groups.entries()) {
+      new CfnUserPoolGroup(this, `${name}Group`, {
+        userPoolId: this.userPool.userPoolId,
+        groupName: name,
+        precedence: index + 1,
+        description: `${name} group`,
+      });
+    }
 
     this.userPoolClient = new UserPoolClient(this, "user-pool-client", {
       userPool: this.userPool,
