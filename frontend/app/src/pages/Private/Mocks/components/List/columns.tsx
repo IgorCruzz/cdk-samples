@@ -1,6 +1,7 @@
+import { CopyButton } from "@/components/CopyButton"
 import { formatBytes } from "@/utils/formatByes"
 import { type ColumnDef } from "@tanstack/react-table"
-import { CircleEllipsis, ThumbsDown, ThumbsUp } from "lucide-react"
+import { CircleEllipsis, ThumbsDown, ThumbsUp, CopyIcon } from "lucide-react"
 
 export type File = {
   size: number
@@ -55,11 +56,14 @@ export const columns: ColumnDef<File>[] = [
   )
   }
 },
-   {
+   { 
     header: "Link",
     cell: (info) => {
       return info.row.original.status === 'COMPLETED' ? (
-        `${import.meta.env.VITE_API_URL}${info.row.original.id}`
+        <div className="flex items-center gap-2">
+          <p>{`${import.meta.env.VITE_API_URL}${info.row.original.id}`}</p>
+          <CopyButton text={`${import.meta.env.VITE_API_URL}${info.row.original.id}`} />
+        </div>
       ) : (
         'N/A'
       );
