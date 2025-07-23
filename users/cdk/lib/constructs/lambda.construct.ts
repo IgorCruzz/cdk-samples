@@ -65,6 +65,13 @@ export class LambdaConstruct extends Construct {
       })
     );
 
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["ssm:GetParameter"],
+        resources: [`arn:aws:ssm:${region}:${account}:parameter/cognito/*`],
+      })
+    );
+
     new StringParameter(this, "parameter-delete-user-function", {
       parameterName: "/lambda/delete-user-function-arn",
       stringValue: fn.functionArn,
