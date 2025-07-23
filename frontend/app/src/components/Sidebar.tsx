@@ -1,4 +1,4 @@
-import { Home, User, Upload } from "lucide-react"
+import { Home, User, Upload, FileJson2 } from "lucide-react"
 
 import {
   Sidebar,
@@ -21,10 +21,10 @@ const applicationRoutes = [
     icon: Home,
   },
   {
-    title: "Upload",
-    url: "/upload",
-    icon: Upload,
-  }, 
+    title: "Mocks",
+    url: "/mocks",
+    icon: FileJson2,
+  },  
 ]
 
 const administratorRoutes =[
