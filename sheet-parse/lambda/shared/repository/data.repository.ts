@@ -37,15 +37,15 @@ export const dataRepository: IDataRepository = {
     const dataCollection = dbHelper.getCollection("data");
     const { page, limit } = input;
 
-    const skip = (page - 1) * limit;
-    const count = await dataCollection.countDocuments({
+    const query = {
       archiveId: new ObjectId(input.archiveId),
-    });
+    };
+
+    const skip = (page - 1) * limit;
+    const count = await dataCollection.countDocuments(query);
 
     const data = await dataCollection
-      .find({
-        archiveId: new ObjectId(input.archiveId),
-      })
+      .find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
