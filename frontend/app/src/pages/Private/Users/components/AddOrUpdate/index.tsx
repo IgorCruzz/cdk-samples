@@ -5,7 +5,7 @@ import { Form } from "@/components/ui/form";
 import { users } from '@/services/endpoints/users';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { userSchema, UserInput } from '@/schemas/users';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AxiosError } from 'axios';
@@ -27,6 +27,8 @@ type AddOrUpdateProps = {
 }
 
 export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
+  const [open, setOpen] = useState(false);
+
   const form = useForm({
     resolver: zodResolver(userSchema),
     mode: "onChange",
@@ -36,6 +38,16 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
       id: user?.id || ''
     }
   });
+
+  useEffect(() => {
+  if (open) {
+    form.reset({
+      email: user?.email || '',
+      name: user?.name || '',
+      id: user?.id || ''
+    });
+  }
+}, [open, user, form]);
 
   const [loading, setLoading] = useState(false);  
 
@@ -64,8 +76,13 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
     }
   };
 
+  const handleOpenChange = (open: boolean) => {
+    form.reset(); 
+    setOpen(open);
+  };
+
   return ( 
-    <Dialog>
+    <Dialog onOpenChange={handleOpenChange} open={open}>
   <DialogTrigger asChild>
     <Button variant="outline" size="icon">
     {type === 'update' ? <Pencil /> : <Plus />} 
