@@ -67,6 +67,13 @@ export class LambdaConstruct extends Construct {
 
     fn.addToRolePolicy(
       new PolicyStatement({
+        actions: ["cognito-idp:AdminAddUserToGroup"],
+        resources: [`arn:aws:cognito-idp:${region}:${account}:userpool/*`],
+      })
+    );
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
         actions: ["ssm:GetParameter"],
         resources: [`arn:aws:ssm:${region}:${account}:parameter/cognito/*`],
       })
@@ -151,6 +158,13 @@ export class LambdaConstruct extends Construct {
     fn.addToRolePolicy(
       new PolicyStatement({
         actions: ["cognito-idp:AdminCreateUser"],
+        resources: [`arn:aws:cognito-idp:${region}:${account}:userpool/*`],
+      })
+    );
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["cognito-idp:AdminAddUserToGroup"],
         resources: [`arn:aws:cognito-idp:${region}:${account}:userpool/*`],
       })
     );
