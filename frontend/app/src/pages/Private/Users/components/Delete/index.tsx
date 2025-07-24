@@ -17,12 +17,16 @@ import {
 } from "@/components/ui/alert-dialog";
 import { UserInput } from "@/schemas/users";
 import { queryClient } from "@/lib/query-client";
+import { useState } from "react";
 
 type DeleteProps = {
   user: Required<Pick<UserInput, "id" | "name">>;
 };
 
 export function Delete({ user }: DeleteProps) {
+  const [open, setOpen] = useState(false);
+
+  
   const { mutateAsync, isPending } = useMutation({
     mutationFn: users.delete,
   });
@@ -42,7 +46,7 @@ export function Delete({ user }: DeleteProps) {
   };
 
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button variant="outline" size="icon">
           <DeleteIcon />
@@ -59,12 +63,14 @@ export function Delete({ user }: DeleteProps) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleDelete}
-            disabled={isPending}
-            className="bg-destructive text-white hover:bg-destructive/90"
-          >
-            {isPending ? "Deleting..." : "Yes, delete"}
+          <AlertDialogAction asChild>
+            <Button
+              onClick={handleDelete}
+              disabled={isPending}
+              className="bg-destructive text-white hover:bg-destructive/90"
+            >
+              {isPending ? "Deleting..." : "Yes, delete"}
+            </Button>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
