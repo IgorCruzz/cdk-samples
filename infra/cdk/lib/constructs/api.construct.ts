@@ -192,6 +192,30 @@ export class ApiConstruct extends Construct {
   }
 
   private createAuthResource() {
+    const oauth2TokenArn = StringParameter.fromStringParameterName(
+      this,
+      "oauth2-token-function-arn",
+      "/auth/oauth2/function/arn"
+    );
+
+    const oauth2TokenFn = NodejsFunction.fromFunctionAttributes(
+      this,
+      "lambda-oauth2-token",
+      {
+        functionArn: oauth2TokenArn.stringValue,
+        sameEnvironment: true,
+      }
+    );
+
+    this.api.addRoutes({
+      path: "/auth/oauth2/callback",
+      integration: new HttpLambdaIntegration(
+        "integration-oauth2-token",
+        oauth2TokenFn
+      ),
+      methods: [HttpMethod.GET],
+    });
+
     const refreshTokenArn = StringParameter.fromStringParameterName(
       this,
       "refresh-token-function-arn",
@@ -260,6 +284,8 @@ export class ApiConstruct extends Construct {
       ),
       methods: [HttpMethod.POST],
     });
+
+    oauth2TokenFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
 
     sendPasswordFn.grantInvoke(
       new ServicePrincipal("apigateway.amazonaws.com")
