@@ -19,6 +19,7 @@ export class LambdaConstruct extends Construct {
     this.createSigninFunction();
     this.createRefreshTokenFunction();
     this.createPasswordFunction();
+    this.createOauth2Function();
   }
 
   private createRefreshTokenFunction() {
@@ -147,6 +148,50 @@ export class LambdaConstruct extends Construct {
 
     new StringParameter(this, "function-signin-arn", {
       parameterName: "/auth/signin/function/arn",
+      stringValue: fn.functionArn,
+    });
+
+    return fn;
+  }
+
+  private createOauth2Function() {
+    const fn = new NodejsFunction(this, "function-oauth2", {
+      memorySize: 128,
+      architecture: Architecture.X86_64,
+      runtime: Runtime.NODEJS_20_X,
+      timeout: Duration.seconds(30),
+      description: "A Lambda function to handle OAuth2 login requests",
+      entry: join(__dirname, "../../../lambda/oauth2/handler.ts"),
+      handler: "handler",
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: "es2020",
+      },
+      loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
+      logRetention: RetentionDays.ONE_WEEK,
+    });
+
+    const region = Stack.of(this).region;
+    const account = Stack.of(this).account;
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["ssm:GetParameter"],
+        resources: [`arn:aws:ssm:${region}:${account}:parameter/cognito/*`],
+      })
+    );
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["cognito-idp:InitiateAuth"],
+        resources: [`arn:aws:cognito-idp:${region}:${account}:userpool/*`],
+      })
+    );
+
+    new StringParameter(this, "function-oauth2-arn", {
+      parameterName: "/auth/oauth2/function/arn",
       stringValue: fn.functionArn,
     });
 
