@@ -4,17 +4,21 @@ import { internal } from "../shared/http/500";
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   try {
-    const data = event.queryStringParameters?.code;
+    const code = event.queryStringParameters?.code;
 
-    if (!data) {
+    if (!code) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: "Code is required" }),
+        body: JSON.stringify({
+          message: "Login successful",
+          success: true,
+          data: null,
+        }),
       };
     }
 
     const response = await service({
-      code: data,
+      code,
     });
 
     if (!response.success) {
@@ -25,8 +29,10 @@ export const handler = async (event: APIGatewayProxyEvent) => {
     }
 
     return {
-      statusCode: 200,
-      body: JSON.stringify(response),
+      statusCode: 302,
+      headers: {
+        Location: `http://localhost:5173/redirect?access_token=${response.data?.accessToken}&refresh_token=${response.data?.refreshToken}`,
+      },
     };
   } catch (error) {
     console.error("Error:", error);
