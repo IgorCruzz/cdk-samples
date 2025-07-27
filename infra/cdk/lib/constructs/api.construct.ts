@@ -73,7 +73,7 @@ export class ApiConstruct extends Construct {
           CorsHttpMethod.DELETE,
           CorsHttpMethod.OPTIONS,
         ],
-        allowHeaders: ["Content-Type", "Authorization"],
+        allowHeaders: ["Content-Type", "Authorization", "Location"],
       },
       defaultDomainMapping: {
         domainName,
@@ -208,7 +208,7 @@ export class ApiConstruct extends Construct {
     );
 
     this.api.addRoutes({
-      path: "/auth/oauth2/callback",
+      path: "/auth/oauth2",
       integration: new HttpLambdaIntegration(
         "integration-oauth2-token",
         oauth2TokenFn
