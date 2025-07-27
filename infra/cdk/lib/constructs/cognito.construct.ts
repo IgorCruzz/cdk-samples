@@ -2,11 +2,15 @@ import { Construct } from "constructs";
 import {
   AccountRecovery,
   CfnUserPoolGroup,
+  OAuthScope,
+  ProviderAttribute,
   UserPool,
   UserPoolClient,
+  UserPoolClientIdentityProvider,
+  UserPoolDomain,
+  UserPoolIdentityProviderGoogle,
 } from "aws-cdk-lib/aws-cognito";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import { Duration } from "aws-cdk-lib";
 
 export class CognitoConstruct extends Construct {
   public readonly userPool: UserPool;
@@ -52,12 +56,52 @@ export class CognitoConstruct extends Construct {
 
     this.userPoolClient = new UserPoolClient(this, "user-pool-client", {
       userPool: this.userPool,
+      generateSecret: false,
       authFlows: {
         userPassword: true,
       },
-      generateSecret: false,
-      accessTokenValidity: Duration.hours(1),
-      refreshTokenValidity: Duration.hours(8),
+      supportedIdentityProviders: [
+        UserPoolClientIdentityProvider.GOOGLE,
+        UserPoolClientIdentityProvider.COGNITO,
+      ],
+      oAuth: {
+        flows: {
+          authorizationCodeGrant: true,
+        },
+        scopes: [OAuthScope.OPENID, OAuthScope.EMAIL, OAuthScope.PROFILE],
+        callbackUrls: ["https://api.igorcruz.space/v1/auth/oauth2"],
+      },
+    });
+
+    const clienteId = StringParameter.fromStringParameterName(
+      this,
+      "parameter-client-id",
+      "/google/client-id"
+    );
+
+    const clientSecret = StringParameter.fromStringParameterName(
+      this,
+      "parameter-client-secret",
+      "/google/secret-id"
+    );
+
+    new UserPoolIdentityProviderGoogle(this, "provider-google", {
+      clientId: clienteId.stringValue,
+      clientSecret: clientSecret.stringValue,
+      userPool: this.userPool,
+      scopes: ["openid", "profile", "email"],
+      attributeMapping: {
+        email: ProviderAttribute.GOOGLE_EMAIL,
+        givenName: ProviderAttribute.GOOGLE_GIVEN_NAME,
+        familyName: ProviderAttribute.GOOGLE_FAMILY_NAME,
+      },
+    });
+
+    new UserPoolDomain(this, "user-pool-domain", {
+      userPool: this.userPool,
+      cognitoDomain: {
+        domainPrefix: `sheetparse`,
+      },
     });
 
     new StringParameter(this, "user-pool-id", {
