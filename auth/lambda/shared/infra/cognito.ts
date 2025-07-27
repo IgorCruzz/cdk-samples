@@ -23,6 +23,42 @@ async function getUserPoolClientId(): Promise<string> {
 }
 
 export const cognito = {
+  getToken: async ({ code }: { code: string }) => {
+    const clientId = await getUserPoolClientId();
+
+    const params = new URLSearchParams({
+      grant_type: "authorization_code",
+      client_id: clientId,
+      redirect_uri: "https://api.igorcruz.space/v1/auth/oauth2",
+      code,
+    });
+
+    const response = await fetch(
+      "https://sheetparse.auth.us-east-1.amazoncognito.com/oauth2/token",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: params.toString(),
+      }
+    );
+
+    if (!response.ok) {
+      return {
+        accessToken: null,
+        refreshToken: null,
+      };
+    }
+
+    const data = await response.json();
+
+    return {
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+    };
+  },
+
   refreshToken: async ({
     refreshToken,
   }: {
@@ -97,9 +133,11 @@ export const cognito = {
   auth: async ({
     email,
     password,
+    token,
   }: {
     email: string;
-    password: string;
+    password?: string;
+    token?: string;
   }): Promise<{
     accessToken?: string;
     refreshToken?: string;
@@ -108,14 +146,23 @@ export const cognito = {
   }> => {
     const clientId = await getUserPoolClientId();
 
-    const params: InitiateAuthCommandInput = {
-      ClientId: clientId,
-      AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
-      AuthParameters: {
-        USERNAME: email,
-        PASSWORD: password,
-      },
-    };
+    const params: InitiateAuthCommandInput = password
+      ? {
+          ClientId: clientId,
+          AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
+          AuthParameters: {
+            USERNAME: email,
+            PASSWORD: password,
+          },
+        }
+      : {
+          ClientId: clientId,
+          AuthFlow: AuthFlowType.USER_SRP_AUTH,
+          AuthParameters: {
+            USERNAME: email,
+            CUSTOM_CHALLENGE: token || "",
+          },
+        };
 
     const command = new InitiateAuthCommand(params);
 
