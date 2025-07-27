@@ -11,5 +11,11 @@ export const auth = {
     return await api.post("auth/refresh-token", {
       refreshToken: data.refreshToken,
     })
+  },
+  oAuth2: async (data: { credential: string; clientId: string }) => {
+    return await api.post("auth/oauth2", {
+      credential: data.credential,
+      clientId: data.clientId,
+    })
   }
 }
