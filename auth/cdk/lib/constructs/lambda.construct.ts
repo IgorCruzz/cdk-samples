@@ -185,7 +185,7 @@ export class LambdaConstruct extends Construct {
 
     fn.addToRolePolicy(
       new PolicyStatement({
-        actions: ["cognito-idp:InitiateAuth"],
+        actions: ["cognito-idp:*"],
         resources: [`arn:aws:cognito-idp:${region}:${account}:userpool/*`],
       })
     );
