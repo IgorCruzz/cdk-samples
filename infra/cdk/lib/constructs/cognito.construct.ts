@@ -30,7 +30,6 @@ export class CognitoConstruct extends Construct {
       standardAttributes: {
         email: {
           required: true,
-          mutable: false,
         },
       },
       passwordPolicy: {
