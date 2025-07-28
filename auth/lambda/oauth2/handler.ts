@@ -10,8 +10,8 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       return {
         statusCode: 400,
         body: JSON.stringify({
-          message: "Login successful",
-          success: true,
+          message: "Unable to process request: code is required",
+          success: false,
           data: null,
         }),
       };
