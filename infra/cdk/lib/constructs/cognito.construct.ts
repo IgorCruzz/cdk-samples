@@ -53,6 +53,34 @@ export class CognitoConstruct extends Construct {
       });
     }
 
+    const clienteId = StringParameter.fromStringParameterName(
+      this,
+      "parameter-client-id",
+      "/google/client-id"
+    );
+
+    const clientSecret = StringParameter.fromStringParameterName(
+      this,
+      "parameter-client-secret",
+      "/google/secret-id"
+    );
+
+    const googleProvider = new UserPoolIdentityProviderGoogle(
+      this,
+      "provider-google",
+      {
+        clientId: clienteId.stringValue,
+        clientSecret: clientSecret.stringValue,
+        userPool: this.userPool,
+        scopes: ["openid", "profile", "email"],
+        attributeMapping: {
+          email: ProviderAttribute.GOOGLE_EMAIL,
+          givenName: ProviderAttribute.GOOGLE_GIVEN_NAME,
+          familyName: ProviderAttribute.GOOGLE_FAMILY_NAME,
+        },
+      }
+    );
+
     this.userPoolClient = new UserPoolClient(this, "user-pool-client", {
       userPool: this.userPool,
       generateSecret: false,
@@ -72,29 +100,7 @@ export class CognitoConstruct extends Construct {
       },
     });
 
-    const clienteId = StringParameter.fromStringParameterName(
-      this,
-      "parameter-client-id",
-      "/google/client-id"
-    );
-
-    const clientSecret = StringParameter.fromStringParameterName(
-      this,
-      "parameter-client-secret",
-      "/google/secret-id"
-    );
-
-    new UserPoolIdentityProviderGoogle(this, "provider-google", {
-      clientId: clienteId.stringValue,
-      clientSecret: clientSecret.stringValue,
-      userPool: this.userPool,
-      scopes: ["openid", "profile", "email"],
-      attributeMapping: {
-        email: ProviderAttribute.GOOGLE_EMAIL,
-        givenName: ProviderAttribute.GOOGLE_GIVEN_NAME,
-        familyName: ProviderAttribute.GOOGLE_FAMILY_NAME,
-      },
-    });
+    this.userPoolClient.node.addDependency(googleProvider);
 
     new UserPoolDomain(this, "user-pool-domain", {
       userPool: this.userPool,
