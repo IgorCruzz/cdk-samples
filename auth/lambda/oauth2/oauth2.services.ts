@@ -10,16 +10,20 @@ export const service = async ({
 }: Input): Output<{
   accessToken: string | null;
   refreshToken: string | null;
+  idToken: string | null;
 }> => {
-  const { accessToken, refreshToken } = await cognito.getToken({ code });
+  const { accessToken, refreshToken, idToken } = await cognito.getToken({
+    code,
+  });
 
-  if (!accessToken || !refreshToken) {
+  if (!accessToken || !refreshToken || !idToken) {
     return {
       message: "Failed to retrieve tokens",
       success: false,
       data: {
         accessToken: null,
         refreshToken: null,
+        idToken: null,
       },
     };
   }
@@ -30,6 +34,7 @@ export const service = async ({
     data: {
       accessToken,
       refreshToken,
+      idToken,
     },
   };
 };
