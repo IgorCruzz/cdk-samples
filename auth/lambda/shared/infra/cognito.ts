@@ -133,11 +133,9 @@ export const cognito = {
   auth: async ({
     email,
     password,
-    token,
   }: {
     email: string;
-    password?: string;
-    token?: string;
+    password: string;
   }): Promise<{
     accessToken?: string;
     refreshToken?: string;
@@ -146,23 +144,14 @@ export const cognito = {
   }> => {
     const clientId = await getUserPoolClientId();
 
-    const params: InitiateAuthCommandInput = password
-      ? {
-          ClientId: clientId,
-          AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
-          AuthParameters: {
-            USERNAME: email,
-            PASSWORD: password,
-          },
-        }
-      : {
-          ClientId: clientId,
-          AuthFlow: AuthFlowType.USER_SRP_AUTH,
-          AuthParameters: {
-            USERNAME: email,
-            CUSTOM_CHALLENGE: token || "",
-          },
-        };
+    const params: InitiateAuthCommandInput = {
+      ClientId: clientId,
+      AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
+      AuthParameters: {
+        USERNAME: email,
+        PASSWORD: password,
+      },
+    };
 
     const command = new InitiateAuthCommand(params);
 
