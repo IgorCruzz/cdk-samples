@@ -4,22 +4,19 @@ import { useAuthStore } from "@/store/use-auth";
 
 export default function Redirect() {
   const navigate = useNavigate();
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
-  const setRefreshToken = useAuthStore((state) => state.setRefreshToken);
+  const setTokens = useAuthStore((state) => state.setTokens);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const accessToken = params.get("access_token");
     const refreshToken = params.get("refresh_token");
 
-    if (accessToken && refreshToken) {
-      setAccessToken({ accessToken });
-      setRefreshToken({ refreshToken });
-      navigate("/home");
+    if (accessToken && refreshToken) { 
+      setTokens({ accessToken, refreshToken }); 
     } else {
       navigate("/");
     }
-  }, [navigate, setAccessToken, setRefreshToken]);
+  }, [navigate, setTokens]);
 
   return <p>Redirecionando...</p>;
 };
