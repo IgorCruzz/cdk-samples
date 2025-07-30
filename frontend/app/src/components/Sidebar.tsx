@@ -9,7 +9,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarHeader
+  SidebarHeader,
+  SidebarFooter
 } from "@/components/ui/sidebar"
 import { Link } from "react-router-dom"
 import Logo from '@/assets/logo.png'
@@ -81,6 +82,15 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup> 
       </SidebarContent>
+
+
+       <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+               <p>s</p>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
     </Sidebar>
   )
 }
