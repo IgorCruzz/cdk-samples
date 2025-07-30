@@ -141,6 +141,7 @@ export const cognito = {
     refreshToken?: string;
     error?: string;
     session?: string;
+    idToken?: string;
   }> => {
     const clientId = await getUserPoolClientId();
 
@@ -172,6 +173,7 @@ export const cognito = {
     return {
       accessToken: res.AuthenticationResult.AccessToken,
       refreshToken: res.AuthenticationResult.RefreshToken,
+      idToken: res.AuthenticationResult.IdToken,
     };
   },
 };
