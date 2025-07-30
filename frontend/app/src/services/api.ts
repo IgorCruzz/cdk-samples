@@ -29,7 +29,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; 
 
-      const { refreshToken, setAccessToken, logout } = useAuthStore.getState();
+      const { refreshToken, setTokens, logout } = useAuthStore.getState();
 
       try {
          
@@ -41,14 +41,14 @@ api.interceptors.response.use(
         });                  
 
         if (response.status !== 200) {
-
-          alert('Session expired. Please log in again.');
-
           window.location.href = '/';
           return Promise.reject(error);
-        }
+        } 
 
-        setAccessToken({ accessToken: response.data.data.accessToken }); 
+        setTokens({
+          accessToken: response.data.data.accessToken,
+          refreshToken,
+        });
 
         error.config.headers.Authorization = `Bearer ${response.data.data.accessToken}`;
 
