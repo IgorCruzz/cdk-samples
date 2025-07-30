@@ -11,11 +11,10 @@ import { toast } from "sonner";
 import { auth } from '@/services/endpoints/auth'; 
 import { useAuthStore } from '@/store/use-auth';
 import { useNavigate } from "react-router-dom";
-
+ 
 export default function LoginPage() { 
   const navigate = useNavigate();
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
-  const setRefreshToken = useAuthStore((state) => state.setRefreshToken);
+   const setTokens = useAuthStore((state) => state.setTokens);
 
   const {isPending, mutateAsync} = useMutation({
     mutationFn: async (input: AuthInput) => {
@@ -32,10 +31,7 @@ export default function LoginPage() {
     try {
       const { data: {accessToken, refreshToken} } = await mutateAsync(data);
 
-      setAccessToken({ accessToken });
-      setRefreshToken({ refreshToken });       
-
-      navigate("/home");
+      setTokens({ accessToken, refreshToken });  
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error('Oops! Something went wrong.');
@@ -43,6 +39,12 @@ export default function LoginPage() {
       console.error(error);   
     }   
   };
+
+  const onGoogleLogin = async () => {
+    window.location.href = `${import.meta.env.VITE_COGNITO_URL}`;  
+
+    navigate('/redirect')
+  }
 
   return (
      <Card className="w-full h-full flex flex-col items-center justify-center p-6">
@@ -71,6 +73,15 @@ export default function LoginPage() {
             </Button> 
           </form>
           </Form>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full flex items-center justify-center gap-2"
+            onClick={onGoogleLogin}
+          >
+            Entrar com Google
+          </Button>
         </CardContent>
     </Card>    
   );
