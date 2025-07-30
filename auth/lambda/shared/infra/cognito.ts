@@ -56,6 +56,7 @@ export const cognito = {
     return {
       accessToken: data.access_token,
       refreshToken: data.refresh_token,
+      idToken: data.id_token,
     };
   },
 
