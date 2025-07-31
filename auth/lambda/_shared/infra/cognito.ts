@@ -144,33 +144,41 @@ export const cognito = {
     session?: string;
     idToken?: string;
   }> => {
-    const clientId = await getUserPoolClientId();
+    try {
+      const clientId = await getUserPoolClientId();
 
-    const params: InitiateAuthCommandInput = {
-      ClientId: clientId,
-      AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
-      AuthParameters: {
-        USERNAME: email,
-        PASSWORD: password,
-      },
-    };
+      const params: InitiateAuthCommandInput = {
+        ClientId: clientId,
+        AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
+        AuthParameters: {
+          USERNAME: email,
+          PASSWORD: password,
+        },
+      };
 
-    const command = new InitiateAuthCommand(params);
+      const command = new InitiateAuthCommand(params);
 
-    const res: InitiateAuthCommandOutput = await cognitoClient.send(command);
+      const res: InitiateAuthCommandOutput = await cognitoClient.send(command);
 
-    if (
-      !res.AuthenticationResult ||
-      !res.AuthenticationResult.AccessToken ||
-      !res.AuthenticationResult.RefreshToken
-    ) {
+      if (
+        !res.AuthenticationResult ||
+        !res.AuthenticationResult.AccessToken ||
+        !res.AuthenticationResult.RefreshToken
+      ) {
+        return { error: "Invalid credentials" };
+      }
+
+      return {
+        accessToken: res.AuthenticationResult.AccessToken,
+        refreshToken: res.AuthenticationResult.RefreshToken,
+        idToken: res.AuthenticationResult.IdToken,
+      };
+    } catch (error) {
+      if (error.name === "UserNotConfirmedException") {
+        return { error: "User not confirmed" };
+      }
+
       return { error: "Invalid credentials" };
     }
-
-    return {
-      accessToken: res.AuthenticationResult.AccessToken,
-      refreshToken: res.AuthenticationResult.RefreshToken,
-      idToken: res.AuthenticationResult.IdToken,
-    };
   },
 };
