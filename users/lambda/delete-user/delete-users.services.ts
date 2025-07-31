@@ -1,6 +1,6 @@
-import { userRepository } from "../shared/repository/user.repository";
-import { cognito } from "../shared/infra/cognito";
-import { Output } from "../shared/service/output";
+import { userRepository } from "../_shared/repository/user.repository";
+import { cognito } from "../_shared/infra/cognito";
+import { Output } from "../_shared/service/output";
 
 export const service = async ({ id }: { id: string }): Output => {
   const verifyUser = await userRepository.findById(id);
