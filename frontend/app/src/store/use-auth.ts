@@ -4,9 +4,10 @@ import { persist } from 'zustand/middleware';
 interface AuthState { 
   accessToken: string | null;
   refreshToken: string | null;   
+  idToken: string | null; 
   getAccessToken: () => string | null;
   logout: () => void;
-  setTokens: (payload: { accessToken: string, refreshToken: string }) => void;
+  setTokens: (payload: { accessToken: string, refreshToken: string, idToken: string }) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -14,11 +15,13 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({   
       accessToken: null,
       refreshToken: null,   
+      idToken: null,
       getAccessToken: () => get().accessToken,   
-      setTokens: ({ accessToken, refreshToken }) => {
+      setTokens: ({ accessToken, refreshToken, idToken }) => {
         set({
           accessToken,
           refreshToken,
+          idToken
         });
 
         window.location.href = '/home';  
@@ -29,6 +32,7 @@ export const useAuthStore = create<AuthState>()(
         return set({
           accessToken: null,
           refreshToken: null, 
+          idToken: null
         })  
       }        
     }),
@@ -37,6 +41,7 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
+        idToken: state.idToken,
       }),
     },
   ),
