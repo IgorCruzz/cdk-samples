@@ -29,9 +29,9 @@ export default function LoginPage() {
 
   const onSubmit = async (data: AuthInput) => {
     try {
-      const { data: {accessToken, refreshToken} } = await mutateAsync(data);
+      const { data: {accessToken, refreshToken, idToken} } = await mutateAsync(data);
 
-      setTokens({ accessToken, refreshToken });  
+      setTokens({ accessToken, refreshToken, idToken });  
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error('Oops! Something went wrong.');
