@@ -34,9 +34,9 @@ export default function LoginPage() {
       setTokens({ accessToken, refreshToken, idToken });  
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast.error('Oops! Something went wrong.');
+        toast.error(error.response?.data.message);
       }
-      console.error(error);   
+      console.error(error);  
     }   
   };
 
