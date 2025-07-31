@@ -1,5 +1,5 @@
-import { cognito } from "../shared/infra/cognito";
-import { Output } from "../shared/service/output";
+import { cognito } from "../_shared/infra/cognito";
+import { Output } from "../_shared/service/output";
 
 type Input = {
   refreshToken: string;
