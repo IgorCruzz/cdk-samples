@@ -1,13 +1,13 @@
 import {
   CognitoIdentityProviderClient,
-  SignUpCommandOutput,
-  AdminCreateUserCommand,
-  AdminCreateUserCommandInput,
   AdminCreateUserCommandOutput,
   AdminDeleteUserCommandInput,
   AdminDeleteUserCommand,
   AdminAddUserToGroupCommand,
   AdminAddUserToGroupCommandInput,
+  SignUpCommandInput,
+  SignUpCommand,
+  SignUpCommandOutput,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
 
@@ -34,21 +34,29 @@ export const cognito = {
     const command = new AdminDeleteUserCommand(params);
     await cognitoClient.send(command);
   },
-  createAuthUser: async (
-    email: string
-  ): Promise<AdminCreateUserCommandOutput> => {
+  createUser: async (
+    email: string,
+    password: string
+  ): Promise<SignUpCommandOutput> => {
     const clientId = await getUserPoolClientId();
 
-    const params: AdminCreateUserCommandInput = {
-      UserPoolId: clientId,
+    const params: SignUpCommandInput = {
+      ClientId: clientId,
       Username: email,
+      Password: password,
       UserAttributes: [
-        { Name: "email", Value: email },
-        { Name: "email_verified", Value: "true" },
+        {
+          Name: "email",
+          Value: email,
+        },
+        {
+          Name: "email_verified",
+          Value: "true",
+        },
       ],
     };
 
-    const command = new AdminCreateUserCommand(params);
+    const command = new SignUpCommand(params);
 
     const res = await cognitoClient.send(command);
 
