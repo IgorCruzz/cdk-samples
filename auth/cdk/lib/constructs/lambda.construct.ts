@@ -18,7 +18,7 @@ export class LambdaConstruct extends Construct {
 
     this.createSigninFunction();
     this.createRefreshTokenFunction();
-    this.createPasswordFunction();
+    this.createConfirmFunction();
     this.createOauth2Function();
   }
 
@@ -66,14 +66,14 @@ export class LambdaConstruct extends Construct {
     return fn;
   }
 
-  private createPasswordFunction() {
-    const fn = new NodejsFunction(this, "function-password", {
+  private createConfirmFunction() {
+    const fn = new NodejsFunction(this, "function-confirm", {
       memorySize: 128,
       architecture: Architecture.X86_64,
       runtime: Runtime.NODEJS_20_X,
       timeout: Duration.seconds(30),
-      description: "A Lambda function to handle password management",
-      entry: join(__dirname, "../../../lambda/password/handler.ts"),
+      description: "A Lambda function to handle email confirmation",
+      entry: join(__dirname, "../../../lambda/confirm/handler.ts"),
       handler: "handler",
       bundling: {
         minify: true,
@@ -88,8 +88,8 @@ export class LambdaConstruct extends Construct {
     const region = Stack.of(this).region;
     const account = Stack.of(this).account;
 
-    new StringParameter(this, "function-password-arn", {
-      parameterName: "/auth/password/function/arn",
+    new StringParameter(this, "function-confirm-arn", {
+      parameterName: "/auth/confirm/function/arn",
       stringValue: fn.functionArn,
     });
 
