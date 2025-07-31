@@ -245,26 +245,26 @@ export class ApiConstruct extends Construct {
       }
     );
 
-    const sendPasswordArn = StringParameter.fromStringParameterName(
+    const sendConfirmdArn = StringParameter.fromStringParameterName(
       this,
-      "send-password-function-arn",
-      "/auth/password/function/arn"
+      "send-confirm-function-arn",
+      "/auth/confirm/function/arn"
     );
 
-    const sendPasswordFn = NodejsFunction.fromFunctionAttributes(
+    const sendConfirmFn = NodejsFunction.fromFunctionAttributes(
       this,
-      "lambda-send-password",
+      "lambda-send-confirm",
       {
-        functionArn: sendPasswordArn.stringValue,
+        functionArn: sendConfirmdArn.stringValue,
         sameEnvironment: true,
       }
     );
 
     this.api.addRoutes({
-      path: "/auth/password",
+      path: "/auth/confirm",
       integration: new HttpLambdaIntegration(
-        "integration-new-password",
-        sendPasswordFn
+        "integration-new-confirm",
+        sendConfirmFn
       ),
       methods: [HttpMethod.POST],
     });
@@ -286,9 +286,7 @@ export class ApiConstruct extends Construct {
 
     oauth2TokenFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
 
-    sendPasswordFn.grantInvoke(
-      new ServicePrincipal("apigateway.amazonaws.com")
-    );
+    sendConfirmFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
     signinFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
     refreshTokenFn.grantInvoke(
       new ServicePrincipal("apigateway.amazonaws.com")
