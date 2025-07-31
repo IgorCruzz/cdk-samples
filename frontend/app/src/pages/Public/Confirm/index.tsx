@@ -29,11 +29,12 @@ export default function Confirm() {
 
   const form = useForm<{ code: string }>({
     resolver: zodResolver(confirmSchema), 
+    defaultValues: { code: '' },
   }); 
 
   const onSubmit = async ({ code }: confirmInput) => {
     try {
-      const { data  } = await mutateAsync({ code }); 
+      const { data  } = await mutateAsync({ code, email: email! }); 
       
       toast.success(data.message); 
       
