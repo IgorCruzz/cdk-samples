@@ -50,6 +50,7 @@ export default function Confirm() {
                 {...form.register("code")}
                 type="code"  
                 required
+                maxLength={6}
               />
             </div>
             <Button type="submit" className="w-full" disabled={isPending}>
