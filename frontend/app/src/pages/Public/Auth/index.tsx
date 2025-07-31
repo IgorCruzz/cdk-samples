@@ -12,7 +12,7 @@ import { auth } from '@/services/endpoints/auth';
 import { useAuthStore } from '@/store/use-auth';
 import { useNavigate } from "react-router-dom";
  
-export default function LoginPage() { 
+export default function Auth() { 
   const navigate = useNavigate();
    const setTokens = useAuthStore((state) => state.setTokens);
 
