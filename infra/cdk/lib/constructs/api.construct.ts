@@ -283,7 +283,7 @@ export class ApiConstruct extends Construct {
 
     oauth2TokenFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
 
-    sendConfirmFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
+    confirmFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
     signinFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
     refreshTokenFn.grantInvoke(
       new ServicePrincipal("apigateway.amazonaws.com")
