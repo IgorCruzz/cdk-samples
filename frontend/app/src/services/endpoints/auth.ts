@@ -12,6 +12,11 @@ export const auth = {
       refreshToken: data.refreshToken,
     })
   },
+  confirm: async (data: { code: string }) => {
+    return await api.post("auth/confirm", {
+      code: data.code,
+    })
+  },
   oAuth2: async (data: { credential: string; clientId: string }) => {
     return await api.post("auth/oauth2", {
       credential: data.credential,
