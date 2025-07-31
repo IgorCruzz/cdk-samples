@@ -419,7 +419,7 @@ export class ApiConstruct extends Construct {
       `https://cognito-idp.${region}.amazonaws.com/${this.props.userPool.userPoolId}`,
       {
         jwtAudience: [this.props.userPoolClient.userPoolClientId],
-        identitySource: ["$request.cookie.Authorization"],
+        identitySource: ["$request.header.Authorization"],
       }
     );
   }
