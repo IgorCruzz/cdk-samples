@@ -3,8 +3,7 @@ import { cognito } from "../_shared/infra/cognito";
 
 type Input = {
   email: string;
-  password: string;
-  session?: string;
+  code: string;
 };
 
 export const service = async (
@@ -13,20 +12,15 @@ export const service = async (
   accessToken?: string;
   refreshToken?: string;
 }> => {
-  const { email, password, session } = data;
+  const { email, code } = data;
 
-  const auth = await cognito.authChallenge({
+  await cognito.confirmSignup({
     email,
-    password,
-    session,
+    code,
   });
 
-  if (auth.error) {
-    return { message: auth.error, success: false, data: null };
-  }
-
   return {
-    message: "Password changed successfully",
+    message: "Account confirmed successfully",
     success: true,
     data: null,
   };
