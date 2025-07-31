@@ -9,10 +9,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { toast } from "sonner";
 import { auth } from '@/services/endpoints/auth'; 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams  } from "react-router-dom";
+import { useEffect } from "react";
  
 export default function Confirm() { 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+   const email = searchParams.get("email");
+  
+  useEffect(() => { 
+    if (!email) { 
+      navigate('/');
+    }
+  }, [email]);
  
   const {isPending, mutateAsync} = useMutation({
     mutationFn: auth.confirm,
