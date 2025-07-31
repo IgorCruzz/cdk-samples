@@ -1,33 +1,16 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { service } from "./create-users.services";
 
-import {
-  SecretsManagerClient,
-  GetSecretValueCommand,
-} from "@aws-sdk/client-secrets-manager";
-
-import { dbHelper } from "../shared/repository/db-helper";
-import { internal } from "../shared/http/500";
-
-const secretsManager = new SecretsManagerClient();
-
-async function getMongoUri(): Promise<string> {
-  const res = await secretsManager.send(
-    new GetSecretValueCommand({
-      SecretId: "mongodb/uri",
-    })
-  );
-
-  const secret = JSON.parse(res.SecretString ?? "{}");
-  return secret["MONGO_URI"];
-}
+import { dbHelper } from "../_shared/repository/db-helper";
+import { internal } from "../_shared/http/500";
+import { secret } from "../_shared/infra/secret";
 
 let isConnected = false;
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   try {
     if (!isConnected) {
-      const uri = await getMongoUri();
+      const uri = await secret.getMongoUri();
       await dbHelper.connect(uri);
       isConnected = true;
     }
