@@ -8,23 +8,13 @@ import {
   RespondToAuthChallengeCommandInput,
   RespondToAuthChallengeCommandOutput,
 } from "@aws-sdk/client-cognito-identity-provider";
-import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
+import { ssm } from "./ssm";
 
 const cognitoClient = new CognitoIdentityProviderClient({});
-const ssmClient = new SSMClient({});
-
-async function getUserPoolClientId(): Promise<string> {
-  const comando = new GetParameterCommand({
-    Name: "/cognito/user-pool-client-id",
-  });
-
-  const resultado = await ssmClient.send(comando);
-  return resultado.Parameter?.Value || "";
-}
 
 export const cognito = {
   getToken: async ({ code }: { code: string }) => {
-    const clientId = await getUserPoolClientId();
+    const clientId = await ssm.getUserPoolClientId();
 
     const params = new URLSearchParams({
       grant_type: "authorization_code",
@@ -69,7 +59,7 @@ export const cognito = {
     refreshToken?: string;
     error?: string;
   }> => {
-    const clientId = await getUserPoolClientId();
+    const clientId = await ssm.getUserPoolClientId();
 
     const params = {
       ClientId: clientId,
@@ -100,7 +90,7 @@ export const cognito = {
     password: string;
     session?: string;
   }) => {
-    const clientId = await getUserPoolClientId();
+    const clientId = await ssm.getUserPoolClientId();
 
     const params: RespondToAuthChallengeCommandInput = {
       ClientId: clientId,
@@ -145,7 +135,7 @@ export const cognito = {
     idToken?: string;
   }> => {
     try {
-      const clientId = await getUserPoolClientId();
+      const clientId = await ssm.getUserPoolClientId();
 
       const params: InitiateAuthCommandInput = {
         ClientId: clientId,
@@ -174,11 +164,14 @@ export const cognito = {
         idToken: res.AuthenticationResult.IdToken,
       };
     } catch (error) {
-      if (error.name === "UserNotConfirmedException") {
+      if (
+        error instanceof Error &&
+        error.name === "UserNotConfirmedException"
+      ) {
         return { error: "User not confirmed" };
       }
 
-      return { error: "Invalid credentials" };
+      throw error;
     }
   },
 };
