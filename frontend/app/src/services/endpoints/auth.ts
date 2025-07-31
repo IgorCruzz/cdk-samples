@@ -12,9 +12,10 @@ export const auth = {
       refreshToken: data.refreshToken,
     })
   },
-  confirm: async (data: { code: string }) => {
+  confirm: async (data: { code: string, email: string }) => {
     return await api.post("auth/confirm", {
       code: data.code,
+      email: data.email,
     })
   },
   oAuth2: async (data: { credential: string; clientId: string }) => {
