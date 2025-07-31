@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { service } from "./refresh.services";
-import { internal } from "../shared/http/500";
+import { internal } from "../_shared/http/500";
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   try {
