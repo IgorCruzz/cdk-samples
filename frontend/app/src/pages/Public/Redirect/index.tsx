@@ -10,9 +10,10 @@ export default function Redirect() {
     const params = new URLSearchParams(window.location.search);
     const accessToken = params.get("access_token");
     const refreshToken = params.get("refresh_token");
+    const idToken = params.get("id_token");
 
-    if (accessToken && refreshToken) { 
-      setTokens({ accessToken, refreshToken }); 
+    if (accessToken && refreshToken && idToken) {
+      setTokens({ accessToken, refreshToken, idToken });
     } else {
       navigate("/");
     }
