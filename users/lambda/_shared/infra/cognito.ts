@@ -14,7 +14,7 @@ const cognitoClient = new CognitoIdentityProviderClient({});
 
 export const cognito = {
   removeUser: async (email: string): Promise<void> => {
-    const userPoolId = await ssm.getUserPoolClientId();
+    const userPoolId = await ssm.getUserPoolId();
 
     const params: AdminDeleteUserCommandInput = {
       UserPoolId: userPoolId,
@@ -27,7 +27,7 @@ export const cognito = {
     email: string,
     password: string
   ): Promise<SignUpCommandOutput> => {
-    const clientId = await ssm.getUserPoolId();
+    const clientId = await ssm.getUserPoolClientId();
 
     const params: SignUpCommandInput = {
       ClientId: clientId,
@@ -45,7 +45,7 @@ export const cognito = {
 
     const res = await cognitoClient.send(command);
 
-    const userPoolId = await ssm.getUserPoolClientId();
+    const userPoolId = await ssm.getUserPoolId();
 
     const addToGroupParams: AdminAddUserToGroupCommandInput = {
       UserPoolId: userPoolId,
