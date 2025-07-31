@@ -159,10 +159,6 @@ export const cognito = {
 
     const res: InitiateAuthCommandOutput = await cognitoClient.send(command);
 
-    if (res.ChallengeName === "NEW_PASSWORD_REQUIRED") {
-      return { error: "New password required", session: res.Session };
-    }
-
     if (
       !res.AuthenticationResult ||
       !res.AuthenticationResult.AccessToken ||
