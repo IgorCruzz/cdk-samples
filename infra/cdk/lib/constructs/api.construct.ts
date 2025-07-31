@@ -245,27 +245,24 @@ export class ApiConstruct extends Construct {
       }
     );
 
-    const sendConfirmdArn = StringParameter.fromStringParameterName(
+    const confirmArn = StringParameter.fromStringParameterName(
       this,
-      "send-confirm-function-arn",
+      "confirm-function-arn",
       "/auth/confirm/function/arn"
     );
 
-    const sendConfirmFn = NodejsFunction.fromFunctionAttributes(
+    const confirmFn = NodejsFunction.fromFunctionAttributes(
       this,
-      "lambda-send-confirm",
+      "lambda-confirm",
       {
-        functionArn: sendConfirmdArn.stringValue,
+        functionArn: confirmArn.stringValue,
         sameEnvironment: true,
       }
     );
 
     this.api.addRoutes({
       path: "/auth/confirm",
-      integration: new HttpLambdaIntegration(
-        "integration-new-confirm",
-        sendConfirmFn
-      ),
+      integration: new HttpLambdaIntegration("integration-confirm", confirmFn),
       methods: [HttpMethod.POST],
     });
 
