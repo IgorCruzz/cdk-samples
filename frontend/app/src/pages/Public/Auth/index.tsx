@@ -37,7 +37,7 @@ export default function Auth() {
 
         if (error.response?.data.message === "User not confirmed") {
           toast.error("Please confirm your account first.");
-          navigate('/confirm');
+          navigate(`/confirm?email=${data.email}`);
           return;
         }
 
