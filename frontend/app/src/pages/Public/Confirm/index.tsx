@@ -15,10 +15,7 @@ export default function Confirm() {
   const navigate = useNavigate();
  
   const {isPending, mutateAsync} = useMutation({
-    mutationFn: async (input: confirmInput) => {
-      const { data } = await auth.confirm(input);
-      return data;
-    }, 
+    mutationFn: auth.confirm,
   }); 
 
   const form = useForm<{ code: string }>({
