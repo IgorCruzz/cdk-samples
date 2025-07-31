@@ -43,7 +43,7 @@ export default function Confirm() {
 
   return (
      <Card className="w-full h-full flex flex-col items-center justify-center p-6">
-        <h1 className="text-2xl font-bold">Confirm</h1>
+        <h1 className="text-2xl font-bold">Confirmation</h1>
         <CardContent className="w-full">
           <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8">
