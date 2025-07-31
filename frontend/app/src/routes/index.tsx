@@ -3,6 +3,7 @@ import Auth from '@/pages/Public/Auth';
 import Home from '@/pages/Private/Home';
 import Mocks from '@/pages/Private/Mocks';
 import Users from '@/pages/Private/Users'; 
+import Confirm from '@/pages/Public/Confirm';
 import Redirect from '@/pages/Public/Redirect';
 import PrivateLayout from '@/components/AppLayout';
 import PublicLayout from '@/components/PublicLayout'; 
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "/", element: <Auth /> },
           { path: "/redirect", element: <Redirect /> },
+          { path: "/confirm", element: <Confirm /> },
         ],
       },
     ],
