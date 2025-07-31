@@ -41,7 +41,7 @@ export default function Confirm() {
       navigate('/login');  
 
     } catch (error) {
-      if (error instanceof AxiosError) {
+      if (error instanceof AxiosError && error.status !== 404) {
         toast.error(error.response?.data.message);
       }
       console.error(error);  
