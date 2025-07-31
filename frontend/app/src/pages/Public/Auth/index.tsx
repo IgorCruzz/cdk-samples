@@ -34,6 +34,13 @@ export default function Auth() {
       setTokens({ accessToken, refreshToken, idToken });  
     } catch (error) {
       if (error instanceof AxiosError) {
+
+        if (error.response?.data.message === "User not confirmed") {
+          toast.error("Please confirm your account first.");
+          navigate('/confirm');
+          return;
+        }
+
         toast.error(error.response?.data.message);
       }
       console.error(error);  
