@@ -45,7 +45,7 @@ export default function Confirm() {
         toast.error(error.response?.data.message);
       }
       console.error(error);  
-      toast.error("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again later.");
     }   
   }; 
 
