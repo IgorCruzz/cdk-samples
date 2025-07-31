@@ -56,7 +56,7 @@ export default function Confirm() {
               />
             </div>
             <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? "Logging in..." : "Confirm"}
+              {isPending ? "Loading..." : "Confirm"}
             </Button> 
           </form>
           </Form> 
