@@ -182,7 +182,6 @@ export class ApiConstruct extends Construct {
         createUserFn
       ),
       methods: [HttpMethod.POST],
-      authorizer: this.authorizer,
     });
 
     createUserFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
