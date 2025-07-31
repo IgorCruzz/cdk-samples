@@ -7,6 +7,9 @@ import {
   RespondToAuthChallengeCommand,
   RespondToAuthChallengeCommandInput,
   RespondToAuthChallengeCommandOutput,
+  ConfirmSignUpCommandInput,
+  ConfirmSignUpCommand,
+  ConfirmSignUpCommandOutput,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { ssm } from "./ssm";
 
@@ -81,44 +84,25 @@ export const cognito = {
     };
   },
 
-  authChallenge: async ({
+  confirmSignup: async ({
     email,
-    password,
-    session,
+    code,
   }: {
     email: string;
-    password: string;
-    session?: string;
-  }) => {
+    code: string;
+  }): Promise<void> => {
     const clientId = await ssm.getUserPoolClientId();
 
-    const params: RespondToAuthChallengeCommandInput = {
+    const params: ConfirmSignUpCommandInput = {
       ClientId: clientId,
-      ChallengeName: "NEW_PASSWORD_REQUIRED",
-      Session: session,
-      ChallengeResponses: {
-        USERNAME: email,
-        NEW_PASSWORD: password,
-      },
+      Username: email,
+      ConfirmationCode: code,
     };
 
-    const command = new RespondToAuthChallengeCommand(params);
-    const res: RespondToAuthChallengeCommandOutput = await cognitoClient.send(
-      command
-    );
+    const command = new ConfirmSignUpCommand(params);
+    await cognitoClient.send(command);
 
-    if (
-      !res.AuthenticationResult ||
-      !res.AuthenticationResult.AccessToken ||
-      !res.AuthenticationResult.RefreshToken
-    ) {
-      return { error: "Invalid credentials" };
-    }
-
-    return {
-      accessToken: res.AuthenticationResult.AccessToken,
-      refreshToken: res.AuthenticationResult.RefreshToken,
-    };
+    return;
   },
 
   auth: async ({
