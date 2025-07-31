@@ -45,8 +45,10 @@ export const cognito = {
 
     const res = await cognitoClient.send(command);
 
+    const userPoolId = await ssm.getUserPoolClientId();
+
     const addToGroupParams: AdminAddUserToGroupCommandInput = {
-      UserPoolId: clientId,
+      UserPoolId: userPoolId,
       Username: email,
       GroupName: "user",
     };
