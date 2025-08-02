@@ -31,11 +31,13 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       isConnected = true;
     }
 
+    const sub = event.requestContext.authorizer?.claims?.sub;
+
     const page = parseInt(event.queryStringParameters?.page || "1");
 
     const limit = parseInt(event.queryStringParameters?.limit || "20");
 
-    const files = await service({ page, limit });
+    const files = await service({ page, limit, sub });
 
     return {
       statusCode: 200,
