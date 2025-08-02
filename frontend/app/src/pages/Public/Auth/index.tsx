@@ -76,7 +76,7 @@ export default function Auth() {
                 required
               />
             </div> 
-            <Button type="submit" className="w-full" disabled={isPending}>
+            <Button variant="outline" type="submit" className="w-full" disabled={isPending}>
               {isPending ? "Logging in..." : "Login"}
             </Button> 
           </form>
