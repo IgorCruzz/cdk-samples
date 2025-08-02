@@ -90,19 +90,32 @@ export const cognito = {
   }: {
     email: string;
     code: string;
-  }): Promise<void> => {
-    const clientId = await ssm.getUserPoolClientId();
+  }): Promise<{
+    error?: string | null;
+    success?: boolean;
+  }> => {
+    try {
+      const clientId = await ssm.getUserPoolClientId();
 
-    const params: ConfirmSignUpCommandInput = {
-      ClientId: clientId,
-      Username: email,
-      ConfirmationCode: code,
-    };
+      const params: ConfirmSignUpCommandInput = {
+        ClientId: clientId,
+        Username: email,
+        ConfirmationCode: code,
+      };
 
-    const command = new ConfirmSignUpCommand(params);
-    await cognitoClient.send(command);
+      const command = new ConfirmSignUpCommand(params);
+      await cognitoClient.send(command);
 
-    return;
+      return { error: null, success: true };
+    } catch (error) {
+      if (error instanceof Error && error.name === "UserNotFoundException") {
+        return { error: "User not found", success: false };
+      }
+      if (error instanceof Error && error.name === "CodeMismatchException") {
+        return { error: "Invalid confirmation code", success: false };
+      }
+      throw error;
+    }
   },
 
   auth: async ({
