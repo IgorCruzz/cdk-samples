@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { actualDate } from "../utils/locale-date.util";
 import { dbHelper } from "./db-helper";
+import { queryBuilder } from "./query-builder";
 
 export type Files = {
   key: string;
@@ -21,6 +22,7 @@ type ArchiveRepositoryOutput = void;
 type GetFilesInput = {
   page: number;
   limit: number;
+  sub?: string;
 };
 
 type GetFilesOutput = Promise<{
@@ -74,19 +76,36 @@ export const archiveRepository: IArchiveRepository = {
     };
   },
 
-  async getFiles({ page, limit }: GetFilesInput): GetFilesOutput {
+  async getFiles({ page, limit, sub }: GetFilesInput): GetFilesOutput {
     const archiveCollection = dbHelper.getCollection("archives");
 
     const skip = (page - 1) * limit;
-    const count = await archiveCollection.countDocuments({});
+    const count = await archiveCollection.countDocuments({
+      sub,
+    });
 
-    const archives = await archiveCollection
-      .find({})
-      .sort({ createdAt: -1 })
-      .skip(skip)
+    const query = queryBuilder()
+      .lookup({
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user",
+      })
+      .unwind({
+        path: "$user",
+        preserveNullAndEmptyArrays: true,
+      })
+      .match({
+        "user.sub": sub,
+      })
       .limit(limit)
-      .toArray();
+      .skip(skip)
+      .sort({
+        createdAt: -1,
+      })
+      .build();
 
+    const archives = await archiveCollection.aggregate(query).toArray();
     const totalPages = Math.ceil(count / limit);
 
     return {
