@@ -28,8 +28,6 @@ export const service = async ({
     };
   }
 
-  await userRepository.save({ ...data, sub: authUser.UserSub });
-
   return {
     message: "Login successful",
     success: true,
