@@ -1,7 +1,7 @@
 import { SQSBatchResponse, SQSRecord } from "aws-lambda";
-import { NotifyType } from "../shared/types/notifier.type";
-import { twilio } from "../shared/infra/twilio";
-import { ses } from "../shared/infra/ses";
+import { NotifyType } from "../_shared/types/notifier.type";
+import { twilio } from "../_shared/infra/twilio";
+import { ses } from "../_shared/infra/ses";
 
 export const service = async ({
   records,

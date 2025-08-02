@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { service } from "./notifier-send.service";
-import { NotifyType } from "../shared/types/notifier.type";
+import { NotifyType } from "../_shared/types/notifier.type";
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   try {

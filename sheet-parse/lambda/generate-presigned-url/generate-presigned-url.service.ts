@@ -1,6 +1,6 @@
-import { s3 } from "../shared/infra/s3";
-import { archiveRepository } from "../shared/repository/archive.repository";
-import { userRepository } from "../shared/repository/user.repository";
+import { s3 } from "../_shared/infra/s3";
+import { archiveRepository } from "../_shared/repository/archive.repository";
+import { userRepository } from "../_shared/repository/user.repository";
 
 export const service = async (
   userId: string,

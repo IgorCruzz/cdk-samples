@@ -1,4 +1,4 @@
-import { dataRepository } from "../shared/repository/data.repository";
+import { dataRepository } from "../_shared/repository/data.repository";
 
 export const service = async ({
   page,

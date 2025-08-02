@@ -1,7 +1,7 @@
 import {
   archiveRepository,
   Files,
-} from "../shared/repository/archive.repository";
+} from "../_shared/repository/archive.repository";
 
 export const service = async ({
   page,

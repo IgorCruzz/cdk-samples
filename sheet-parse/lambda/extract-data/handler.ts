@@ -5,7 +5,7 @@ import {
   GetSecretValueCommand,
 } from "@aws-sdk/client-secrets-manager";
 
-import { dbHelper } from "../shared/repository/db-helper";
+import { dbHelper } from "../_shared/repository/db-helper";
 
 const secretsManager = new SecretsManagerClient();
 

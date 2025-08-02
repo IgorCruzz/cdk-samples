@@ -1,6 +1,6 @@
 import { APIGatewayProxyResult } from "aws-lambda";
-import { NotifyType } from "../shared/types/notifier.type";
-import { sns } from "../shared/infra/sns";
+import { NotifyType } from "../_shared/types/notifier.type";
+import { sns } from "../_shared/infra/sns";
 
 export const service = async ({
   notifications,

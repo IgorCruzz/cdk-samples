@@ -1,10 +1,10 @@
 import { S3EventRecord } from "aws-lambda";
-import { s3 } from "../shared/infra/s3";
+import { s3 } from "../_shared/infra/s3";
 import { parse } from "csv-parse";
-import { archiveRepository } from "../shared/repository/archive.repository";
-import { dataRepository } from "../shared/repository/data.repository";
-import { sendNotification } from "../shared/infra/send-notification";
-import { normalizeRow } from "../shared/utils/normalize.util";
+import { archiveRepository } from "../_shared/repository/archive.repository";
+import { dataRepository } from "../_shared/repository/data.repository";
+import { sendNotification } from "../_shared/infra/send-notification";
+import { normalizeRow } from "../_shared/utils/normalize.util";
 import { ObjectId } from "mongodb";
 
 export const service = async ({
