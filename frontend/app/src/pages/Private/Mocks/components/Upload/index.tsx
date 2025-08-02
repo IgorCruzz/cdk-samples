@@ -97,7 +97,7 @@ export function Upload()  {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 h-full">
             <DropField name="file" />
-            <Button type="submit" disabled={!form.formState.isValid || loading}>
+            <Button variant="outline" type="submit" disabled={!form.formState.isValid || loading}>
               {loading ? `${uploadProgress}%` : <SendHorizontal />}
             </Button>
           </form>
