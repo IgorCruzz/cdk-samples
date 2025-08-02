@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { auth } from '@/services/endpoints/auth'; 
 import { useAuthStore } from '@/store/use-auth';
 import { useNavigate } from "react-router-dom";
+import { onError } from "@/utils/catchError";
  
 export default function Auth() { 
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ export default function Auth() {
       const { data: {accessToken, refreshToken, idToken} } = await mutateAsync(data);
 
       setTokens({ accessToken, refreshToken, idToken });  
-    } catch (error) {
+    } catch (error) {      
       if (error instanceof AxiosError) {
 
         if (error.response?.data.message === "User not confirmed") {
