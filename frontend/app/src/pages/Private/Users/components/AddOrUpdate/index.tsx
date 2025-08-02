@@ -119,7 +119,7 @@ export function AddOrUpdate({ type, user }: AddOrUpdateProps) {
               />
             </div>
 
-            <Button type="submit" disabled={!form.formState.isValid || loading}>
+            <Button variant="outline" type="submit" disabled={!form.formState.isValid || loading}>
               {loading ? `loading...` : <SendHorizontal />}
             </Button>
           </form>
