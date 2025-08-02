@@ -6,9 +6,11 @@ import {
 export const service = async ({
   page,
   limit,
+  sub,
 }: {
   page: number;
   limit: number;
+  sub?: string;
 }): Promise<{
   itens: Files[];
   count: number;
@@ -19,6 +21,7 @@ export const service = async ({
   const files = await archiveRepository.getFiles({
     page,
     limit,
+    sub,
   });
 
   return files;
