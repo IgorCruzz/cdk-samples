@@ -158,11 +158,25 @@ export const cognito = {
         idToken: res.AuthenticationResult.IdToken,
       };
     } catch (error) {
-      if (
-        error instanceof Error &&
-        error.name === "UserNotConfirmedException"
-      ) {
-        return { error: "User not confirmed" };
+      if (error instanceof Error) {
+        if (error.name === "UserNotConfirmedException") {
+          return { error: "User not confirmed" };
+        }
+
+        const genericLoginErrors = [
+          "UserNotFoundException",
+          "NotAuthorizedException",
+          "PasswordResetRequiredException",
+          "TooManyFailedAttemptsException",
+          "TooManyRequestsException",
+          "InvalidParameterException",
+        ];
+
+        if (genericLoginErrors.includes(error.name)) {
+          return { error: "Invalid email or password" };
+        }
+
+        console.log("Unexpected Cognito error:", error);
       }
 
       throw error;
