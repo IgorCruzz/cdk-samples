@@ -61,7 +61,7 @@ export default function Confirm() {
                 maxLength={6}
               />
             </div>
-            <Button type="submit" className="w-full" disabled={isPending}>
+            <Button variant="outline" type="submit" className="w-full" disabled={isPending}>
               {isPending ? "Loading..." : "Confirm"}
             </Button> 
           </form>
