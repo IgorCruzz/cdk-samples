@@ -7,11 +7,13 @@ export type QueryBuilder = {
   unwind: (data: object) => QueryBuilder;
   lookup: (data: object) => QueryBuilder;
   project: (data: object) => QueryBuilder;
+  limit: (data: number) => QueryBuilder;
+  skip: (data: number) => QueryBuilder;
   build: () => QueryStep[];
 };
 
 export const queryBuilder = (query: QueryStep[] = []): QueryBuilder => {
-  const addStep = (step: string, data: object): QueryBuilder => {
+  const addStep = (step: string, data: any): QueryBuilder => {
     return queryBuilder([...query, { [step]: data }]);
   };
 
@@ -22,6 +24,8 @@ export const queryBuilder = (query: QueryStep[] = []): QueryBuilder => {
     unwind: (data) => addStep("$unwind", data),
     lookup: (data) => addStep("$lookup", data),
     project: (data) => addStep("$project", data),
+    limit: (data) => addStep("$limit", data),
+    skip: (data) => addStep("$skip", data),
     build: () => query,
   };
 };
