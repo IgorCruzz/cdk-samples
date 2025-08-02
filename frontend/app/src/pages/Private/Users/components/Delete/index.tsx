@@ -65,6 +65,7 @@ export function Delete({ user }: DeleteProps) {
           <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <AlertDialogAction asChild>
             <Button
+            variant="outline"
               onClick={handleDelete}
               disabled={isPending}
               className="bg-destructive text-white hover:bg-destructive/90"
