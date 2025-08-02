@@ -4,12 +4,8 @@ import {
   InitiateAuthCommand,
   InitiateAuthCommandInput,
   InitiateAuthCommandOutput,
-  RespondToAuthChallengeCommand,
-  RespondToAuthChallengeCommandInput,
-  RespondToAuthChallengeCommandOutput,
   ConfirmSignUpCommandInput,
   ConfirmSignUpCommand,
-  ConfirmSignUpCommandOutput,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { ssm } from "./ssm";
 
@@ -41,6 +37,7 @@ export const cognito = {
       return {
         accessToken: null,
         refreshToken: null,
+        idToken: null,
       };
     }
 
