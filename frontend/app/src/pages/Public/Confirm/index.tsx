@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { auth } from '@/services/endpoints/auth'; 
 import { useNavigate, useSearchParams  } from "react-router-dom";
 import { useEffect } from "react";
+import { onError } from "@/utils/catchError";
  
 export default function Confirm() { 
   const navigate = useNavigate();
@@ -38,15 +39,11 @@ export default function Confirm() {
       
       toast.success(data.message); 
       
-      navigate('/login');  
+      navigate('/');  
 
     } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-      }
-      console.error(error);  
-      toast.error("An error occurred. Please try again later.");
-    }   
+      onError(error);
+    }
   }; 
 
   return (
