@@ -31,7 +31,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
     return {
       statusCode: 302,
       headers: {
-        Location: `http://localhost:5173/redirect?access_token=${response.data?.accessToken}&refresh_token=${response.data?.refreshToken}`,
+        Location: `http://localhost:5173/redirect?id_token=${response.data?.idToken}&access_token=${response.data?.accessToken}&refresh_token=${response.data?.refreshToken}`,
       },
     };
   } catch (error) {
