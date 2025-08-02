@@ -1,4 +1,4 @@
-import { Home, User, Upload, FileJson2 } from "lucide-react"
+import { Home, User, FileJson2, LogOut} from "lucide-react"
 
 import {
   Sidebar,
@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/sidebar"
 import { Link } from "react-router-dom"
 import Logo from '@/assets/logo.png'
- 
+import { Button } from "./ui/button"
+  
 const applicationRoutes = [
   {
     title: "Home",
@@ -87,7 +88,7 @@ export function AppSidebar() {
        <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
-               <p>s</p>
+               <Button variant="outline"><LogOut /></Button>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
