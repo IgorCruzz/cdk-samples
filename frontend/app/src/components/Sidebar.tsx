@@ -15,6 +15,7 @@ import {
 import { Link } from "react-router-dom"
 import Logo from '@/assets/logo.png'
 import { Button } from "./ui/button"
+import { useAuthStore } from '@/store/use-auth'
   
 const applicationRoutes = [
   {
@@ -38,6 +39,12 @@ const administratorRoutes =[
 ]
 
 export function AppSidebar() {
+  const logout = useAuthStore((state) => state.logout)
+
+  const onLogout = () => {
+    logout()
+  }
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -88,7 +95,7 @@ export function AppSidebar() {
        <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
-               <Button variant="outline"><LogOut /></Button>
+               <Button variant="outline" onClick={onLogout}><LogOut /></Button>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
