@@ -14,10 +14,18 @@ export const service = async (
 }> => {
   const { email, code } = data;
 
-  await cognito.confirmSignup({
+  const confirmSignUp = await cognito.confirmSignup({
     email,
     code,
   });
+
+  if (confirmSignUp.error) {
+    return {
+      message: confirmSignUp.error,
+      success: false,
+      data: null,
+    };
+  }
 
   return {
     message: "Account confirmed successfully",
