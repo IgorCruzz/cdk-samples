@@ -11,4 +11,12 @@ export const ssm = {
     const resultado = await ssmClient.send(comando);
     return resultado.Parameter?.Value || "";
   },
+  async getUserPoolId(): Promise<string> {
+    const command = new GetParameterCommand({
+      Name: "/cognito/user-pool-id",
+    });
+
+    const res = await ssmClient.send(command);
+    return res.Parameter?.Value || "";
+  },
 };
