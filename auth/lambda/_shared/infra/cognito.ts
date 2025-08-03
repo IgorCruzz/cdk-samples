@@ -6,12 +6,51 @@ import {
   InitiateAuthCommandOutput,
   ConfirmSignUpCommandInput,
   ConfirmSignUpCommand,
+  SignUpCommandOutput,
+  SignUpCommandInput,
+  SignUpCommand,
+  AdminAddUserToGroupCommandInput,
+  AdminAddUserToGroupCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { ssm } from "./ssm";
 
 const cognitoClient = new CognitoIdentityProviderClient({});
 
 export const cognito = {
+  signUp: async (
+    email: string,
+    password: string
+  ): Promise<SignUpCommandOutput> => {
+    const clientId = await ssm.getUserPoolClientId();
+
+    const params: SignUpCommandInput = {
+      ClientId: clientId,
+      Username: email,
+      Password: password,
+      UserAttributes: [
+        {
+          Name: "email",
+          Value: email,
+        },
+      ],
+    };
+
+    const command = new SignUpCommand(params);
+
+    const res = await cognitoClient.send(command);
+
+    const userPoolId = await ssm.getUserPoolId();
+
+    const addToGroupParams: AdminAddUserToGroupCommandInput = {
+      UserPoolId: userPoolId,
+      Username: email,
+      GroupName: "user",
+    };
+    const addToGroupCommand = new AdminAddUserToGroupCommand(addToGroupParams);
+    await cognitoClient.send(addToGroupCommand);
+
+    return res;
+  },
   getToken: async ({ code }: { code: string }) => {
     const clientId = await ssm.getUserPoolClientId();
 
