@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Auth from '@/pages/Public/Auth';
+import Signup from '@/pages/Public/Signup';
 import Home from '@/pages/Private/Home';
 import Mocks from '@/pages/Private/Mocks';
 import Users from '@/pages/Private/Users'; 
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
           { path: "/", element: <Auth /> },
           { path: "/redirect", element: <Redirect /> },
           { path: "/confirm", element: <Confirm /> },
+          { path: "/signup", element: <Signup /> },
         ],
       },
     ],
