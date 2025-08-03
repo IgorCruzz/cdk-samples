@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { auth } from '@/services/endpoints/auth'; 
 import { useNavigate, useSearchParams  } from "react-router-dom";
 import { useEffect } from "react";
-import { onError } from "@/utils/catchError";
+import { onError } from "@/utils/catchError"; 
  
 export default function Confirm() { 
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ export default function Confirm() {
                 required
                 maxLength={6}
               />
-            </div>
+            </div> 
             <Button variant="outline" type="submit" className="w-full" disabled={isPending}>
               {isPending ? "Loading..." : "Confirm"}
             </Button> 
