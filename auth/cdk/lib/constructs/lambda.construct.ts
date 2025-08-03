@@ -20,6 +20,66 @@ export class LambdaConstruct extends Construct {
     this.createRefreshTokenFunction();
     this.createConfirmFunction();
     this.createOauth2Function();
+    this.createSignUpFunction();
+  }
+
+  private createSignUpFunction() {
+    const fn = new NodejsFunction(this, "function-signup", {
+      memorySize: 128,
+      architecture: Architecture.X86_64,
+      runtime: Runtime.NODEJS_20_X,
+      timeout: Duration.seconds(30),
+      description: "A Lambda function to signup a user",
+      entry: join(__dirname, "../../../lambda/signup/handler.ts"),
+      handler: "handler",
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: "es2020",
+      },
+      loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
+      logRetention: RetentionDays.ONE_WEEK,
+    });
+    const region = Stack.of(this).region;
+    const account = Stack.of(this).account;
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
+        ],
+      })
+    );
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["cognito-idp:AdminCreateUser"],
+        resources: [`arn:aws:cognito-idp:${region}:${account}:userpool/*`],
+      })
+    );
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["cognito-idp:AdminAddUserToGroup"],
+        resources: [`arn:aws:cognito-idp:${region}:${account}:userpool/*`],
+      })
+    );
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["ssm:GetParameter"],
+        resources: [`arn:aws:ssm:${region}:${account}:parameter/cognito/*`],
+      })
+    );
+
+    new StringParameter(this, "parameter-signup-function", {
+      parameterName: "/lambda/signup/function-arn",
+      stringValue: fn.functionArn,
+    });
+
+    return fn;
   }
 
   private createRefreshTokenFunction() {
