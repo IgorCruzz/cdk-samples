@@ -10,7 +10,7 @@ import { Form } from "@/components/ui/form";
 import { toast } from "sonner";
 import { auth } from '@/services/endpoints/auth'; 
 import { useAuthStore } from '@/store/use-auth';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator"
 
 export default function Auth() { 
@@ -113,6 +113,9 @@ export default function Auth() {
   Entrar com Google
 </Button>
 
+          <p className="mt-4 text-sm text-gray-600">
+            Don't have an account? <Link to="/signup" className="text-blue-600 hover:underline">Sign up</Link>
+          </p>
         </CardContent>
     </Card>    
   );
