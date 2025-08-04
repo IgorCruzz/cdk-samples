@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.787.0",
+    "@aws-sdk/client-secrets-manager": "^3.859.0",
     "@aws-sdk/client-ses": "^3.799.0",
     "@aws-sdk/client-sns": "^3.787.0",
     "@aws-sdk/lib-dynamodb": "^3.787.0",
@@ -39,10 +40,11 @@
     "esbuild": "^0.25.2",
     "sib-api-v3-sdk": "^8.5.0",
     "twilio": "^5.5.2"
-  },   
+  },
   "compilerOptions": {
-    "typeRoots": ["./types", "./node_modules/@types"]
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ]
   }
- 
-
 }
