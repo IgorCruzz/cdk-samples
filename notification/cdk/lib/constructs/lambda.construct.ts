@@ -12,7 +12,6 @@ import { SqsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 import { SNSConstruct } from "./sns.construct";
 import { SQSConstruct } from "./sqs.construct";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 
 import { join } from "node:path";
 
