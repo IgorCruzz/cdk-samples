@@ -105,7 +105,7 @@ export class CognitoConstruct extends Construct {
     new UserPoolDomain(this, "user-pool-domain", {
       userPool: this.userPool,
       cognitoDomain: {
-        domainPrefix: `sheetparse`,
+        domainPrefix: `csvparse`,
       },
     });
 
