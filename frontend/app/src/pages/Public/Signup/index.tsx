@@ -8,8 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { toast } from "sonner"; 
 import { SendHorizontal } from "lucide-react";
-import { userSchema, UserInput } from "@/schemas/users";
-import { users } from "@/services/endpoints/users";
+import {  signUpInput, signUpSchema} from "@/schemas/signup";
+import { auth } from "@/services/endpoints/auth";
 import { useState } from "react";
 import PasswordValidation from "@/components/PasswordValidation";
 import { useNavigate } from 'react-router-dom'
@@ -19,15 +19,15 @@ export default function Signup() {
   const [password, setPassword] = useState("");
 
   const { isPending, mutateAsync } = useMutation({
-    mutationFn: users.post    
+    mutationFn: auth.signup    
   }); 
 
   const form = useForm({
-    resolver: zodResolver(userSchema),
+    resolver: zodResolver(signUpSchema),
     mode: "onChange",
   }); 
 
-  const onSubmit = async (input: UserInput) => {
+  const onSubmit = async (input: signUpInput) => {
     try {    
       const { data } = await mutateAsync(input);      
       toast.success(data.message); 
