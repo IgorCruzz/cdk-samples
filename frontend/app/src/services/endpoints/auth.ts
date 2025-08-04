@@ -1,6 +1,17 @@
 import { api } from '../api'
 
 export const auth = {
+  signup: async (data: {
+    email: string;
+    password: string;
+    name: string; 
+  }) => {
+    return await api.post("auth/signup", {
+      email: data.email,
+      password: data.password,
+      name: data.name, 
+    })
+  },
   login: async (data: { email: string; password: string }) => {
     return await api.post("auth/signin", {
       email: data.email,
