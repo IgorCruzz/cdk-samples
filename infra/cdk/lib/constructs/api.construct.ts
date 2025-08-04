@@ -191,6 +191,27 @@ export class ApiConstruct extends Construct {
   }
 
   private createAuthResource() {
+    const signupArn = StringParameter.fromStringParameterName(
+      this,
+      "signup-function-arn",
+      "/lambda/signup/function-arn"
+    );
+
+    const signupFn = NodejsFunction.fromFunctionAttributes(
+      this,
+      "lambda-signup",
+      {
+        functionArn: signupArn.stringValue,
+        sameEnvironment: true,
+      }
+    );
+
+    this.api.addRoutes({
+      path: "/auth/signup",
+      integration: new HttpLambdaIntegration("integration-signup", signupFn),
+      methods: [HttpMethod.POST],
+    });
+
     const oauth2TokenArn = StringParameter.fromStringParameterName(
       this,
       "oauth2-token-function-arn",
@@ -280,6 +301,8 @@ export class ApiConstruct extends Construct {
       ),
       methods: [HttpMethod.POST],
     });
+
+    signupFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
 
     oauth2TokenFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
 
