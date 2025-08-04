@@ -100,18 +100,6 @@ export class LambdaConstruct extends Construct {
       "/twilio/my-number"
     );
 
-    const SES_IDENTITY = StringParameter.fromStringParameterName(
-      this,
-      "parameter-ses-identity",
-      "/ses/email-identity"
-    );
-
-    const SES_ARN_IDENTITY = StringParameter.fromStringParameterName(
-      this,
-      "parameter-ses-arn-identity",
-      "/ses/arn-identity"
-    );
-
     const fn = new NodejsFunction(this, "function-notifier-process", {
       memorySize: 256,
       architecture: Architecture.X86_64,
@@ -125,7 +113,6 @@ export class LambdaConstruct extends Construct {
         TWILIO_AUTH_TOKEN: AUTH_TOKEN.stringValue,
         TWILIO_SENDER_PHONE: SENDER_PHONE.stringValue,
         TWILIO_RECEIVER_PHONE: RECEIVER_PHONE.stringValue,
-        SES_IDENTITY: SES_IDENTITY.stringValue,
       },
       bundling: {
         minify: true,
@@ -136,14 +123,6 @@ export class LambdaConstruct extends Construct {
       tracing: Tracing.ACTIVE,
       logRetention: RetentionDays.ONE_WEEK,
     });
-
-    fn.addToRolePolicy(
-      new PolicyStatement({
-        actions: ["ses:SendEmail", "ses:SendRawEmail"],
-        resources: [SES_ARN_IDENTITY.stringValue],
-        effect: Effect.ALLOW,
-      })
-    );
 
     fn.addEventSource(
       new SqsEventSource(notifierEmailQueue, {
