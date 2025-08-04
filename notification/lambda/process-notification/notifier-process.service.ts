@@ -1,7 +1,7 @@
 import { SQSBatchResponse, SQSRecord } from "aws-lambda";
 import { NotifyType } from "../_shared/types/notifier.type";
 import { twilio } from "../_shared/infra/twilio";
-import { ses } from "../_shared/infra/ses";
+import { mail } from "../_shared/infra/mail";
 
 export const service = async ({
   records,
@@ -9,9 +9,9 @@ export const service = async ({
   records: SQSRecord[];
 }): Promise<SQSBatchResponse> => {
   const serviceSender: {
-    [key: string]: (args: { notification: NotifyType }) => Promise<void>;
+    [key: string]: (args: NotifyType) => Promise<void>;
   } = {
-    EMAIL: ses.sendMail,
+    EMAIL: mail.sendMail,
     WHATSAPP: twilio.sendWhatsAppMessage,
   };
 
@@ -23,9 +23,7 @@ export const service = async ({
 
       const { service } = notification;
 
-      await serviceSender[service]({
-        notification,
-      });
+      await serviceSender[service](notification);
     } catch (error) {
       console.error("Erro ao processar a mensagem:", error);
       batchItemFailures.push({
