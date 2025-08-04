@@ -5,7 +5,7 @@ Esta aplicação **serverless** permite o **upload, processamento e extração a
 ## 🛠️ Arquitetura
 
 <p align="center">
-  <img src="https://github.com/IgorCruzz/cdk-samples/blob/main/diagrams/sheet-parse.png" alt="Arquitetura Sheet Parse" />
+  <img src="https://github.com/IgorCruzz/cdk-samples/blob/main/diagrams/csv-parse.png" alt="Arquitetura Sheet Parse" />
 </p>
 
 ## 🚀 Principais Funcionalidades

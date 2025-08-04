@@ -1,8 +1,8 @@
 {
-  "name": "sheet-parse",
+  "name": "csv-parse",
   "version": "0.1.0",
   "bin": {
-    "sheet-parse": "bin/sheet-parse.js"
+    "csv-parse": "bin/csv-parse.js"
   },
   "scripts": {
     "build": "tsc",
@@ -11,9 +11,9 @@
     "cdk": "cdk",
     "lint": "eslint '*.ts' --quiet --fix",
     "test:watch": "npm test -- --watch -c jest.config.js",
-    "local:api": "sam local start-api -t ./cdk.out/stack-sheet-parse.template.json --env-vars env.json --port 4000",
-    "local:extract": "sam local invoke function-extract-data -e events/extract-data.json  --env-vars env.json  -t ./cdk.out/stack-sheet-parse.template.json",
-    "local:get": "sam local invoke function-get-files-data -e events/get-files.json  --env-vars env.json  -t ./cdk.out/stack-sheet-parse.template.json"
+    "local:api": "sam local start-api -t ./cdk.out/stack-csv-parse.template.json --env-vars env.json --port 4000",
+    "local:extract": "sam local invoke function-extract-data -e events/extract-data.json  --env-vars env.json  -t ./cdk.out/stack-csv-parse.template.json",
+    "local:get": "sam local invoke function-get-files-data -e events/get-files.json  --env-vars env.json  -t ./cdk.out/stack-csv-parse.template.json"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

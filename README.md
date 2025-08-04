@@ -13,7 +13,7 @@ Cada pasta representa um exemplo independente, com foco em diferentes serviços 
 
 - [Notification](./notification) – Envio de notificações por Email (SES) e WhatsApp (Twilio) com arquitetura serverless.
 
-- [CsvParse](./sheet-parse/) - Processamento de arquivo CSV por demanda com arquitetura
+- [CsvParse](./csv-parse/) - Processamento de arquivo CSV por demanda com arquitetura
 serverles.
 
 - [Frontend](./frontend/) - Aplicação web construída com Vite + React, responsável por permitir o upload de arquivos CSV e acompanhar o processamento dos dados. A infraestrutura é provisionada com AWS CDK, incluindo S3 para hospedagem estática e CloudFront
