@@ -1,11 +1,6 @@
 import SibApiV3Sdk from "sib-api-v3-sdk";
 import { NotifyType } from "../types/notifier.type";
-
-const defaultClient = SibApiV3Sdk.ApiClient.instance;
-const apiKey = defaultClient.authentications["api-key"];
-apiKey.apiKey = process.env.BREVO_API_KEY;
-
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+import { secret } from "./secret";
 
 export interface SesInterface {
   sendMail: (input: NotifyType) => Promise<void>;
@@ -13,6 +8,11 @@ export interface SesInterface {
 
 export const mail: SesInterface = {
   async sendMail({ title, message, toAddress }: NotifyType) {
+    const defaultClient = SibApiV3Sdk.ApiClient.instance;
+    const apiKey = defaultClient.authentications["api-key"];
+    apiKey.apiKey = await secret.getBrevoApiKey();
+    const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+
     const FROM_ADDRESS = "igorcruz.dev@gmail.com";
 
     const sendSmtpEmail = {
