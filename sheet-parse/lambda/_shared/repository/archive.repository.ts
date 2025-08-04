@@ -91,12 +91,12 @@ export const archiveRepository: IArchiveRepository = {
         foreignField: "_id",
         as: "user",
       })
+      .match({
+        "user.sub": sub,
+      })
       .unwind({
         path: "$user",
         preserveNullAndEmptyArrays: true,
-      })
-      .match({
-        "user.sub": sub,
       })
       .limit(limit)
       .skip(skip)
@@ -106,6 +106,9 @@ export const archiveRepository: IArchiveRepository = {
       .build();
 
     const archives = await archiveCollection.aggregate(query).toArray();
+
+    console.log({ archives });
+
     const totalPages = Math.ceil(count / limit);
 
     return {
