@@ -14,7 +14,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       isConnected = true;
     }
 
-    const sub = event.requestContext.authorizer?.claims?.sub;
+    const sub = event.requestContext.authorizer?.jwt.claims?.sub;
 
     const page = parseInt(event.queryStringParameters?.page || "1");
 
