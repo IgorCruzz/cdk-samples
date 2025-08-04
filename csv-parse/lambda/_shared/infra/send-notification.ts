@@ -24,6 +24,7 @@ export const sendNotification: ISendNotification = {
             service: "EMAIL",
             title: "File processed",
             message,
+            toAddress: "igorskt2009@gmail.com",
           },
           {
             service: "WHATSAPP",
