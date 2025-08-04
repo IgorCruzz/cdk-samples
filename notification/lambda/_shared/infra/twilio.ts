@@ -9,13 +9,11 @@ const RECEIVER_PHONE = process.env.TWILIO_RECEIVER_PHONE;
 const client = new Twilio(ACCOUNT_SID, AUTH_TOKEN);
 
 export interface TwilioInterface {
-  sendWhatsAppMessage: (args: { notification: NotifyType }) => Promise<void>;
+  sendWhatsAppMessage: (args: NotifyType) => Promise<void>;
 }
 
 export const twilio: TwilioInterface = {
-  async sendWhatsAppMessage({ notification }: { notification: NotifyType }) {
-    const { message } = notification;
-
+  async sendWhatsAppMessage({ message }: NotifyType) {
     await client.messages.create({
       from: `whatsapp:${SENDER_PHONE}`,
       to: `whatsapp:${RECEIVER_PHONE}`,
