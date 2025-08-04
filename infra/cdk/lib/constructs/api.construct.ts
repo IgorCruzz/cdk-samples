@@ -36,7 +36,7 @@ export class ApiConstruct extends Construct {
     this.authorizer = this.createAuthorizer();
     this.createUserResource();
     this.createAuthResource();
-    this.createSheetParseResource();
+    this.createCsvParseResource();
     this.createNotificationResource();
   }
 
@@ -313,7 +313,7 @@ export class ApiConstruct extends Construct {
     );
   }
 
-  private createSheetParseResource() {
+  private createCsvParseResource() {
     const getDataArn = StringParameter.fromStringParameterName(
       this,
       "get-data-function-arn",
