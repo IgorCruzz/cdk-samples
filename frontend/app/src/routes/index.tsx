@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import Auth from '@/pages/Public/Auth';
+import SingIn from '@/pages/Public/Singin';
 import Signup from '@/pages/Public/Signup';
 import Home from '@/pages/Private/Home';
 import Mocks from '@/pages/Private/Mocks';
@@ -18,7 +18,7 @@ export const router = createBrowserRouter([
       {
         element: <PublicLayout />,
         children: [
-          { path: "/", element: <Auth /> },
+          { path: "/", element: <SingIn /> },
           { path: "/redirect", element: <Redirect /> },
           { path: "/confirm", element: <Confirm /> },
           { path: "/signup", element: <Signup /> },
