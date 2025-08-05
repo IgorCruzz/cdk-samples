@@ -24,13 +24,13 @@ export const columns: ColumnDef<File>[] = [
     cell: (info) => `${formatBytes(info.getValue() as number)}`,
   },
   {
-    accessorKey: "successLines",
+    accessorKey: "lines",
     header: "Success Lines",
     cell: (info) => info.getValue(),
   },
   {
-    accessorKey: "failedLines",
-    header: "Failed Lines",
+    accessorKey: "createdAt",
+    header: "Created",
     cell: (info) => info.getValue(),
   },
 {
