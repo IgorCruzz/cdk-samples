@@ -16,8 +16,7 @@ import { Link } from "react-router-dom"
 import Logo from '@/assets/logo.png'
 import { Button } from "./ui/button"
 import { useAuthStore } from '@/store/use-auth'
-import { useEffect } from "react"
-  
+   
 const applicationRoutes = [
   {
     title: "Home",
@@ -29,14 +28,6 @@ const applicationRoutes = [
     url: "/mocks",
     icon: FileJson2,
   },  
-]
-
-const administratorRoutes =[
-  {
-    title: "Users",
-    url: "/users",
-    icon: User,
-  }, 
 ]
 
 export function AppSidebar() {
@@ -67,24 +58,6 @@ export function AppSidebar() {
                       <item.icon />
                       <span>{item.title}</span>
                     </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-         <SidebarGroup>
-          <SidebarGroupLabel>Administrator</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {administratorRoutes.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link to={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
