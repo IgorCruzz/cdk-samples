@@ -24,8 +24,8 @@ export const columns: ColumnDef<File>[] = [
     cell: (info) => `${formatBytes(info.getValue() as number)}`,
   },
   {
-    accessorKey: "lines",
-    header: "Success Lines",
+    accessorKey: "successLines",
+    header: "Lines",
     cell: (info) => info.getValue(),
   },
   {
