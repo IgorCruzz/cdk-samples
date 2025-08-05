@@ -45,7 +45,7 @@ export const service = async ({
         const data = {
           ...normalizedRow,
           archiveId: new ObjectId(file?.id),
-          createdAt: actualDate,
+          createdAt: actualDate(),
         };
 
         chunk.push(data);
