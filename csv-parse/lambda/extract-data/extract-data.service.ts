@@ -6,7 +6,6 @@ import { dataRepository } from "../_shared/repository/data.repository";
 import { sendNotification } from "../_shared/infra/send-notification";
 import { normalizeRow } from "../_shared/utils/normalize.util";
 import { ObjectId } from "mongodb";
-import { actualDate } from "../_shared/utils/locale-date.util";
 
 export const service = async ({
   s3Record,
@@ -45,7 +44,7 @@ export const service = async ({
         const data = {
           ...normalizedRow,
           archiveId: new ObjectId(file?.id),
-          createdAt: actualDate(),
+          createdAt: new Date(),
         };
 
         chunk.push(data);
