@@ -9,6 +9,8 @@ export type QueryBuilder = {
   project: (data: object) => QueryBuilder;
   limit: (data: number) => QueryBuilder;
   skip: (data: number) => QueryBuilder;
+  count: () => QueryBuilder;
+  facet: (data: Record<string, QueryStep[]>) => QueryBuilder;
   build: () => QueryStep[];
 };
 
@@ -26,6 +28,16 @@ export const queryBuilder = (query: QueryStep[] = []): QueryBuilder => {
     project: (data) => addStep("$project", data),
     limit: (data) => addStep("$limit", data),
     skip: (data) => addStep("$skip", data),
+    count: () => addStep("$count", "total"),
+
+    facet: (data) => {
+      const facetObject: Record<string, QueryStep[]> = {};
+      for (const key in data) {
+        facetObject[key] = data[key];
+      }
+      return addStep("$facet", facetObject);
+    },
+
     build: () => query,
   };
 };
