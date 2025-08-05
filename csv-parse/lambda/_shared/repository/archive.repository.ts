@@ -77,11 +77,7 @@ export const archiveRepository: IArchiveRepository = {
 
   async getFiles({ page, limit, sub }: GetFilesInput): GetFilesOutput {
     const archiveCollection = dbHelper.getCollection("archives");
-
     const skip = (page - 1) * limit;
-    const count = await archiveCollection.countDocuments({
-      sub,
-    });
 
     const query = queryBuilder()
       .lookup({
@@ -97,20 +93,25 @@ export const archiveRepository: IArchiveRepository = {
         path: "$user",
         preserveNullAndEmptyArrays: true,
       })
-      .limit(limit)
-      .skip(skip)
-      .sort({
-        createdAt: -1,
+      .facet({
+        data: [
+          { $sort: { createdAt: -1 } },
+          { $skip: skip },
+          { $limit: limit },
+        ],
+        total: [{ $count: "count" }],
       })
       .build();
 
-    const archives = await archiveCollection.aggregate(query).toArray();
+    const [result] = await archiveCollection.aggregate(query).toArray();
 
-    const totalPages = Math.ceil(count / limit);
+    const itens = dbHelper.mapCollection(result.data || []);
+    const total = result.total?.[0]?.count || 0;
+    const totalPages = Math.ceil(total / limit);
 
     return {
-      itens: dbHelper.mapCollection(archives),
-      count,
+      itens,
+      count: total,
       page,
       limit,
       totalPages,
