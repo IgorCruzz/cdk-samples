@@ -1,5 +1,4 @@
 import { ObjectId } from "mongodb";
-import { actualDate } from "../utils/locale-date.util";
 import { dbHelper } from "./db-helper";
 import { queryBuilder } from "./query-builder";
 
@@ -107,8 +106,6 @@ export const archiveRepository: IArchiveRepository = {
 
     const archives = await archiveCollection.aggregate(query).toArray();
 
-    console.log({ archives });
-
     const totalPages = Math.ceil(count / limit);
 
     return {
@@ -128,7 +125,8 @@ export const archiveRepository: IArchiveRepository = {
       userId: new ObjectId(item.userId),
       successLines: 0,
       failedLines: 0,
-      createdAt: actualDate,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
   },
 
@@ -149,7 +147,7 @@ export const archiveRepository: IArchiveRepository = {
           message,
           successLines,
           failedLines,
-          updatedAt: actualDate,
+          updatedAt: new Date(),
         },
       }
     );
