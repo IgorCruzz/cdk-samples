@@ -11,6 +11,9 @@ export type Files = {
   userId: string;
   id?: string;
   filename?: string;
+  user: {
+    email: string;
+  };
 };
 
 type ArchiveRepositoryInput = Files;
