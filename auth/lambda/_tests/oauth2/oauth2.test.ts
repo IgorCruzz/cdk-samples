@@ -59,6 +59,18 @@ describe("OAuth2 Service", () => {
     expect(jwt.decode).toHaveBeenCalledWith({ token: "mockIdToken" });
   });
 
+  it("should be able to call findByEmail with decoded email", async () => {
+    (jwt.decode as jest.Mock).mockReturnValue({ email: "test@example.com" });
+
+    await service({
+      code: "test-code",
+    });
+
+    expect(userRepository.findByEmail).toHaveBeenCalledWith({
+      email: "test@example.com",
+    });
+  });
+
   it("should return success message and tokens on successful login", async () => {
     (cognito.getToken as jest.Mock).mockResolvedValue({
       accessToken: "mockAccessToken",
