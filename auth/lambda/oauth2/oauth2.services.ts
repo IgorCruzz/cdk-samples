@@ -34,6 +34,7 @@ export const service = async ({
     given_name: string;
     email: string;
     family_name: string;
+    sub: string;
   };
 
   const findUser = await userRepository.findByEmail({
@@ -43,12 +44,23 @@ export const service = async ({
   if (!findUser) {
     await userRepository.save({
       email: userDecoded?.email,
-      provider: "Google",
+      providers: {
+        cognito: null,
+        gmail: userDecoded.sub,
+      },
       name: userDecoded?.given_name + " " + userDecoded?.family_name,
     });
   }
 
-  // if (findUser && findUser.provider) console.log({ findUser });
+  if (findUser && findUser.providers.cognito && !findUser.providers.gmail) {
+    await userRepository.update({
+      id: findUser.id,
+      providers: {
+        cognito: findUser.providers.cognito,
+        gmail: userDecoded.sub,
+      },
+    });
+  }
 
   return {
     message: "Login successful",
