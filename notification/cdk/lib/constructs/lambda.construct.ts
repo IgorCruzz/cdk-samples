@@ -144,9 +144,7 @@ export class LambdaConstruct extends Construct {
     fn.addToRolePolicy(
       new PolicyStatement({
         actions: ["secretsmanager:GetSecretValue"],
-        resources: [
-          `arn:aws:secretsmanager:${region}:${account}:secret:prod/brevo`,
-        ],
+        resources: [`arn:aws:secretsmanager:${region}:${account}:secret:*`],
       })
     );
 
