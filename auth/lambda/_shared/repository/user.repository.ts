@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { dbHelper } from "./db-helper";
 
 export type Users = {
@@ -9,10 +8,11 @@ export type Users = {
   createdAt?: Date;
   updatedAt?: Date;
   sub?: string;
+  provider?: "cognito" | "gmail";
 };
 
 export interface IUserRepository {
-  findByEmail(email: string): Promise<Users | null>;
+  findByEmail(input: { email: string }): Promise<Users | null>;
   save(data: Users): Promise<void>;
 }
 
@@ -24,11 +24,15 @@ export const userRepository: IUserRepository = {
 
     await users.insertOne({
       ...userData,
+      providers: {
+        cognito: data.sub,
+        gmail: null,
+      },
       createdAt: new Date(),
     });
   },
 
-  async findByEmail(email: string): Promise<Users> {
+  async findByEmail({ email }: { email: string }): Promise<Users> {
     const users = dbHelper.getCollection("users");
     const user = await users.findOne({ email });
 
