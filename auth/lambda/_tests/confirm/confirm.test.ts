@@ -23,4 +23,22 @@ describe("Confirm Service", () => {
       code: "123456",
     });
   });
+
+  it("throws an error if confirmSignup fails", async () => {
+    (cognito.confirmSignup as jest.Mock).mockResolvedValueOnce({
+      error: "Invalid confirmation code",
+      success: false,
+    });
+
+    const svc = await service({
+      email: "test@example.com",
+      code: "123456",
+    });
+
+    expect(svc).toEqual({
+      message: "Invalid confirmation code",
+      success: false,
+      data: null,
+    });
+  });
 });
