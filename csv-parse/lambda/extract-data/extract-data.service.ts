@@ -12,8 +12,7 @@ export const service = async ({
 }: {
   s3Record: S3EventRecord;
 }): Promise<void> => {
-  let success = 0;
-  let failure = 0;
+  let lines = 0;
 
   try {
     const stream = await s3.getObject({
@@ -52,13 +51,11 @@ export const service = async ({
         if (chunk.length === 10000) {
           await dataRepository.save(chunk);
 
-          success += chunk.length;
+          lines += chunk.length;
           chunk.length = 0;
         }
       } catch (error) {
         console.log({ error });
-
-        failure += 1;
       }
     }
 
@@ -66,22 +63,20 @@ export const service = async ({
       try {
         await dataRepository.save(chunk);
 
-        success += chunk.length;
+        lines += chunk.length;
         chunk.length = 0;
       } catch (error) {
         console.log({ error });
-        failure += chunk.length;
       }
     }
 
-    const message = `Process completed successfully: Processed ${success} records with ${failure} failures.`;
+    const message = `Process completed successfully: Processed ${lines} records.`;
 
     await archiveRepository.updateStatus({
       key: s3Record.s3.object.key,
-      status: !success ? "FAILED" : "COMPLETED",
+      status: !lines ? "FAILED" : "COMPLETED",
       message,
-      successLines: success,
-      failedLines: failure,
+      lines,
     });
 
     const response = await sendNotification.send({
@@ -104,8 +99,7 @@ export const service = async ({
       key: s3Record.s3.object.key,
       status: "FAILED",
       message,
-      successLines: success,
-      failedLines: failure,
+      lines,
     });
 
     await sendNotification.send({
