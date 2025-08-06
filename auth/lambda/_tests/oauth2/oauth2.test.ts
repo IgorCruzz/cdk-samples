@@ -44,7 +44,11 @@ describe("OAuth2 Service", () => {
   });
 
   it("should be able to call decoded", async () => {
-    (jwt.decode as jest.Mock).mockResolvedValue({ email: "test@example.com" });
+    (jwt.decode as jest.Mock).mockResolvedValue({
+      email: "test@example.com",
+      given_name: "Foo",
+      family_name: "Bar",
+    });
 
     (cognito.getToken as jest.Mock).mockResolvedValue({
       accessToken: "mockAccessToken",
@@ -60,7 +64,11 @@ describe("OAuth2 Service", () => {
   });
 
   it("should be able to call findByEmail with decoded email", async () => {
-    (jwt.decode as jest.Mock).mockReturnValue({ email: "test@example.com" });
+    (jwt.decode as jest.Mock).mockReturnValue({
+      email: "test@example.com",
+      given_name: "Foo",
+      family_name: "Bar",
+    });
 
     await service({
       code: "test-code",
@@ -68,6 +76,25 @@ describe("OAuth2 Service", () => {
 
     expect(userRepository.findByEmail).toHaveBeenCalledWith({
       email: "test@example.com",
+    });
+  });
+
+  it("should be able to call save if user not found", async () => {
+    (jwt.decode as jest.Mock).mockReturnValue({
+      email: "test@example.com",
+      given_name: "Foo",
+      family_name: "Bar",
+    });
+    (userRepository.findByEmail as jest.Mock).mockResolvedValue(null);
+
+    await service({
+      code: "test-code",
+    });
+
+    expect(userRepository.save).toHaveBeenCalledWith({
+      email: "test@example.com",
+      provider: "Google",
+      name: "Foo Bar",
     });
   });
 
