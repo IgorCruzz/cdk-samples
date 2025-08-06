@@ -27,4 +27,22 @@ describe("signin services", () => {
       password: "password123",
     });
   });
+
+  it("should return error when auth fails", async () => {
+    (cognito.auth as jest.Mock).mockResolvedValueOnce({
+      error: "Invalid credentials",
+      session: "sessionData",
+    });
+
+    const response = await service({
+      email: "test@example.com",
+      password: "password123",
+    });
+
+    expect(response).toEqual({
+      message: "Invalid credentials",
+      success: false,
+      data: { session: "sessionData" },
+    });
+  });
 });
