@@ -20,7 +20,7 @@ export const List = () => {
     pageSize: 10, 
   });
 
-  const { data, isLoading, refetch  } = useQuery({
+  const { data, isLoading, refetch, isRefetching  } = useQuery({
     queryKey: ['files', pagination],
     queryFn: () => files.getFiles({
       page: pagination.pageIndex + 1,
@@ -44,7 +44,7 @@ export const List = () => {
             columns={columns}
             data={data?.data.itens || []} 
             total={data?.data.count || 0}
-            isLoading={isLoading}
+            isLoading={isLoading || isRefetching}
             />
          
             <Pagination
