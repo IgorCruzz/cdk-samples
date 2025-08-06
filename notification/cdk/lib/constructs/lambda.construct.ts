@@ -1,4 +1,4 @@
-import { Duration } from "aws-cdk-lib";
+import { Duration, Stack } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import {
@@ -14,6 +14,7 @@ import { SQSConstruct } from "./sqs.construct";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
 import { join } from "node:path";
+import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 
 interface LambdaStackProps {
   sqsConstruct: SQSConstruct;
@@ -134,6 +135,18 @@ export class LambdaConstruct extends Construct {
       new SqsEventSource(notifierWhatsappQueue, {
         batchSize: 10,
         reportBatchItemFailures: true,
+      })
+    );
+
+    const region = Stack.of(this).region;
+    const account = Stack.of(this).account;
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          `arn:aws:secretsmanager:${region}:${account}:secret:prod/brevo`,
+        ],
       })
     );
 
