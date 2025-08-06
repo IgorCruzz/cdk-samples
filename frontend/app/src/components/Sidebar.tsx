@@ -16,6 +16,7 @@ import { Link } from "react-router-dom"
 import Logo from '@/assets/logo.png'
 import { Button } from "./ui/button"
 import { useAuthStore } from '@/store/use-auth'
+import { useEffect } from "react"
    
 const applicationRoutes = [
   {
@@ -33,6 +34,10 @@ const applicationRoutes = [
 export function AppSidebar() {
   const logout = useAuthStore((state) => state.logout)
   const user = useAuthStore((state) => state.getUser)
+
+  useEffect(() => {
+    console.log("User data:", user())
+  },[])
 
   const onLogout = () => {
     logout()
