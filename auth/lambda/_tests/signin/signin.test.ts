@@ -45,4 +45,22 @@ describe("signin services", () => {
       data: { session: "sessionData" },
     });
   });
+
+  it("should return success when auth succeeds", async () => {
+    const response = await service({
+      email: "test@example.com",
+      password: "password123",
+    });
+
+    expect(response).toEqual({
+      message: "Authentication successful",
+      success: true,
+      data: {
+        accessToken: "accessToken",
+        refreshToken: "refreshToken",
+        idToken: "idToken",
+      },
+    });
+    expect(cognito.auth).toHaveBeenCalledTimes(1);
+  });
 });
