@@ -4,6 +4,7 @@ export interface ISendNotification {
 
 export type sendNotificationInput = {
   message: string;
+  email: string;
 };
 
 export type sendNotificationOutput = Response;
@@ -11,6 +12,7 @@ export type sendNotificationOutput = Response;
 export const sendNotification: ISendNotification = {
   async send({
     message,
+    email,
   }: sendNotificationInput): Promise<sendNotificationOutput> {
     const response = await fetch(`${process.env.API_URL}/notifications`, {
       method: "POST",
@@ -24,7 +26,7 @@ export const sendNotification: ISendNotification = {
             service: "EMAIL",
             title: "File processed",
             message,
-            toAddress: "igorskt2009@gmail.com",
+            email,
           },
           {
             service: "WHATSAPP",
