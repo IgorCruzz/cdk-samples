@@ -1,7 +1,7 @@
 import { decode } from "jsonwebtoken";
 
 export const jwt = {
-  decode: (token: string) => {
+  decode: ({ token }: { token: string }) => {
     try {
       return decode(token);
     } catch (error) {
