@@ -30,18 +30,22 @@ export const service = async ({
     };
   }
 
-  const decoded = jwt.decode(idToken) as { email: string };
+  const userDecoded = jwt.decode({ token: idToken }) as {
+    given_name: string;
+    email: string;
+    family_name: string;
+  };
 
   const findUser = await userRepository.findByEmail({
-    email: decoded?.email,
+    email: userDecoded?.email,
   });
 
   if (!findUser) {
-    // await userRepository.save({
-    //   ...data,
-    //   sub: authUser.UserSub,
-    //   provider: "cognito",
-    // });
+    await userRepository.save({
+      email: userDecoded?.email,
+      provider: "Google",
+      name: userDecoded?.given_name + " " + userDecoded?.family_name,
+    });
   }
 
   // if (findUser && findUser.provider) console.log({ findUser });
