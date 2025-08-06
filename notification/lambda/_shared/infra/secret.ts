@@ -9,7 +9,7 @@ export const secret = {
   async getBrevoApiKey(): Promise<string> {
     const res = await secretsManager.send(
       new GetSecretValueCommand({
-        SecretId: "brevo/api/key",
+        SecretId: "prod/brevo",
       })
     );
 
