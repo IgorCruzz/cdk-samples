@@ -19,6 +19,7 @@ jest.mock("../../_shared/repository/user.repository", () => ({
   userRepository: {
     findByEmail: jest.fn(),
     save: jest.fn(),
+    update: jest.fn(),
   },
 }));
 
@@ -48,6 +49,7 @@ describe("OAuth2 Service", () => {
       email: "test@example.com",
       given_name: "Foo",
       family_name: "Bar",
+      sub: "c4386438-6051-70b8-e5b6-94553c68677f",
     });
 
     (cognito.getToken as jest.Mock).mockResolvedValue({
@@ -68,6 +70,7 @@ describe("OAuth2 Service", () => {
       email: "test@example.com",
       given_name: "Foo",
       family_name: "Bar",
+      sub: "c4386438-6051-70b8-e5b6-94553c68677f",
     });
 
     await service({
@@ -84,6 +87,7 @@ describe("OAuth2 Service", () => {
       email: "test@example.com",
       given_name: "Foo",
       family_name: "Bar",
+      sub: "c4386438-6051-70b8-e5b6-94553c68677f",
     });
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(null);
 
@@ -93,9 +97,36 @@ describe("OAuth2 Service", () => {
 
     expect(userRepository.save).toHaveBeenCalledWith({
       email: "test@example.com",
-      provider: "Google",
+      providers: {
+        cognito: null,
+        gmail: "c4386438-6051-70b8-e5b6-94553c68677f",
+      },
       name: "Foo Bar",
     });
+  });
+
+  it("should be able to call update user", async () => {
+    (cognito.getToken as jest.Mock).mockResolvedValue({
+      accessToken: "mockAccessToken",
+      refreshToken: "mockRefreshToken",
+      idToken: "mockIdToken",
+    });
+
+    (userRepository.findByEmail as jest.Mock).mockResolvedValue({
+      id: "user-id",
+      name: "Existing User",
+      email: "test@example.com",
+      providers: {
+        cognito: "some-cognito-id",
+        gmail: null,
+      },
+    });
+
+    await service({
+      code: "test-code",
+    });
+
+    expect(userRepository.update).toHaveBeenCalled();
   });
 
   it("should return success message and tokens on successful login", async () => {
@@ -104,6 +135,8 @@ describe("OAuth2 Service", () => {
       refreshToken: "mockRefreshToken",
       idToken: "mockIdToken",
     });
+
+    (userRepository.findByEmail as jest.Mock).mockResolvedValue(null);
 
     const response = await service({
       code: "test-code",
