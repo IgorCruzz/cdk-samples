@@ -7,8 +7,7 @@ export type File = {
   size: number
   status: string 
   key: string
-  successLines: number
-  failedLines: number
+  lines: number 
   id: string
 }
 
@@ -39,13 +38,13 @@ export const columns: ColumnDef<File>[] = [
   cell: (info) => {
     const rowData = info.row.original;
 
-    const successLines = rowData.successLines; 
+    const lines = rowData.lines; 
 
     return (
     <>
     {info.getValue() === 'COMPLETED' && (
       <>
-       {successLines > 0 ? <ThumbsUp color="green" /> : <ThumbsDown color="red" />}  
+       {lines > 0 ? <ThumbsUp color="green" /> : <ThumbsDown color="red" />}  
       </>
     )}
 
