@@ -1,5 +1,7 @@
 import { Output } from "../_shared/service/output";
 import { cognito } from "../_shared/infra/cognito";
+import { userRepository } from "../_shared/repository/user.repository";
+import { jwt } from "../_shared/infra/jwt";
 
 type Input = {
   code: string;
@@ -27,6 +29,28 @@ export const service = async ({
       },
     };
   }
+
+  const decoded = jwt.decode(idToken) as { email: string };
+
+  const findUser = await userRepository.findByEmail({
+    email: decoded?.email,
+  });
+
+  if (!findUser) {
+    // await userRepository.save({
+    //   ...data,
+    //   sub: authUser.UserSub,
+    //   provider: "cognito",
+    // });
+  }
+
+  // if (findUser && findUser.provider) console.log({ findUser });
+
+  // await userRepository.save({
+  //   ...data,
+  //   sub: authUser.UserSub,
+  //   provider: "cognito",
+  // });
 
   return {
     message: "Login successful",
