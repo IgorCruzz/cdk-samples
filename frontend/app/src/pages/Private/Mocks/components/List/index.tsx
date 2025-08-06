@@ -33,7 +33,9 @@ export const List = () => {
       <Card className="flex flex-col h-full">
         <CardHeader className="flex items-center justify-center gap-4">
           <CardTitle className="text-center">Mocks</CardTitle>
-           <Button variant="outline" onClick={() => refetch()}><RefreshCw /></Button>
+<Button variant="outline" onClick={() => refetch()}>
+  <RefreshCw className={isRefetching ? "animate-spin" : ""} />
+</Button>
         </CardHeader>
 
         <CardContent className="h-full flex items-center justify-center">
