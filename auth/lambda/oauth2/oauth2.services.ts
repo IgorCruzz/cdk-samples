@@ -50,12 +50,6 @@ export const service = async ({
 
   // if (findUser && findUser.provider) console.log({ findUser });
 
-  // await userRepository.save({
-  //   ...data,
-  //   sub: authUser.UserSub,
-  //   provider: "cognito",
-  // });
-
   return {
     message: "Login successful",
     success: true,
