@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 import { dbHelper } from "./db-helper";
 
 export type Users = {
@@ -47,7 +49,7 @@ export const userRepository: IUserRepository = {
     const users = dbHelper.getCollection("users");
 
     await users.updateOne(
-      { id: data.id },
+      { _id: new ObjectId(data.id) },
       {
         $set: {
           providers: data.providers,
