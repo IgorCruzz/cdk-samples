@@ -238,6 +238,15 @@ export class LambdaConstruct extends Construct {
 
     fn.addToRolePolicy(
       new PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
+        ],
+      })
+    );
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
         actions: ["ssm:GetParameter"],
         resources: [`arn:aws:ssm:${region}:${account}:parameter/cognito/*`],
       })
