@@ -28,5 +28,5 @@ export const service = async (
     };
   }
 
-  return { message: "Login successful", success: true, data: auth };
+  return { message: "Authentication successful", success: true, data: auth };
 };
