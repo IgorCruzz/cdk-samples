@@ -7,8 +7,7 @@ export type Files = {
   size: number;
   message: string;
   status: "PROCESSING" | "COMPLETED" | "FAILED" | "PENDING";
-  successLines?: number;
-  failedLines?: number;
+  lines?: number;
   userId: string;
   id?: string;
   filename?: string;
@@ -41,10 +40,7 @@ export interface IArchiveRepository {
   getFiles: (input: GetFilesInput) => GetFilesOutput;
   save: (input: ArchiveRepositoryInput) => Promise<ArchiveRepositoryOutput>;
   updateStatus(
-    data: Pick<
-      ArchiveRepositoryInput,
-      "key" | "status" | "message" | "successLines" | "failedLines"
-    >
+    data: Pick<ArchiveRepositoryInput, "key" | "status" | "message" | "lines">
   ): Promise<void>;
   getStatistics(): GetStatisticOutput;
   getFileByKey: (key: string) => Promise<Files | null>;
@@ -136,20 +132,13 @@ export const archiveRepository: IArchiveRepository = {
     await archives.insertOne({
       ...item,
       userId: new ObjectId(item.userId),
-      successLines: 0,
-      failedLines: 0,
+      lines: 0,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
   },
 
-  async updateStatus({
-    key,
-    status,
-    message,
-    successLines = 0,
-    failedLines = 0,
-  }): Promise<void> {
+  async updateStatus({ key, status, message, lines = 0 }): Promise<void> {
     const archives = dbHelper.getCollection("archives");
 
     await archives.updateOne(
@@ -158,8 +147,7 @@ export const archiveRepository: IArchiveRepository = {
         $set: {
           status,
           message,
-          successLines,
-          failedLines,
+          lines,
           updatedAt: new Date(),
         },
       }
