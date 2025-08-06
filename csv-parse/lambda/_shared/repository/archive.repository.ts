@@ -43,13 +43,30 @@ export interface IArchiveRepository {
     data: Pick<ArchiveRepositoryInput, "key" | "status" | "message" | "lines">
   ): Promise<void>;
   getStatistics(): GetStatisticOutput;
-  getFileByKey: (key: string) => Promise<Files | null>;
+  getFileByKey: (input: { key: string }) => Promise<Files | null>;
 }
 
 export const archiveRepository: IArchiveRepository = {
-  async getFileByKey(key: string): Promise<Files | null> {
+  async getFileByKey({ key }: { key: string }): Promise<Files | null> {
     const archiveCollection = dbHelper.getCollection("archives");
-    const file = await archiveCollection.findOne({ key });
+
+    const query = queryBuilder()
+      .lookup({
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user",
+      })
+      .match({
+        key,
+      })
+      .unwind({
+        path: "$user",
+        preserveNullAndEmptyArrays: true,
+      })
+      .build();
+
+    const file = await archiveCollection.aggregate(query).next();
 
     return file ? dbHelper.map(file) : null;
   },
