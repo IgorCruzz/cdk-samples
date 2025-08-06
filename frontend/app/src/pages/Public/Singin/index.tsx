@@ -12,6 +12,7 @@ import { auth } from '@/services/endpoints/auth';
 import { useAuthStore } from '@/store/use-auth';
 import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator"
+import { RefreshCw } from "lucide-react";
 
 export default function SingIn() { 
   const navigate = useNavigate();
@@ -77,7 +78,7 @@ export default function SingIn() {
               />
             </div> 
             <Button variant="outline" type="submit" className="w-full" disabled={isPending}>
-              {isPending ? "Logging in..." : "Login"}
+              {isPending ? <RefreshCw className="animate-spin" />: "Login"}
             </Button> 
           </form>
           </Form>
