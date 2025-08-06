@@ -92,7 +92,7 @@ export const service = async ({
 
     const response = await sendNotification.send({
       message,
-      email: fileOwnerEmail!,
+      email: fileOwnerEmail,
     });
 
     if (!response.ok) {
