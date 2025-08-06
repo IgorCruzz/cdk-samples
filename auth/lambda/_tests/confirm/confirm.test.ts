@@ -41,4 +41,22 @@ describe("Confirm Service", () => {
       data: null,
     });
   });
+
+  it("returns success message on successful confirmation", async () => {
+    cognito.confirmSignup = jest.fn().mockResolvedValueOnce({
+      error: null,
+      success: true,
+    });
+
+    const svc = await service({
+      email: "test@example.com",
+      code: "123456",
+    });
+
+    expect(svc).toEqual({
+      message: "Account confirmed successfully",
+      success: true,
+      data: null,
+    });
+  });
 });
