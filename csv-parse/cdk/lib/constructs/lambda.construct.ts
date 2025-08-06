@@ -145,7 +145,7 @@ export class LambdaConstruct extends Construct {
         target: "es2020",
       },
       environment: {
-        API_URL: "https://api.igorcruz.space",
+        API_URL: "https://api.igorcruz.space/v1",
         API_KEY: apiKey,
       },
       loggingFormat: LoggingFormat.JSON,
