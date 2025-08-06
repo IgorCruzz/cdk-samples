@@ -22,7 +22,11 @@ export const service = async ({
 
     const chunk = [];
 
-    const file = await archiveRepository.getFileByKey(s3Record.s3.object.key);
+    const file = await archiveRepository.getFileByKey({
+      key: s3Record.s3.object.key,
+    });
+
+    console.log({ file });
 
     await archiveRepository.updateStatus({
       key: s3Record.s3.object.key,
@@ -81,6 +85,7 @@ export const service = async ({
 
     const response = await sendNotification.send({
       message,
+      email: "igorskt2009@gmail.com",
     });
 
     if (!response.ok) {
@@ -104,6 +109,7 @@ export const service = async ({
 
     await sendNotification.send({
       message,
+      email: "igorskt2009@gmail.com",
     });
 
     console.log(
