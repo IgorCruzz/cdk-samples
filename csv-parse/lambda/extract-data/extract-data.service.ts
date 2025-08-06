@@ -14,6 +14,19 @@ export const service = async ({
 }): Promise<void> => {
   let lines = 0;
 
+  const file = await archiveRepository.getFileByKey({
+    key: s3Record.s3.object.key,
+  });
+
+  if (!file) {
+    console.log(
+      `File not found for key: ${s3Record.s3.object.key}. Skipping processing.`
+    );
+    return;
+  }
+
+  const fileOwnerEmail = file?.user.email;
+
   try {
     const stream = await s3.getObject({
       key: s3Record.s3.object.key,
@@ -21,12 +34,6 @@ export const service = async ({
     });
 
     const chunk = [];
-
-    const file = await archiveRepository.getFileByKey({
-      key: s3Record.s3.object.key,
-    });
-
-    console.log({ file });
 
     await archiveRepository.updateStatus({
       key: s3Record.s3.object.key,
@@ -85,7 +92,7 @@ export const service = async ({
 
     const response = await sendNotification.send({
       message,
-      email: "igorskt2009@gmail.com",
+      email: fileOwnerEmail!,
     });
 
     if (!response.ok) {
@@ -109,7 +116,7 @@ export const service = async ({
 
     await sendNotification.send({
       message,
-      email: "igorskt2009@gmail.com",
+      email: fileOwnerEmail!,
     });
 
     console.log(
