@@ -18,7 +18,6 @@ export const sendNotification: ISendNotification = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-Key": process.env.API_KEY || "",
       },
       body: JSON.stringify({
         notifications: [
