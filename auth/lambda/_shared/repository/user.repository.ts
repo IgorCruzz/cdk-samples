@@ -1,14 +1,14 @@
 import { dbHelper } from "./db-helper";
 
 export type Users = {
-  id: string;
+  id?: string;
   name: string;
   email: string;
-  password: string;
+  password?: string;
   createdAt?: Date;
   updatedAt?: Date;
   sub?: string;
-  provider?: "cognito" | "gmail";
+  provider?: "Cognito" | "Google";
 };
 
 export interface IUserRepository {
