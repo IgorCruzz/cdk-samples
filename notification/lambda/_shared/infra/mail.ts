@@ -7,7 +7,7 @@ export interface SesInterface {
 }
 
 export const mail: SesInterface = {
-  async sendMail({ title, message, toAddress }: NotifyType) {
+  async sendMail({ title, message, email }: NotifyType) {
     const defaultClient = SibApiV3Sdk.ApiClient.instance;
     const apiKey = defaultClient.authentications["api-key"];
     apiKey.apiKey = await secret.getBrevoApiKey();
@@ -16,7 +16,7 @@ export const mail: SesInterface = {
     const FROM_ADDRESS = "igorcruz.dev@gmail.com";
 
     const sendSmtpEmail = {
-      to: [{ email: toAddress }],
+      to: [{ email }],
       sender: {
         email: FROM_ADDRESS,
         name: "CsvParse",
