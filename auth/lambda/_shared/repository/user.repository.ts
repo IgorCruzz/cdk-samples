@@ -8,12 +8,16 @@ export type Users = {
   createdAt?: Date;
   updatedAt?: Date;
   sub?: string;
-  provider?: "Cognito" | "Google";
+  providers: {
+    cognito: string | null;
+    gmail: string | null;
+  };
 };
 
 export interface IUserRepository {
   findByEmail(input: { email: string }): Promise<Users | null>;
   save(data: Users): Promise<void>;
+  update(data: Pick<Users, "id" | "providers">): Promise<void>;
 }
 
 export const userRepository: IUserRepository = {
@@ -25,7 +29,7 @@ export const userRepository: IUserRepository = {
     await users.insertOne({
       ...userData,
       providers: {
-        cognito: data.sub,
+        cognito: data.providers?.cognito || null,
         gmail: null,
       },
       createdAt: new Date(),
@@ -37,5 +41,19 @@ export const userRepository: IUserRepository = {
     const user = await users.findOne({ email });
 
     return user && dbHelper.map(user);
+  },
+
+  async update(data: Pick<Users, "id" | "providers">): Promise<void> {
+    const users = dbHelper.getCollection("users");
+
+    await users.updateOne(
+      { id: data.id },
+      {
+        $set: {
+          providers: data.providers,
+          updatedAt: new Date(),
+        },
+      }
+    );
   },
 };
