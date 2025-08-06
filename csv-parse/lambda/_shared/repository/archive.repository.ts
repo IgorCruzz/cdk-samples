@@ -98,9 +98,21 @@ export const archiveRepository: IArchiveRepository = {
           { $sort: { createdAt: -1 } },
           { $skip: skip },
           { $limit: limit },
+          {
+            $addFields: {
+              createdAt: {
+                $dateToString: {
+                  format: "%d/%m/%Y %H:%M:%S",
+                  date: "$createdAt",
+                  timezone: "America/Sao_Paulo",
+                },
+              },
+            },
+          },
         ],
         total: [{ $count: "count" }],
       })
+
       .build();
 
     const [result] = await archiveCollection.aggregate(query).toArray();
