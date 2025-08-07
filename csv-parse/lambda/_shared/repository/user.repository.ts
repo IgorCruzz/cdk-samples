@@ -18,7 +18,9 @@ export const userRepository: IUserRepository = {
   async findBySub(id: string): Promise<Users | null> {
     const users = dbHelper.getCollection("users");
 
-    const user = await users.findOne({ sub: id });
+    const user = await users.findOne({
+      $or: [{ "providers.google": id }, { "providers.cognito": id }],
+    });
 
     return user && dbHelper.map(user);
   },
