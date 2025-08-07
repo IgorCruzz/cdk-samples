@@ -63,4 +63,14 @@ describe("generatePresignedUrl", () => {
 
     expect(s3.createPresignedUrl).toHaveBeenCalled();
   });
+
+  it("should be able to call findBySub", async () => {
+    await service({
+      userId: "userId",
+      size: 123465,
+      filename: "filename",
+    });
+
+    expect(userRepository.findBySub).toHaveBeenCalledWith("userId");
+  });
 });
