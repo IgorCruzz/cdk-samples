@@ -84,4 +84,21 @@ describe("generatePresignedUrl", () => {
 
     expect(svc).rejects.toThrow("User not found");
   });
+
+  it("should be able to call save", async () => {
+    await service({
+      userId: "userId",
+      size: 123465,
+      filename: "filename",
+    });
+
+    expect(archiveRepository.save).toHaveBeenCalledWith({
+      key: "mocked-key.csv",
+      size: 123465,
+      message: ``,
+      status: "PENDING",
+      userId: "userId",
+      filename: "filename",
+    });
+  });
 });
