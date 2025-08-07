@@ -73,4 +73,15 @@ describe("generatePresignedUrl", () => {
 
     expect(userRepository.findBySub).toHaveBeenCalledWith("userId");
   });
+
+  it("throw an error if findBySub throws", async () => {
+    (userRepository.findBySub as jest.Mock).mockResolvedValueOnce(null);
+    const svc = service({
+      userId: "userId",
+      size: 123465,
+      filename: "filename",
+    });
+
+    expect(svc).rejects.toThrow("User not found");
+  });
 });
