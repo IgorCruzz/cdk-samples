@@ -66,6 +66,7 @@ describe("Signup Services", () => {
     });
 
     expect(cognito.signUp).toHaveBeenCalledWith(
+      "Existing User",
       "existing@example.com",
       "password123"
     );
