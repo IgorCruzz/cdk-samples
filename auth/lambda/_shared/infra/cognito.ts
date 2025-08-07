@@ -18,6 +18,7 @@ const cognitoClient = new CognitoIdentityProviderClient({});
 
 export const cognito = {
   signUp: async (
+    name: string,
     email: string,
     password: string
   ): Promise<SignUpCommandOutput> => {
@@ -31,6 +32,10 @@ export const cognito = {
         {
           Name: "email",
           Value: email,
+        },
+        {
+          Name: "name",
+          Value: name,
         },
       ],
     };
