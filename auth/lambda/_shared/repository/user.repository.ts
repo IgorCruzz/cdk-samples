@@ -10,9 +10,9 @@ export type Users = {
   createdAt?: Date;
   updatedAt?: Date;
   sub?: string;
-  providers: {
-    cognito: string | null;
-    gmail: string | null;
+  providers?: {
+    cognito: string | null | undefined;
+    google: string | null | undefined;
   };
 };
 
@@ -32,7 +32,7 @@ export const userRepository: IUserRepository = {
       ...userData,
       providers: {
         cognito: data.providers?.cognito || null,
-        gmail: null,
+        google: null,
       },
       createdAt: new Date(),
     });
