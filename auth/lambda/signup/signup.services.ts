@@ -15,7 +15,7 @@ export const service = async (data: SignUpInput): Output => {
     return { message: "Email already exists", success: false, data: null };
   }
 
-  const authUser = await cognito.signUp(data.email, data.password);
+  const authUser = await cognito.signUp(data.name, data.email, data.password);
 
   await userRepository.save({
     ...data,
