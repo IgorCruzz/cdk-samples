@@ -99,7 +99,7 @@ describe("OAuth2 Service", () => {
       email: "test@example.com",
       providers: {
         cognito: null,
-        gmail: "c4386438-6051-70b8-e5b6-94553c68677f",
+        google: "c4386438-6051-70b8-e5b6-94553c68677f",
       },
       name: "Foo Bar",
     });
@@ -118,7 +118,7 @@ describe("OAuth2 Service", () => {
       email: "test@example.com",
       providers: {
         cognito: "some-cognito-id",
-        gmail: null,
+        google: null,
       },
     });
 
