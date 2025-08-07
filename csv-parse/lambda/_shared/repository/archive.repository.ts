@@ -11,7 +11,7 @@ export type Files = {
   userId: string;
   id?: string;
   filename?: string;
-  user: {
+  user?: {
     email: string;
   };
 };
