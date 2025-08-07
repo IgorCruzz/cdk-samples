@@ -18,7 +18,7 @@ export const service = async ({
     key: s3Record.s3.object.key,
   });
 
-  if (!file) {
+  if (!file || !file.user) {
     console.log(
       `File not found for key: ${s3Record.s3.object.key}. Skipping processing.`
     );
