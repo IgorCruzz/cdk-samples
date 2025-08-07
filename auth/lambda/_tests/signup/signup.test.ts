@@ -4,15 +4,7 @@ import { userRepository } from "../../_shared/repository/user.repository";
 
 jest.mock("../../_shared/repository/user.repository", () => ({
   userRepository: {
-    findByEmail: jest.fn().mockResolvedValue({
-      id: "existing-user-id",
-      name: "Existing User",
-      email: "existing@example.com",
-      providers: {
-        cognito: "existing-sub",
-        google: null,
-      },
-    }),
+    findByEmail: jest.fn().mockResolvedValue(null),
     save: jest.fn(),
   },
 }));
@@ -44,6 +36,15 @@ describe("Signup Services", () => {
   });
 
   it("should throw an error if user already exists", async () => {
+    jest.spyOn(userRepository, "findByEmail").mockResolvedValueOnce({
+      email: "existing@example.com",
+      name: "Existing User",
+      providers: {
+        cognito: "existing-sub",
+        google: null,
+      },
+    });
+
     const svc = await service({
       email: "existing@example.com",
       password: "password123",
@@ -58,8 +59,6 @@ describe("Signup Services", () => {
   });
 
   it("should call cognito.signUp with correct parameters", async () => {
-    jest.spyOn(userRepository, "findByEmail").mockResolvedValue(null);
-
     await service({
       email: "existing@example.com",
       password: "password123",
@@ -70,5 +69,23 @@ describe("Signup Services", () => {
       "existing@example.com",
       "password123"
     );
+  });
+
+  it("should save the user with correct data", async () => {
+    await service({
+      email: "existing@example.com",
+      password: "password123",
+      name: "Existing User",
+    });
+
+    expect(userRepository.save).toHaveBeenCalledWith({
+      name: "Existing User",
+      email: "existing@example.com",
+      password: "password123",
+      providers: {
+        cognito: "new-user-sub",
+        google: null,
+      },
+    });
   });
 });
