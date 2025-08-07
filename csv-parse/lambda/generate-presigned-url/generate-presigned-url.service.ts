@@ -2,11 +2,15 @@ import { s3 } from "../_shared/infra/s3";
 import { archiveRepository } from "../_shared/repository/archive.repository";
 import { userRepository } from "../_shared/repository/user.repository";
 
-export const service = async (
-  userId: string,
-  size: number,
-  filename: string
-): Promise<{
+export const service = async ({
+  userId,
+  size,
+  filename,
+}: {
+  userId: string;
+  size: number;
+  filename: string;
+}): Promise<{
   url: string;
   key: string;
 }> => {
