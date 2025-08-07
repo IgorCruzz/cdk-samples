@@ -56,4 +56,19 @@ describe("Signup Services", () => {
       data: null,
     });
   });
+
+  it("should call cognito.signUp with correct parameters", async () => {
+    jest.spyOn(userRepository, "findByEmail").mockResolvedValue(null);
+
+    await service({
+      email: "existing@example.com",
+      password: "password123",
+      name: "Existing User",
+    });
+
+    expect(cognito.signUp).toHaveBeenCalledWith(
+      "existing@example.com",
+      "password123"
+    );
+  });
 });
