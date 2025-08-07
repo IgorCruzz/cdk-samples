@@ -88,4 +88,18 @@ describe("Signup Services", () => {
       },
     });
   });
+
+  it("should return success message on successful signup", async () => {
+    const svc = await service({
+      email: "existing@example.com",
+      password: "password123",
+      name: "Existing User",
+    });
+
+    expect(svc).toEqual({
+      message: "User created successfully",
+      success: true,
+      data: null,
+    });
+  });
 });
