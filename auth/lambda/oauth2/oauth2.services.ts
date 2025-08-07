@@ -46,18 +46,23 @@ export const service = async ({
       email: userDecoded?.email,
       providers: {
         cognito: null,
-        gmail: userDecoded.sub,
+        google: userDecoded.sub,
       },
       name: userDecoded?.given_name + " " + userDecoded?.family_name,
     });
   }
 
-  if (findUser && findUser.providers.cognito && !findUser.providers.gmail) {
+  if (
+    findUser &&
+    findUser.providers &&
+    findUser.providers.cognito &&
+    !findUser.providers.google
+  ) {
     await userRepository.update({
       id: findUser.id,
       providers: {
         cognito: findUser.providers.cognito,
-        gmail: userDecoded.sub,
+        google: userDecoded.sub,
       },
     });
   }
