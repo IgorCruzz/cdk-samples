@@ -4,19 +4,26 @@ import { archiveRepository } from "../../_shared/repository/archive.repository";
 jest.mock("../../_shared/repository/archive.repository", () => ({
   archiveRepository: {
     getFiles: jest.fn().mockResolvedValue({
-      key: "key",
-      size: 0,
-      message: "message",
-      status: "PROCESSING",
-      lines: 0,
-      userId: "userId",
-      id: "id",
-      filename: "filename",
-      user: {
-        email: "email@mail.com",
-      },
+      itens: [
+        {
+          key: "file-key-1",
+          size: 12345,
+          message: "File processed",
+          status: "COMPLETED",
+          lines: 100,
+          userId: "user-id-1",
+          id: "id-1",
+          filename: "file1.csv",
+          user: {
+            email: "user1@example.com",
+          },
+        },
+      ],
+      count: 2,
+      page: 1,
+      limit: 10,
+      totalPages: 1,
     }),
-    updateStatus: jest.fn(),
   },
 }));
 
