@@ -103,7 +103,10 @@ export const archiveRepository: IArchiveRepository = {
         as: "user",
       })
       .match({
-        $or: [{ "providers.google": sub }, { "providers.cognito": sub }],
+        $or: [
+          { "user.providers.google": sub },
+          { "user.providers.cognito": sub },
+        ],
       })
       .unwind({
         path: "$user",
