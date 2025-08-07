@@ -25,7 +25,7 @@ export const service = async ({
     return;
   }
 
-  const fileOwnerEmail = file?.user.email;
+  const fileOwnerEmail = file.user.email;
 
   try {
     const stream = await s3.getObject({
