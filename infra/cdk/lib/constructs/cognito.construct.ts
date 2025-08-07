@@ -32,12 +32,10 @@ export class CognitoConstruct extends Construct {
           required: true,
         },
         givenName: {
-          required: true,
-          mutable: true,
+          required: false,
         },
         familyName: {
-          required: true,
-          mutable: true,
+          required: false,
         },
       },
       passwordPolicy: {
