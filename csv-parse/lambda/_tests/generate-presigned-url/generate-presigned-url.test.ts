@@ -101,4 +101,17 @@ describe("generatePresignedUrl", () => {
       filename: "filename",
     });
   });
+
+  it("should return url and key on success", async () => {
+    const svc = await service({
+      userId: "userId",
+      size: 123465,
+      filename: "filename",
+    });
+
+    expect(svc).toEqual({
+      url: "https://fake-s3-url.com/upload.csv",
+      key: "mocked-key.csv",
+    });
+  });
 });
