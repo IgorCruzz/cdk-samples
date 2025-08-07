@@ -1,11 +1,16 @@
-import { userRepository, Users } from "../_shared/repository/user.repository";
+import { userRepository } from "../_shared/repository/user.repository";
 import { Output } from "../_shared/service/output";
 import { cognito } from "../_shared/infra/cognito";
 
-type SignUpInput = Users;
+type SignUpInput = {
+  name: string;
+  email: string;
+  password: string;
+};
 
 export const service = async (data: SignUpInput): Output => {
   const existingUser = await userRepository.findByEmail({ email: data.email });
+
   if (existingUser) {
     return { message: "Email already exists", success: false, data: null };
   }
@@ -14,8 +19,10 @@ export const service = async (data: SignUpInput): Output => {
 
   await userRepository.save({
     ...data,
-    sub: authUser.UserSub,
-    provider: "cognito",
+    providers: {
+      cognito: authUser.UserSub,
+      google: null,
+    },
   });
 
   return { message: "User created successfully", success: true, data: null };
