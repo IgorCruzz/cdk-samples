@@ -17,6 +17,15 @@ jest.mock("../../_shared/repository/user.repository", () => ({
   },
 }));
 
+jest.mock("../../_shared/infra/cognito", () => ({
+  cognito: {
+    signUp: jest.fn().mockResolvedValue({
+      UserSub: "new-user-sub",
+      sub: "new-user-sub",
+    }),
+  },
+}));
+
 describe("Signup Services", () => {
   beforeEach(() => {
     jest.clearAllMocks();
