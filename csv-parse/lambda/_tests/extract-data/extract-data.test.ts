@@ -114,4 +114,17 @@ describe("Extract Data Service", () => {
       key: mockS3Record.s3.object.key,
     });
   });
+
+  it("should log an error if file does not exists", async () => {
+    jest.spyOn(archiveRepository, "getFileByKey").mockResolvedValue(null);
+    const log = jest.spyOn(console, "log");
+
+    await service({
+      s3Record: mockS3Record,
+    });
+
+    expect(log).toHaveBeenCalledWith(
+      `File not found for key: ${mockS3Record.s3.object.key}. Skipping processing.`
+    );
+  });
 });
