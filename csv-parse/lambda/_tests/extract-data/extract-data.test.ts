@@ -139,4 +139,16 @@ describe("Extract Data Service", () => {
       Bucket: mockS3Record.s3.bucket.name,
     });
   });
+
+  it("should be able to call updateStatus", async () => {
+    await service({
+      s3Record: mockS3Record,
+    });
+
+    expect(archiveRepository.updateStatus).toHaveBeenCalledWith({
+      key: mockS3Record.s3.object.key,
+      message: ``,
+      status: "PROCESSING",
+    });
+  });
 });
