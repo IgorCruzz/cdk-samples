@@ -58,9 +58,9 @@ describe("Delete Users Service", () => {
     expect(cognito.removeUser).toHaveBeenCalledWith("user1@example.com");
   });
 
-  // it("should be able to call delete", async () => {
-  //   await service(request);
+  it("should be able to call delete", async () => {
+    await service(request);
 
-  //   expect(userRepository.delete).toHaveBeenCalledWith({ id: "1" });
-  // });
+    expect(userRepository.delete).toHaveBeenCalledWith({ id: "1" });
+  });
 });
