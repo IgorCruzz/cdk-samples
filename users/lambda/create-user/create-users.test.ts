@@ -6,17 +6,13 @@ jest.mock("../_shared/infra/cognito", () => ({
   cognito: {
     removeUser: jest.fn(),
     createUser: jest.fn().mockResolvedValue({
-      UserConfirmed: false,
-      CodeDeliveryDetails: {
-        AttributeName: "email",
-        DeliveryMedium: "EMAIL",
-        Destination: "email",
-      },
+      UserSub: "UserSub",
     }),
   },
 }));
 jest.mock("../_shared/repository/user.repository", () => ({
   userRepository: {
+    save: jest.fn(),
     findByEmail: jest.fn().mockResolvedValue([
       {
         id: "1",
@@ -60,6 +56,54 @@ describe("Create Users Service", () => {
     expect(svc).toEqual({
       message: "Email already exists",
       success: false,
+      data: null,
+    });
+  });
+
+  it("should be able to createUser", async () => {
+    (userRepository.findByEmail as jest.Mock).mockResolvedValueOnce(undefined);
+
+    await service({
+      email: "user1@example.com",
+      password: "password",
+      name: "Name",
+    });
+
+    expect(cognito.createUser).toHaveBeenCalledWith(
+      "user1@example.com",
+      "password"
+    );
+  });
+
+  it("should be able to save user", async () => {
+    (userRepository.findByEmail as jest.Mock).mockResolvedValueOnce(undefined);
+
+    await service({
+      email: "user1@example.com",
+      password: "password",
+      name: "Name",
+    });
+
+    expect(userRepository.save).toHaveBeenCalledWith({
+      email: "user1@example.com",
+      password: "password",
+      name: "Name",
+      sub: expect.any(String),
+    });
+  });
+
+  it("should return success message when user is created", async () => {
+    (userRepository.findByEmail as jest.Mock).mockResolvedValueOnce(undefined);
+
+    const svc = await service({
+      email: "user1@example.com",
+      password: "password",
+      name: "Name",
+    });
+
+    expect(svc).toEqual({
+      message: "User created successfully",
+      success: true,
       data: null,
     });
   });
