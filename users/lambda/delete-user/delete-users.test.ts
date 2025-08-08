@@ -34,11 +34,11 @@ describe("Delete Users Service", () => {
     expect(service).toBeDefined();
   });
 
-  // it("should be able to call findById", async () => {
-  //   await service(request);
+  it("should be able to call findById", async () => {
+    await service(request);
 
-  //   expect(userRepository.findById).toHaveBeenCalledWith("1");
-  // });
+    expect(userRepository.findById).toHaveBeenCalledWith("1");
+  });
 
   // it("should throw an error if user is not found", async () => {
   //   (userRepository.findById as jest.Mock).mockResolvedValueOnce(undefined);
