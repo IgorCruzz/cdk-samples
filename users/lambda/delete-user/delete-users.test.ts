@@ -40,17 +40,17 @@ describe("Delete Users Service", () => {
     expect(userRepository.findById).toHaveBeenCalledWith("1");
   });
 
-  // it("should throw an error if user is not found", async () => {
-  //   (userRepository.findById as jest.Mock).mockResolvedValueOnce(undefined);
+  it("should throw an error if user is not found", async () => {
+    (userRepository.findById as jest.Mock).mockResolvedValueOnce(undefined);
 
-  //   const result = await service(request);
+    const result = await service(request);
 
-  //   expect(result).toEqual({
-  //     message: "User not found",
-  //     success: false,
-  //     data: null,
-  //   });
-  // });
+    expect(result).toEqual({
+      message: "User not found",
+      success: false,
+      data: null,
+    });
+  });
 
   it("should be able to call removeUser", async () => {
     await service(request);
