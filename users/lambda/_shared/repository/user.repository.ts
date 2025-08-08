@@ -19,7 +19,7 @@ export interface IUserRepository {
     limit: number;
     totalPages: number;
   }>;
-  save(item: Users): Promise<void>;
+  save(item: Pick<Users, "email" | "name" | "password" | "sub">): Promise<void>;
   update(item: Users): Promise<void>;
   delete(input: { id: string }): Promise<void>;
   findByEmail(email: string): Promise<Users | null>;
@@ -50,7 +50,9 @@ export const userRepository: IUserRepository = {
     };
   },
 
-  async save(data: Users): Promise<void> {
+  async save(
+    data: Pick<Users, "email" | "name" | "password" | "sub">
+  ): Promise<void> {
     const users = dbHelper.getCollection("users");
 
     const { password, ...userData } = data;
