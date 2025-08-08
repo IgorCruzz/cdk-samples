@@ -1,8 +1,12 @@
-import { userRepository, Users } from "../_shared/repository/user.repository";
+import { userRepository } from "../_shared/repository/user.repository";
 import { Output } from "../_shared/service/output";
 import { cognito } from "../_shared/infra/cognito";
 
-type CreateUserInput = Users;
+type CreateUserInput = {
+  email: string;
+  password: string;
+  name: string;
+};
 
 export const service = async (data: CreateUserInput): Output => {
   const existingUser = await userRepository.findByEmail(data.email);
