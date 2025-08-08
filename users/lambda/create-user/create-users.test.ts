@@ -25,6 +25,12 @@ jest.mock("../_shared/repository/user.repository", () => ({
   },
 }));
 
+const request = {
+  email: "user1@example.com",
+  password: "password",
+  name: "Name",
+};
+
 describe("Create Users Service", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -35,11 +41,7 @@ describe("Create Users Service", () => {
   });
 
   it("should be able to call findByEmail", async () => {
-    await service({
-      email: "user1@example.com",
-      password: "password",
-      name: "Name",
-    });
+    await service(request);
 
     expect(userRepository.findByEmail).toHaveBeenCalledWith(
       "user1@example.com"
@@ -47,11 +49,7 @@ describe("Create Users Service", () => {
   });
 
   it("throw an error if email already exists", async () => {
-    const svc = await service({
-      email: "user1@example.com",
-      password: "password",
-      name: "Name",
-    });
+    const svc = await service(request);
 
     expect(svc).toEqual({
       message: "Email already exists",
@@ -63,11 +61,7 @@ describe("Create Users Service", () => {
   it("should be able to createUser", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValueOnce(undefined);
 
-    await service({
-      email: "user1@example.com",
-      password: "password",
-      name: "Name",
-    });
+    await service(request);
 
     expect(cognito.createUser).toHaveBeenCalledWith(
       "user1@example.com",
@@ -78,11 +72,7 @@ describe("Create Users Service", () => {
   it("should be able to save user", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValueOnce(undefined);
 
-    await service({
-      email: "user1@example.com",
-      password: "password",
-      name: "Name",
-    });
+    await service(request);
 
     expect(userRepository.save).toHaveBeenCalledWith({
       email: "user1@example.com",
@@ -95,11 +85,7 @@ describe("Create Users Service", () => {
   it("should return success message when user is created", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValueOnce(undefined);
 
-    const svc = await service({
-      email: "user1@example.com",
-      password: "password",
-      name: "Name",
-    });
+    const svc = await service(request);
 
     expect(svc).toEqual({
       message: "User created successfully",
