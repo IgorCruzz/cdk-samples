@@ -63,6 +63,6 @@ describe("Delete Users Service", () => {
   it("should be able to call delete", async () => {
     await service(request);
 
-    expect(userRepository.delete).toHaveBeenCalledWith("user1@example.com");
+    expect(userRepository.delete).toHaveBeenCalledWith({ id: "1" });
   });
 });
