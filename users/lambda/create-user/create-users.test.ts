@@ -49,4 +49,18 @@ describe("Create Users Service", () => {
       "user1@example.com"
     );
   });
+
+  it("throw an error if email already exists", async () => {
+    const svc = await service({
+      email: "user1@example.com",
+      password: "password",
+      name: "Name",
+    });
+
+    expect(svc).toEqual({
+      message: "Email already exists",
+      success: false,
+      data: null,
+    });
+  });
 });
