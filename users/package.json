@@ -9,6 +9,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
+    "test:watch": "npm test -- --watch -c jest.config.js",
     "local:api": "sam local start-api -t ./cdk.out/stack-users.template.json --port 4000"
   },
   "devDependencies": {
