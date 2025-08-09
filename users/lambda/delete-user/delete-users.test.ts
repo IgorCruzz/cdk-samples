@@ -18,7 +18,9 @@ jest.mock("../_shared/repository/user.repository", () => ({
 }));
 
 jest.mock("../_shared/infra/cognito", () => ({
-  removeUser: jest.fn(),
+  cognito: {
+    removeUser: jest.fn(),
+  },
 }));
 
 const request = {
