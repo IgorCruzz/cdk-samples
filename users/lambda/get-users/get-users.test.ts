@@ -35,4 +35,25 @@ describe("Get Users Service", () => {
       page: 1,
     });
   });
+
+  it("should be able to return sucess", async () => {
+    const svc = await service({
+      limit: 10,
+      page: 1,
+    });
+
+    expect(svc).toEqual({
+      message: "Users retrieved successfully",
+      success: true,
+      data: [
+        {
+          id: "1",
+          name: "User One",
+          email: "user1@example.com",
+          password: "hashedpassword",
+          createdAt: expect.any(Date),
+        },
+      ],
+    });
+  });
 });
