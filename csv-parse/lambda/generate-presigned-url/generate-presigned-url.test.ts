@@ -3,7 +3,7 @@ import { archiveRepository } from "../_shared/repository/archive.repository";
 import { userRepository } from "../_shared/repository/user.repository";
 import { s3 } from "../_shared/infra/s3";
 
-jest.mock("../../_shared/infra/s3", () => ({
+jest.mock("../_shared/infra/s3", () => ({
   s3: {
     createPresignedUrl: jest.fn().mockResolvedValue({
       url: "https://fake-s3-url.com/upload.csv",
@@ -16,7 +16,7 @@ jest.mock("../../_shared/infra/s3", () => ({
   },
 }));
 
-jest.mock("../../_shared/repository/archive.repository", () => ({
+jest.mock("../_shared/repository/archive.repository", () => ({
   archiveRepository: {
     getFileByKey: jest.fn().mockResolvedValue({
       key: "key",
@@ -36,7 +36,7 @@ jest.mock("../../_shared/repository/archive.repository", () => ({
   },
 }));
 
-jest.mock("../../_shared/repository/user.repository", () => ({
+jest.mock("../_shared/repository/user.repository", () => ({
   userRepository: {
     findBySub: jest.fn().mockResolvedValue({
       id: "userId",
