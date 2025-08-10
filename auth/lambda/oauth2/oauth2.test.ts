@@ -3,19 +3,19 @@ import { cognito } from "../_shared/infra/cognito";
 import { jwt } from "../_shared/infra/jwt";
 import { userRepository } from "../_shared/repository/user.repository";
 
-jest.mock("../../_shared/infra/cognito", () => ({
+jest.mock("../_shared/infra/cognito", () => ({
   cognito: {
     getToken: jest.fn(),
   },
 }));
 
-jest.mock("../../_shared/infra/jwt", () => ({
+jest.mock("../_shared/infra/jwt", () => ({
   jwt: {
     decode: jest.fn(),
   },
 }));
 
-jest.mock("../../_shared/repository/user.repository", () => ({
+jest.mock("../_shared/repository/user.repository", () => ({
   userRepository: {
     findByEmail: jest.fn(),
     save: jest.fn(),
