@@ -56,4 +56,16 @@ describe("Update Users Service", () => {
       data: null,
     });
   });
+
+  it("should be able to call findByEmail", async () => {
+    await service({
+      name: "User One",
+      email: "user1@example.com",
+      id: "1",
+    });
+
+    expect(userRepository.findByEmail).toHaveBeenCalledWith(
+      "user1@example.com"
+    );
+  });
 });
