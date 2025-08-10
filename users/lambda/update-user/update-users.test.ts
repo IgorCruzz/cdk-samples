@@ -40,4 +40,20 @@ describe("Update Users Service", () => {
 
     expect(userRepository.findById).toHaveBeenCalledWith("1");
   });
+
+  it("should return success false when user does not exists", async () => {
+    (userRepository.findById as jest.Mock).mockResolvedValueOnce(null);
+
+    const result = await service({
+      name: "User One",
+      email: "user1@example.com",
+      id: "1",
+    });
+
+    expect(result).toEqual({
+      message: "User not found",
+      success: false,
+      data: null,
+    });
+  });
 });
