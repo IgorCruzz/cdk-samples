@@ -1,7 +1,7 @@
 import { service } from "../signin/signin.services";
 import { cognito } from "../_shared/infra/cognito";
 
-jest.mock("../../_shared/infra/cognito", () => ({
+jest.mock("../_shared/infra/cognito", () => ({
   cognito: {
     auth: jest.fn().mockResolvedValue({
       accessToken: "accessToken",
