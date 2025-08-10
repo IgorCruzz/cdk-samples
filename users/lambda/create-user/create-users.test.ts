@@ -13,15 +13,13 @@ jest.mock("../_shared/infra/cognito", () => ({
 jest.mock("../_shared/repository/user.repository", () => ({
   userRepository: {
     save: jest.fn(),
-    findByEmail: jest.fn().mockResolvedValue([
-      {
-        id: "1",
-        name: "User One",
-        email: "user1@example.com",
-        password: "hashedpassword",
-        createdAt: new Date(),
-      },
-    ]),
+    findByEmail: jest.fn().mockResolvedValue({
+      id: "1",
+      name: "User One",
+      email: "user1@example.com",
+      password: "hashedpassword",
+      createdAt: new Date(),
+    }),
   },
 }));
 
