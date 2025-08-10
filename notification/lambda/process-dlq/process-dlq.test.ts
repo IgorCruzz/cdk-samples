@@ -1,7 +1,7 @@
 import { service } from "../process-dlq/process-dlq.service";
 import { sns } from "../_shared/infra/sns";
 
-jest.mock("../../_shared/infra/sns", () => ({
+jest.mock("../_shared/infra/sns", () => ({
   sns: {
     publishMessage: jest.fn().mockResolvedValue(undefined),
     publishBatchMessage: jest.fn().mockResolvedValue(undefined),
