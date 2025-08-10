@@ -96,4 +96,18 @@ describe("Update Users Service", () => {
       email: "user1@example.com",
     });
   });
+
+  it("should return success with user was updated", async () => {
+    const result = await service({
+      name: "User One",
+      email: "user1@example.com",
+      id: "1",
+    });
+
+    expect(result).toEqual({
+      message: "User updated successfully",
+      success: true,
+      data: null,
+    });
+  });
 });
