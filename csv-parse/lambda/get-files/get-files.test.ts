@@ -1,7 +1,7 @@
 import { service } from "../get-files/get-files.services";
 import { archiveRepository } from "../_shared/repository/archive.repository";
 
-jest.mock("../../_shared/repository/archive.repository", () => ({
+jest.mock("../_shared/repository/archive.repository", () => ({
   archiveRepository: {
     getFiles: jest.fn().mockResolvedValue({
       itens: [
