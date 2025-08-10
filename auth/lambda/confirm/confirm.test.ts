@@ -1,7 +1,7 @@
 import { service } from "../confirm/confirm.services";
 import { cognito } from "../_shared/infra/cognito";
 
-jest.mock("../../_shared/infra/cognito", () => ({
+jest.mock("../_shared/infra/cognito", () => ({
   cognito: {
     confirmSignup: jest.fn(),
   },
