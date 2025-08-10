@@ -68,4 +68,18 @@ describe("Update Users Service", () => {
       "user1@example.com"
     );
   });
+
+  it("should return success false when email already exists", async () => {
+    const result = await service({
+      name: "User One",
+      email: "user1@example.com",
+      id: "anotherId",
+    });
+
+    expect(result).toEqual({
+      message: "Email already exists",
+      success: false,
+      data: null,
+    });
+  });
 });
