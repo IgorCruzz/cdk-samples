@@ -63,4 +63,14 @@ describe("Delete Users Service", () => {
 
     expect(userRepository.delete).toHaveBeenCalledWith({ id: "1" });
   });
+
+  it("should be able to return success on delete", async () => {
+    const svc = await service(request);
+
+    expect(svc).toEqual({
+      message: "User deleted successfully",
+      success: true,
+      data: null,
+    });
+  });
 });
