@@ -82,4 +82,18 @@ describe("Update Users Service", () => {
       data: null,
     });
   });
+
+  it("should be able to call update", async () => {
+    await service({
+      name: "User One",
+      email: "user1@example.com",
+      id: "1",
+    });
+
+    expect(userRepository.update).toHaveBeenCalledWith({
+      id: "1",
+      name: "User One",
+      email: "user1@example.com",
+    });
+  });
 });
