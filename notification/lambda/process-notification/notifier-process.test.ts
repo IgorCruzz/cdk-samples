@@ -1,6 +1,6 @@
-import { service } from "../../process-notification/notifier-process.service";
-import { mail } from "../../_shared/infra/mail";
-import { twilio } from "../../_shared/infra/twilio";
+import { service } from "../process-notification/notifier-process.service";
+import { mail } from "../_shared/infra/mail";
+import { twilio } from "../_shared/infra/twilio";
 
 jest.mock("../../_shared/infra/mail", () => ({
   mail: {
