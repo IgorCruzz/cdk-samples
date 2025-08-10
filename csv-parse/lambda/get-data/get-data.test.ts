@@ -1,7 +1,7 @@
 import { service } from "../get-data/get-data.services";
 import { dataRepository } from "../_shared/repository/data.repository";
 
-jest.mock("../../_shared/repository/data.repository", () => ({
+jest.mock("../_shared/repository/data.repository", () => ({
   dataRepository: {
     get: jest.fn().mockResolvedValue({
       itens: [{ id: "mocked-id", name: "mocked-name" }],
