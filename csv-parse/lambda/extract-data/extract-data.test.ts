@@ -5,7 +5,7 @@ import { sendNotification } from "../_shared/infra/send-notification";
 import { normalizeRow } from "../_shared/utils/normalize.util";
 import { s3 } from "../_shared/infra/s3";
 
-jest.mock("../../_shared/infra/s3", () => ({
+jest.mock("../_shared/infra/s3", () => ({
   s3: {
     createPresignedUrl: jest.fn().mockResolvedValue({
       url: "https://fake-s3-url.com/upload.csv",
@@ -18,7 +18,7 @@ jest.mock("../../_shared/infra/s3", () => ({
   },
 }));
 
-jest.mock("../../_shared/repository/archive.repository", () => ({
+jest.mock("../_shared/repository/archive.repository", () => ({
   archiveRepository: {
     getFileByKey: jest.fn().mockResolvedValue({
       key: "key",
@@ -37,7 +37,7 @@ jest.mock("../../_shared/repository/archive.repository", () => ({
   },
 }));
 
-jest.mock("../../_shared/repository/data.repository", () => ({
+jest.mock("../_shared/repository/data.repository", () => ({
   dataRepository: {
     save: jest.fn().mockResolvedValue(undefined),
     get: jest.fn().mockResolvedValue({
