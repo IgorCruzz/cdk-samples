@@ -1,7 +1,13 @@
-import { userRepository, Users } from "../_shared/repository/user.repository";
+import { userRepository } from "../_shared/repository/user.repository";
 import { Output } from "../_shared/service/output";
 
-export const service = async (data: Users): Output => {
+type UpdateUserInput = {
+  id: string;
+  email: string;
+  name: string;
+};
+
+export const service = async (data: UpdateUserInput): Output => {
   const verifyUser = await userRepository.findById(data.id);
 
   if (!verifyUser) {
