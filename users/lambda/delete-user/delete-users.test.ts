@@ -5,15 +5,13 @@ import { service } from "./delete-users.services";
 jest.mock("../_shared/repository/user.repository", () => ({
   userRepository: {
     delete: jest.fn(),
-    findById: jest.fn().mockResolvedValue([
-      {
-        id: "1",
-        name: "User One",
-        email: "user1@example.com",
-        password: "hashedpassword",
-        createdAt: new Date(),
-      },
-    ]),
+    findById: jest.fn().mockResolvedValue({
+      id: "1",
+      name: "User One",
+      email: "user1@example.com",
+      password: "hashedpassword",
+      createdAt: new Date(),
+    }),
   },
 }));
 
