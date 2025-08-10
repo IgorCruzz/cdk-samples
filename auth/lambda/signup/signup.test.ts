@@ -2,14 +2,14 @@ import { service } from "../signup/signup.services";
 import { cognito } from "../_shared/infra/cognito";
 import { userRepository } from "../_shared/repository/user.repository";
 
-jest.mock("../../_shared/repository/user.repository", () => ({
+jest.mock("../_shared/repository/user.repository", () => ({
   userRepository: {
     findByEmail: jest.fn().mockResolvedValue(null),
     save: jest.fn(),
   },
 }));
 
-jest.mock("../../_shared/infra/cognito", () => ({
+jest.mock("../_shared/infra/cognito", () => ({
   cognito: {
     signUp: jest.fn().mockResolvedValue({
       UserSub: "new-user-sub",
