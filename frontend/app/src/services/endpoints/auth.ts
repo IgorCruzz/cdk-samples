@@ -1,13 +1,15 @@
 import { api } from '../api';
 
 export const auth = {
-  signup: async (data: { email: string; password: string; name: string }) => {
+  signup: async (data: { email: string; password: string; firstName: string; lastName: string }) => {
     return await api.post('auth/signup', {
       email: data.email,
       password: data.password,
-      name: data.name,
+      firstName: data.firstName,
+      lastName: data.lastName,
     });
   },
+
   login: async (data: { email: string; password: string }) => {
     return await api.post('auth/signin', {
       email: data.email,
