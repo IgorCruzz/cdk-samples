@@ -53,9 +53,16 @@ export default function Signup() {
               <Input {...form.register('email')} type="email" required />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Name</label>
-              <Input {...form.register('name')} type="text" required />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">First Name</label>
+                <Input {...form.register('firstName')} type="text" required />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Last Name</label>
+                <Input {...form.register('lastName')} type="text" required />
+              </div>
             </div>
 
             <div>
@@ -75,6 +82,7 @@ export default function Signup() {
               />
               <PasswordValidation password={password} />
             </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
               <Input {...form.register('confirmPassword')} type="password" required />
