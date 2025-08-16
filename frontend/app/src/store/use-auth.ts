@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
 
 interface AuthState {
   accessToken: string | null;
@@ -41,14 +42,16 @@ export const useAuthStore = create<AuthState>()(
 
         window.location.href = '/home';
       },
-      logout: () => {
-        window.location.href = '/';
-
-        return set({
+      logout: async () => {
+        // Limpa tokens do app
+        set({
           accessToken: null,
           refreshToken: null,
           idToken: null,
         });
+
+        // Redireciona para o Cognito logout
+        window.location.href = import.meta.env.VITE_COGNITO_LOGOUT;
       },
     }),
     {
