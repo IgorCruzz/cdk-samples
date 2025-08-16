@@ -33,7 +33,7 @@ export const userRepository: IUserRepository = {
       ...userData,
       providers: {
         cognito: data.providers?.cognito || null,
-        google: null,
+        google: data.providers?.google || null,
       },
       createdAt: new Date(),
     });
