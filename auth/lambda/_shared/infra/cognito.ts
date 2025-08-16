@@ -13,6 +13,7 @@ import {
   AdminAddUserToGroupCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { ssm } from "./ssm";
+import { splitFullName } from "../utils/split-name";
 
 const cognitoClient = new CognitoIdentityProviderClient({});
 
@@ -24,6 +25,8 @@ export const cognito = {
   ): Promise<SignUpCommandOutput> => {
     const clientId = await ssm.getUserPoolClientId();
 
+    const { firstName, lastName } = splitFullName(name);
+
     const params: SignUpCommandInput = {
       ClientId: clientId,
       Username: email,
@@ -33,10 +36,8 @@ export const cognito = {
           Name: "email",
           Value: email,
         },
-        {
-          Name: "name",
-          Value: name,
-        },
+        { Name: "given_name", Value: firstName },
+        { Name: "family_name", Value: lastName },
       ],
     };
 
