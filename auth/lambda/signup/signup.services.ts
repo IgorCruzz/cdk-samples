@@ -3,7 +3,8 @@ import { Output } from "../_shared/service/output";
 import { cognito } from "../_shared/infra/cognito";
 
 type SignUpInput = {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
 };
@@ -15,7 +16,12 @@ export const service = async (data: SignUpInput): Output => {
     return { message: "Email already exists", success: false, data: null };
   }
 
-  const authUser = await cognito.signUp(data.name, data.email, data.password);
+  const authUser = await cognito.signUp(
+    data.firstName,
+    data.lastName,
+    data.email,
+    data.password
+  );
 
   await userRepository.save({
     ...data,
