@@ -103,6 +103,7 @@ export class CognitoConstruct extends Construct {
         },
         scopes: [OAuthScope.OPENID, OAuthScope.EMAIL, OAuthScope.PROFILE],
         callbackUrls: ["https://api.igorcruz.space/v1/auth/oauth2"],
+        logoutUrls: ["http://localhost:5173/"],
       },
     });
 
