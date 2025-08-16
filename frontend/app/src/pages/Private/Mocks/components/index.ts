@@ -1,2 +1,2 @@
-export  { Upload } from './Upload';
-export { List } from './List'; 
+export { Upload } from './Upload';
+export { List } from './List';

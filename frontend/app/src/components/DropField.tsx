@@ -1,14 +1,9 @@
-import {
-  Controller,
-  type UseControllerProps,
-} from "react-hook-form";
-import { useDropzone } from "react-dropzone";
-import { X } from "lucide-react"; // Ícone de "fechar/remover"
-import { formatBytes } from "@/utils/formatByes";
+import { Controller, type UseControllerProps } from 'react-hook-form';
+import { useDropzone } from 'react-dropzone';
+import { X } from 'lucide-react'; // Ícone de "fechar/remover"
+import { formatBytes } from '@/utils/formatByes';
 
-const DropField = ({
-  ...controllerProps
-}: UseControllerProps) => {
+const DropField = ({ ...controllerProps }: UseControllerProps) => {
   return (
     <Controller
       {...controllerProps}
@@ -21,7 +16,7 @@ const DropField = ({
           onDrop,
           multiple: false,
           accept: {
-            "text/csv": [".csv"],
+            'text/csv': ['.csv'],
           },
         });
 
@@ -51,8 +46,8 @@ const DropField = ({
                   <button
                     type="button"
                     onClick={(e) => {
-                      e.stopPropagation();  
-                      field.onChange(null); 
+                      e.stopPropagation();
+                      field.onChange(null);
                     }}
                     className="
                       p-1 rounded-full hover:bg-red-100 dark:hover:bg-red-900 transition
@@ -65,14 +60,12 @@ const DropField = ({
               ) : (
                 <p className="text-center">Drag and drop a file here, or click to select a file</p>
               )}
-            </div> 
+            </div>
           </div>
         );
       }}
     />
   );
 };
-
-
 
 export default DropField;

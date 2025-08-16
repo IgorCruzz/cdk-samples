@@ -1,5 +1,5 @@
-import { Outlet } from "react-router-dom";
-import Logo from "@/assets/logo.png";
+import { Outlet } from 'react-router-dom';
+import Logo from '@/assets/logo.png';
 
 const PublicLayout = () => {
   return (

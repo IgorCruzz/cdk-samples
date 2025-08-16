@@ -1,62 +1,60 @@
-import { CopyButton } from "@/components/CopyButton"
-import { formatBytes } from "@/utils/formatByes"
-import { type ColumnDef } from "@tanstack/react-table"
-import { CircleEllipsis, ThumbsDown, ThumbsUp } from "lucide-react"
+import { CopyButton } from '@/components/CopyButton';
+import { formatBytes } from '@/utils/formatByes';
+import { type ColumnDef } from '@tanstack/react-table';
+import { CircleEllipsis, ThumbsDown, ThumbsUp } from 'lucide-react';
 
 export type File = {
-  size: number
-  status: string 
-  key: string
-  lines: number 
-  id: string
-}
+  size: number;
+  status: string;
+  key: string;
+  lines: number;
+  id: string;
+};
 
 export const columns: ColumnDef<File>[] = [
   {
-    accessorKey: "filename",
-    header: "Filename",
+    accessorKey: 'filename',
+    header: 'Filename',
     cell: (info) => info.getValue(),
   },
   {
-    accessorKey: "size",
-    header: "Size",
+    accessorKey: 'size',
+    header: 'Size',
     cell: (info) => `${formatBytes(info.getValue() as number)}`,
   },
   {
-    accessorKey: "lines",
-    header: "Lines",
+    accessorKey: 'lines',
+    header: 'Lines',
     cell: (info) => info.getValue(),
   },
   {
-    accessorKey: "createdAt",
-    header: "Created",
+    accessorKey: 'createdAt',
+    header: 'Created',
     cell: (info) => info.getValue(),
   },
-{
-  accessorKey: "status",
-  header: "Status",  
-  cell: (info) => {
-    const rowData = info.row.original;
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: (info) => {
+      const rowData = info.row.original;
 
-    const lines = rowData.lines; 
+      const lines = rowData.lines;
 
-    return (
-    <>
-    {info.getValue() === 'COMPLETED' && (
-      <>
-       {lines > 0 ? <ThumbsUp color="green" /> : <ThumbsDown color="red" />}  
-      </>
-    )}
+      return (
+        <>
+          {info.getValue() === 'COMPLETED' && (
+            <>{lines > 0 ? <ThumbsUp color="green" /> : <ThumbsDown color="red" />}</>
+          )}
 
-    {info.getValue() === 'FAILED' && (<ThumbsDown color="red" />)}
+          {info.getValue() === 'FAILED' && <ThumbsDown color="red" />}
 
-    {(info.getValue() === 'PROCESSING' || info.getValue() === 'PENDING') && (<CircleEllipsis />)}
-    </>     
-  )
-  }
-},
-   { 
-    header: "Link",
+          {(info.getValue() === 'PROCESSING' || info.getValue() === 'PENDING') && <CircleEllipsis />}
+        </>
+      );
+    },
+  },
+  {
+    header: 'Link',
     cell: (info) => {
       return info.row.original.status === 'COMPLETED' ? (
         <div className="flex items-center gap-2">
@@ -68,4 +66,4 @@ export const columns: ColumnDef<File>[] = [
       );
     },
   },
-]
+];

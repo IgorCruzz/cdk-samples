@@ -1,4 +1,4 @@
-import { api } from '../api'
+import { api } from '../api';
 
 export const files = {
   statistics: async () => {
@@ -11,8 +11,8 @@ export const files = {
     return await api.get('files', {
       params: {
         limit,
-        page
-      }
+        page,
+      },
     });
-  }
-}
+  },
+};

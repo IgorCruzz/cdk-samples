@@ -18,11 +18,7 @@ interface PaginationProps {
   total: number;
 }
 
-export const Pagination = ({
-  pagination,
-  setPagination,
-  total,
-}: PaginationProps) => {
+export const Pagination = ({ pagination, setPagination, total }: PaginationProps) => {
   const totalPages = Math.ceil(total / pagination.pageSize);
   const currentPage = pagination.pageIndex + 1;
 
@@ -33,25 +29,24 @@ export const Pagination = ({
     const lastPage = totalPages;
     const current = currentPage;
 
- 
     pages.push(firstPage);
 
-     if (current - 2 > firstPage) {
+    if (current - 2 > firstPage) {
       pages.push('ellipsis-prev');
     }
 
-     const start = Math.max(current - 1, firstPage + 1);
+    const start = Math.max(current - 1, firstPage + 1);
     const end = Math.min(current + 1, lastPage - 1);
 
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
 
-     if (current + 2 < lastPage) {
+    if (current + 2 < lastPage) {
       pages.push('ellipsis-next');
     }
 
-     if (lastPage > firstPage) {
+    if (lastPage > firstPage) {
       pages.push(lastPage);
     }
 
@@ -64,13 +59,9 @@ export const Pagination = ({
     <Card className="w-full flex flex-col md:flex-row justify-center md:justify-between items-center ml-auto shadow-lg pb-10 lg:p-0">
       <CardContent className="w-max flex items-center gap-1 py-2 px-4 !text-sm">
         Viewing
-        <span className="font-semibold m-0">
-          {pagination.pageIndex * pagination.pageSize + 1}
-        </span>
+        <span className="font-semibold m-0">{pagination.pageIndex * pagination.pageSize + 1}</span>
         to
-        <span className="font-semibold m-0">
-          {Math.min((pagination.pageIndex + 1) * pagination.pageSize, total)}
-        </span>
+        <span className="font-semibold m-0">{Math.min((pagination.pageIndex + 1) * pagination.pageSize, total)}</span>
         from <span className="font-semibold m-0">{total}</span>
       </CardContent>
 
@@ -129,7 +120,7 @@ export const Pagination = ({
           disabled={pagination.pageIndex + 1 >= totalPages}
           className="border-none"
         >
-        <StepForward />  
+          <StepForward />
         </Button>
       </CardContent>
     </Card>

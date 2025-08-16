@@ -1,4 +1,4 @@
-import { Home, User, FileJson2, LogOut} from "lucide-react"
+import { Home, User, FileJson2, LogOut } from 'lucide-react';
 
 import {
   Sidebar,
@@ -10,38 +10,38 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
-  SidebarFooter
-} from "@/components/ui/sidebar"
-import { Link } from "react-router-dom"
-import Logo from '@/assets/logo.png'
-import { Button } from "./ui/button"
-import { useAuthStore } from '@/store/use-auth'
-import { useEffect } from "react"
-   
+  SidebarFooter,
+} from '@/components/ui/sidebar';
+import { Link } from 'react-router-dom';
+import Logo from '@/assets/logo.png';
+import { Button } from './ui/button';
+import { useAuthStore } from '@/store/use-auth';
+import { useEffect } from 'react';
+
 const applicationRoutes = [
   {
-    title: "Home",
-    url: "/home",
+    title: 'Home',
+    url: '/home',
     icon: Home,
   },
   {
-    title: "Mocks",
-    url: "/mocks",
+    title: 'Mocks',
+    url: '/mocks',
     icon: FileJson2,
-  },  
-]
+  },
+];
 
 export function AppSidebar() {
-  const logout = useAuthStore((state) => state.logout)
-  const user = useAuthStore((state) => state.getUser)
+  const logout = useAuthStore((state) => state.logout);
+  const user = useAuthStore((state) => state.getUser);
 
   useEffect(() => {
-    console.log("User data:", user())
-  },[])
+    console.log('User data:', user());
+  }, []);
 
   const onLogout = () => {
-    logout()
-  }
+    logout();
+  };
 
   return (
     <Sidebar>
@@ -49,7 +49,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarHeader className="mb-14">
             <Link to="/home">
-              <img src={Logo} alt="Logo"  width={120} />
+              <img src={Logo} alt="Logo" width={120} />
             </Link>
           </SidebarHeader>
 
@@ -68,17 +68,18 @@ export function AppSidebar() {
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup> 
+        </SidebarGroup>
       </SidebarContent>
 
-
-       <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem>
-               <Button variant="outline" onClick={onLogout}><LogOut /></Button>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <Button variant="outline" onClick={onLogout}>
+              <LogOut />
+            </Button>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

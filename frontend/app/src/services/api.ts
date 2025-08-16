@@ -4,9 +4,9 @@ import { useAuthStore } from '@/store/use-auth';
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-})
+});
 
- api.interceptors.request.use(function (config) {
+api.interceptors.request.use(function (config) {
   const storage = localStorage.getItem('auth-storage');
 
   if (storage) {
@@ -22,28 +22,25 @@ export const api = axios.create({
 
 api.interceptors.response.use(
   (response) => response,
-  async (error) => { 
-
+  async (error) => {
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true; 
+      originalRequest._retry = true;
 
       const { refreshToken, setTokens, logout } = useAuthStore.getState();
 
       try {
-         
-
-        if (!refreshToken) return Promise.reject(error); 
+        if (!refreshToken) return Promise.reject(error);
 
         const response = await auth.refresh({
           refreshToken,
-        });                  
+        });
 
         if (response.status !== 200) {
           window.location.href = '/';
           return Promise.reject(error);
-        } 
+        }
 
         setTokens({
           accessToken: response.data.data.accessToken,
@@ -54,7 +51,7 @@ api.interceptors.response.use(
 
         return api(error.config);
       } catch (refreshError) {
-        logout();       
+        logout();
 
         return Promise.reject(refreshError);
       }
