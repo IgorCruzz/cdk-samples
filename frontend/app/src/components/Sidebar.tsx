@@ -16,6 +16,8 @@ import { Link } from 'react-router-dom';
 import Logo from '@/assets/logo.png';
 import { Button } from './ui/button';
 import { useAuthStore } from '@/store/use-auth';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import Avatar from 'react-avatar';
 
 const applicationRoutes = [
   { title: 'Home', url: '/home', icon: Home },
@@ -39,50 +41,86 @@ export function AppSidebar() {
     >
       <SidebarContent>
         <SidebarGroup>
-          <SidebarHeader className={`mb-14 flex items-center justify-between ${collapsed ? 'px-2' : 'px-4'}`}>
+          {/* HEADER */}
+          <SidebarHeader
+            className={`mb-14 flex items-center ${collapsed ? 'justify-center px-0' : 'justify-between px-4'}`}
+          >
             {!collapsed && (
               <Link to="/home">
                 <img src={Logo} alt="Logo" width={120} />
               </Link>
             )}
-            <Button variant="ghost" size="icon" onClick={() => setCollapsed(!collapsed)}>
-              {collapsed ? '»' : '«'}
-            </Button>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" onClick={() => setCollapsed(!collapsed)}>
+                    {collapsed ? '▶' : '◀'}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right">{collapsed ? 'Expandir' : 'Recolher'}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </SidebarHeader>
 
           {!collapsed && <SidebarGroupLabel>Application</SidebarGroupLabel>}
 
+          {/* MENU */}
           <SidebarGroupContent>
             <SidebarMenu>
               {applicationRoutes.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link to={item.url} className="flex items-center gap-2">
-                      <item.icon className="h-5 w-5" />
-                      <span
-                        className={`transition-opacity duration-200 ${collapsed ? 'opacity-0 w-0' : 'opacity-100'}`}
-                      >
-                        {item.title}
-                      </span>
-                    </Link>
-                  </SidebarMenuButton>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <SidebarMenuButton asChild>
+                          <Link to={item.url} className="flex items-center gap-2">
+                            <item.icon className="h-5 w-5" />
+                            <span
+                              className={`transition-opacity duration-200 ${
+                                collapsed ? 'opacity-0 w-0' : 'opacity-100'
+                              }`}
+                            >
+                              {item.title}
+                            </span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </TooltipTrigger>
+                      {collapsed && (
+                        <TooltipContent side="right" className="ml-2">
+                          {item.title}
+                        </TooltipContent>
+                      )}
+                    </Tooltip>
+                  </TooltipProvider>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      {/* FOOTER */}
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem className={`w-full p-2 bg-zinc-900 flex items-center justify-between`}>
+          <SidebarMenuItem
+            className={`w-full p-2 flex items-center ${collapsed ? 'justify-center' : 'justify-between'}`}
+          >
             {!collapsed && (
               <p>
-                {user.given_name} {user.family_name}
+                <Avatar name={`${user.given_name} ${user.family_name}`} size="40" round={true} />
               </p>
             )}
-            <Button variant="outline" onClick={onLogout}>
-              <LogOut />
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" onClick={onLogout}>
+                    <LogOut />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right">Logout</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
