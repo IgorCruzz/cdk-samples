@@ -37,6 +37,8 @@ export const service = async ({
     sub: string;
   };
 
+  console.log({ userDecoded });
+
   const findUser = await userRepository.findByEmail({
     email: userDecoded?.email,
   });
