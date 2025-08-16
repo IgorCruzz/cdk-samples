@@ -48,7 +48,8 @@ export const service = async ({
         cognito: null,
         google: userDecoded.sub,
       },
-      name: userDecoded?.given_name + " " + userDecoded?.family_name,
+      firstName: userDecoded?.given_name,
+      lastName: userDecoded?.family_name,
     });
   }
 
