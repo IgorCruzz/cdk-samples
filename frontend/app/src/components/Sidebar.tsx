@@ -12,7 +12,7 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Logo from '@/assets/logo.png';
 import { Button } from './ui/button';
 import { useAuthStore } from '@/store/use-auth';
@@ -29,6 +29,7 @@ export function AppSidebar() {
   const getUser = useAuthStore((state) => state.getUser);
   const user = getUser();
 
+  const location = useLocation(); // hook para pegar rota atual
   const [collapsed, setCollapsed] = useState(false);
 
   const onLogout = () => logout();
@@ -41,7 +42,6 @@ export function AppSidebar() {
     >
       <SidebarContent>
         <SidebarGroup>
-          {/* HEADER */}
           <SidebarHeader
             className={`mb-14 flex items-center ${collapsed ? 'justify-center px-0' : 'justify-between px-4'}`}
           >
@@ -65,42 +65,48 @@ export function AppSidebar() {
 
           {!collapsed && <SidebarGroupLabel>Application</SidebarGroupLabel>}
 
-          {/* MENU */}
           <SidebarGroupContent>
             <SidebarMenu>
-              {applicationRoutes.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <SidebarMenuButton asChild>
-                          <Link to={item.url} className="flex items-center gap-2">
-                            <item.icon className="h-5 w-5" />
-                            <span
-                              className={`transition-opacity duration-200 ${
-                                collapsed ? 'opacity-0 w-0' : 'opacity-100'
+              {applicationRoutes.map((item) => {
+                const isActive = location.pathname === item.url; // verifica se está na página
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <SidebarMenuButton asChild>
+                            <Link
+                              to={item.url}
+                              className={`flex items-center gap-2 p-2 rounded-lg transition-colors duration-200 ${
+                                isActive ? 'bg-blue-500 text-white' : 'hover:bg-gray-200 dark:hover:bg-gray-700'
                               }`}
                             >
-                              {item.title}
-                            </span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </TooltipTrigger>
-                      {collapsed && (
-                        <TooltipContent side="right" className="ml-2">
-                          {item.title}
-                        </TooltipContent>
-                      )}
-                    </Tooltip>
-                  </TooltipProvider>
-                </SidebarMenuItem>
-              ))}
+                              <item.icon className="h-5 w-5" />
+                              <span
+                                className={`transition-opacity duration-200 ${
+                                  collapsed ? 'opacity-0 w-0' : 'opacity-100'
+                                }`}
+                              >
+                                {item.title}
+                              </span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </TooltipTrigger>
+                        {collapsed && (
+                          <TooltipContent side="right" className="ml-2">
+                            {item.title}
+                          </TooltipContent>
+                        )}
+                      </Tooltip>
+                    </TooltipProvider>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
-      {/* FOOTER */}
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem
