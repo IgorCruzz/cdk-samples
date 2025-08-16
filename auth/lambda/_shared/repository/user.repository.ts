@@ -4,7 +4,8 @@ import { dbHelper } from "./db-helper";
 
 export type Users = {
   id?: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password?: string;
   createdAt?: Date;
