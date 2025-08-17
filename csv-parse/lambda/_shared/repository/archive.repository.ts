@@ -44,7 +44,7 @@ export interface IArchiveRepository {
   save: (input: ArchiveRepositoryInput) => Promise<ArchiveRepositoryOutput>;
   updateStatus(
     data: Pick<ArchiveRepositoryInput, "key" | "status" | "message" | "lines">,
-    session?: { session: any }
+    session?: any
   ): Promise<void>;
   getStatistics(): GetStatisticOutput;
   getFileByKey: (input: { key: string }) => Promise<Files | null>;
