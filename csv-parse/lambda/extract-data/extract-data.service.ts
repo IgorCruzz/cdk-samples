@@ -36,7 +36,7 @@ export const service = async ({
         message: "",
         status: "PROCESSING",
       },
-      { session }
+      session
     );
 
     const stream = await s3.getObject({
@@ -65,7 +65,7 @@ export const service = async ({
         chunk.push(data);
 
         if (chunk.length === 10000) {
-          await dataRepository.save(chunk, { session });
+          await dataRepository.save(chunk, session);
           lines += chunk.length;
           chunk.length = 0;
         }
@@ -75,7 +75,7 @@ export const service = async ({
     }
 
     if (chunk.length) {
-      await dataRepository.save(chunk, { session });
+      await dataRepository.save(chunk, session);
       lines += chunk.length;
     }
 
@@ -88,7 +88,7 @@ export const service = async ({
         message,
         lines,
       },
-      { session }
+      session
     );
 
     const response = await sendNotification.send({
