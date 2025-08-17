@@ -9,6 +9,7 @@ export class S3Construct extends Construct {
     super(scope, id);
 
     this.bucket = this.createS3Bucket();
+    this.createS3BucketData();
   }
 
   createS3Bucket() {
@@ -22,6 +23,12 @@ export class S3Construct extends Construct {
           allowedHeaders: ["*"],
         },
       ],
+    });
+  }
+
+  createS3BucketData() {
+    return new Bucket(this, "bucket-csv-parse-data", {
+      removalPolicy: RemovalPolicy.RETAIN,
     });
   }
 }
