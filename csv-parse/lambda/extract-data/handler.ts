@@ -10,6 +10,7 @@ export const handler = async (event: S3Event) => {
   if (!isConnected) {
     const uri = await secret.getMongoUri();
     await dbHelper.connect(uri);
+
     isConnected = true;
   }
 
