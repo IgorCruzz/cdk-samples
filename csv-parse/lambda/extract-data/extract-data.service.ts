@@ -111,15 +111,12 @@ export const service = async ({
       error instanceof Error ? error.message : String(error)
     }`;
 
-    await archiveRepository.updateStatus(
-      {
-        key: s3Record.s3.object.key,
-        status: "FAILED",
-        message,
-        lines: 0,
-      },
-      session
-    );
+    await archiveRepository.updateStatus({
+      key: s3Record.s3.object.key,
+      status: "FAILED",
+      message,
+      lines: 0,
+    });
 
     await sendNotification.send({
       message,
