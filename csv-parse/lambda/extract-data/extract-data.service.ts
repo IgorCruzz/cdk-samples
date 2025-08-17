@@ -93,7 +93,7 @@ export const service = async ({
 
     const response = await sendNotification.send({
       message,
-      email: fileOwnerEmaill,
+      email: fileOwnerEmail,
     });
 
     if (!response.ok) {
@@ -105,7 +105,6 @@ export const service = async ({
     await session.commitTransaction();
   } catch (error) {
     await session.abortTransaction();
-    console.log("Transaction aborted due to error:", error);
 
     const message = `Error processing file ${s3Record.s3.object.key}: ${
       error instanceof Error ? error.message : String(error)
