@@ -164,7 +164,7 @@ export const archiveRepository: IArchiveRepository = {
 
   async updateStatus(
     { key, status, message, lines = 0 },
-    { session }: { session: any }
+    session: any
   ): Promise<void> {
     const archives = dbHelper.getCollection("archives");
 
