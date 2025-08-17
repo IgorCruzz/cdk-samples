@@ -43,8 +43,7 @@ export interface IArchiveRepository {
   getFiles: (input: GetFilesInput) => GetFilesOutput;
   save: (input: ArchiveRepositoryInput) => Promise<ArchiveRepositoryOutput>;
   updateStatus(
-    data: Pick<ArchiveRepositoryInput, "key" | "status" | "message" | "lines">,
-    session?: any
+    data: Pick<ArchiveRepositoryInput, "key" | "status" | "message" | "lines">
   ): Promise<void>;
   getStatistics(): GetStatisticOutput;
   getFileByKey: (input: { key: string }) => Promise<Files | null>;
@@ -162,10 +161,7 @@ export const archiveRepository: IArchiveRepository = {
     });
   },
 
-  async updateStatus(
-    { key, status, message, lines = 0 },
-    session: any
-  ): Promise<void> {
+  async updateStatus({ key, status, message, lines = 0 }): Promise<void> {
     const archives = dbHelper.getCollection("archives");
 
     await archives.updateOne(
@@ -177,9 +173,6 @@ export const archiveRepository: IArchiveRepository = {
           lines,
           updatedAt: new Date(),
         },
-      },
-      {
-        session,
       }
     );
   },
