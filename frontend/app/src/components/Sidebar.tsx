@@ -37,7 +37,7 @@ export function AppSidebar() {
   return (
     <Sidebar
       className={`transition-all duration-300 ${
-        collapsed ? 'w-16' : 'w-40'
+        collapsed ? 'w-16' : 'w-50'
       } h-[95vh] overflow-hidden rounded-2xl shadow-lg m-4`}
     >
       <SidebarContent>
@@ -68,7 +68,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {applicationRoutes.map((item) => {
-                const isActive = location.pathname === item.url; // verifica se está na página
+                const isActive = location.pathname === item.url;
                 return (
                   <SidebarMenuItem key={item.title}>
                     <TooltipProvider>
@@ -107,28 +107,26 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem
-            className={`w-full p-2 flex items-center ${collapsed ? 'justify-center' : 'justify-between'}`}
-          >
-            {!collapsed && (
-              <p>
-                <Avatar name={`${user.given_name} ${user.family_name}`} size="40" round={true} />
-              </p>
-            )}
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline" onClick={onLogout}>
-                    <LogOut />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="right">Logout</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </SidebarMenuItem>
-        </SidebarMenu>
+      <SidebarFooter className="px-4 py-2">
+        <div className="flex justify-between items-center w-full">
+          <div className="flex items-center gap-3">
+            <Avatar name={user.given_name} size="40" round={true} />
+            <div className="flex flex-col">
+              <span className="font-medium">{user.given_name}</span>
+            </div>
+          </div>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" onClick={onLogout}>
+                  <LogOut />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="top">Logout</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );
