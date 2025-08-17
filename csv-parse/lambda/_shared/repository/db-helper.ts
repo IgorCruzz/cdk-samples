@@ -4,7 +4,7 @@ export const dbHelper = {
   client: null as MongoClient | null,
   uri: null as string | null,
 
-  async connect(uri: string): Promise<void> {
+  async connect(uri: string): Promise<any> {
     if (this.client) return;
 
     this.uri = uri;
@@ -17,6 +17,13 @@ export const dbHelper = {
     this.client = null;
   },
 
+  getClient() {
+    if (!this.client) {
+      throw new Error("MongoClient is not connected");
+    }
+
+    return this.client;
+  },
   getCollection(name: string): Collection {
     if (!this.client) {
       throw new Error("MongoClient is not connected");
