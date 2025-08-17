@@ -58,7 +58,7 @@ export const service = async ({
 
         chunk.push(data);
 
-        if (chunk.length === 1000) {
+        if (chunk.length === 10000) {
           await dataRepository.save(chunk);
           lines += chunk.length;
           chunk.length = 0;
