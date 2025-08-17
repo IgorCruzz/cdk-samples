@@ -20,15 +20,15 @@ type GetFilesOutput = Promise<{
 }>;
 
 export interface IDataRepository {
-  save: (data: dataRepositoryInput) => dataRepositoryOutput;
+  save: (data: dataRepositoryInput, session: any) => dataRepositoryOutput;
   get: (input: GetFilesInput) => GetFilesOutput;
 }
 
 export const dataRepository: IDataRepository = {
-  async save(data: dataRepositoryInput): dataRepositoryOutput {
+  async save(data: dataRepositoryInput, session: any): dataRepositoryOutput {
     const Data = dbHelper.getCollection("data");
 
-    await Data.insertMany(data);
+    await Data.insertMany(data, { session });
 
     return;
   },
