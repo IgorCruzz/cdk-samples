@@ -13,7 +13,6 @@ export const service = async ({
 }: {
   s3Record: S3EventRecord;
 }): Promise<void> => {
-  const session = dbHelper.getClient().startSession();
   let lines = 0;
 
   const file = await archiveRepository.getFileByKey({
@@ -28,16 +27,11 @@ export const service = async ({
   const fileOwnerEmail = file.user.email;
 
   try {
-    session.startTransaction();
-
-    await archiveRepository.updateStatus(
-      {
-        key: s3Record.s3.object.key,
-        message: "",
-        status: "PROCESSING",
-      },
-      session
-    );
+    await archiveRepository.updateStatus({
+      key: s3Record.s3.object.key,
+      message: "",
+      status: "PROCESSING",
+    });
 
     const stream = await s3.getObject({
       key: s3Record.s3.object.key,
@@ -64,8 +58,8 @@ export const service = async ({
 
         chunk.push(data);
 
-        if (chunk.length === 10000) {
-          await dataRepository.save(chunk, session);
+        if (chunk.length === 1000) {
+          await dataRepository.save(chunk);
           lines += chunk.length;
           chunk.length = 0;
         }
@@ -75,21 +69,18 @@ export const service = async ({
     }
 
     if (chunk.length) {
-      await dataRepository.save(chunk, session);
+      await dataRepository.save(chunk);
       lines += chunk.length;
     }
 
     const message = `Process completed successfully: Processed ${lines} records.`;
 
-    await archiveRepository.updateStatus(
-      {
-        key: s3Record.s3.object.key,
-        status: !lines ? "FAILED" : "COMPLETED",
-        message,
-        lines,
-      },
-      session
-    );
+    await archiveRepository.updateStatus({
+      key: s3Record.s3.object.key,
+      status: !lines ? "FAILED" : "COMPLETED",
+      message,
+      lines,
+    });
 
     const response = await sendNotification.send({
       message,
@@ -101,11 +92,7 @@ export const service = async ({
         `Failed to send notification: ${response.status} ${response.statusText}`
       );
     }
-
-    await session.commitTransaction();
   } catch (error) {
-    await session.abortTransaction();
-
     const message = `Error processing file ${s3Record.s3.object.key}: ${
       error instanceof Error ? error.message : String(error)
     }`;
@@ -122,8 +109,6 @@ export const service = async ({
       email: fileOwnerEmail,
     });
   } finally {
-    session.endSession();
-
     await s3.removeObject({
       Key: s3Record.s3.object.key,
       Bucket: s3Record.s3.bucket.name,
