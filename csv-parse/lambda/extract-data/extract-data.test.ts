@@ -50,7 +50,7 @@ jest.mock("../_shared/repository/data.repository", () => ({
   },
 }));
 
-jest.mock("../../_shared/infra/send-notification", () => ({
+jest.mock("../_shared/infra/send-notification", () => ({
   sendNotification: {
     send: jest.fn().mockResolvedValue({
       ok: true,
@@ -60,7 +60,7 @@ jest.mock("../../_shared/infra/send-notification", () => ({
   },
 }));
 
-jest.mock("../../_shared/utils/normalize.util", () => ({
+jest.mock("../_shared/utils/normalize.util", () => ({
   formatKey: jest.fn((str: string) => `mocked-${str}`),
   normalizeRow: jest.fn(() => ({ mocked: true })),
 }));
@@ -125,7 +125,7 @@ describe("Extract Data Service", () => {
     });
 
     expect(log).toHaveBeenCalledWith(
-      `File not found for key: ${mockS3Record.s3.object.key}. Skipping processing.`
+      `File not found for key: ${mockS3Record.s3.object.key}. Skipping.`
     );
   });
 
