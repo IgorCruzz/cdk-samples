@@ -22,6 +22,7 @@ type GetFilesOutput = Promise<{
 export interface IDataRepository {
   save: (data: dataRepositoryInput) => dataRepositoryOutput;
   get: (input: GetFilesInput) => GetFilesOutput;
+  delete: (id: string) => Promise<void>;
 }
 
 export const dataRepository: IDataRepository = {
@@ -31,6 +32,11 @@ export const dataRepository: IDataRepository = {
     await Data.insertMany(data);
 
     return;
+  },
+
+  async delete(id: string): Promise<void> {
+    const dataCollection = dbHelper.getCollection("data");
+    await dataCollection.deleteOne({ _id: new ObjectId(id) });
   },
 
   async get(input: GetFilesInput): GetFilesOutput {
