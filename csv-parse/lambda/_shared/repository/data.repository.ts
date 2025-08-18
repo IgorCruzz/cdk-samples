@@ -23,6 +23,7 @@ export interface IDataRepository {
   save: (data: dataRepositoryInput) => dataRepositoryOutput;
   get: (input: GetFilesInput) => GetFilesOutput;
   delete: (input: { id: string }) => Promise<void>;
+  findById: (input: { id: string }) => Promise<unknown>;
 }
 
 export const dataRepository: IDataRepository = {
@@ -32,6 +33,13 @@ export const dataRepository: IDataRepository = {
     await Data.insertMany(data);
 
     return;
+  },
+
+  async findById({ id }: { id: string }): Promise<unknown> {
+    const dataCollection = dbHelper.getCollection("data");
+    const data = await dataCollection.findOne({ _id: new ObjectId(id) });
+
+    return dbHelper.map(data);
   },
 
   async delete({ id }: { id: string }): Promise<void> {
