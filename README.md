@@ -11,7 +11,7 @@ O objetivo é demonstrar como modelar e provisionar infraestrutura na AWS usando
 
 Cada pasta representa um exemplo independente, com foco em diferentes serviços ou padrões de arquitetura com o CDK.
 
-- [Notification](./notification) – Envio de notificações por Email (SES) e WhatsApp (Twilio) com arquitetura serverless.
+- [Notification](./notification) – Envio de notificações por Email (Brevo) e WhatsApp (Twilio) com arquitetura serverless.
 
 - [CsvParse](./csv-parse/) - Processamento de arquivo CSV por demanda com arquitetura
 serverles.
