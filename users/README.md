@@ -2,7 +2,7 @@
 Esta aplicação serverless permite o cadastro, consulta, atualização e remoção de usuários utilizando API REST com Amazon API Gateway, AWS Lambda e MongoDB.
 
 🛠️ Arquitetura
-<p align="center"> <img src="https://github.com/IgorCruzz/cdk-samples/blob/main/diagrams/user-service.png" alt="Arquitetura User Service" /> </p>
+<p align="center"> <img src="https://github.com/IgorCruzz/cdk-samples/blob/main/_diagrams/user-service.png" alt="Arquitetura User Service" /> </p>
 🚀 Principais Funcionalidades
 ➕ Cadastro de usuários via API REST
 

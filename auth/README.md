@@ -2,7 +2,7 @@
 Esta aplicação serverless fornece um serviço de autenticação.
 
 🛠️ Arquitetura
-<p align="center"> <img src="https://github.com/IgorCruzz/cdk-samples/blob/main/diagrams/auth-service.png" alt="Arquitetura Auth Service" /> </p>
+<p align="center"> <img src="https://github.com/IgorCruzz/cdk-samples/blob/main/_diagrams/auth-service.png" alt="Arquitetura Auth Service" /> </p>
 
 🚀 Principais Funcionalidades
 

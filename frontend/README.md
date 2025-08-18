@@ -5,7 +5,7 @@ Esta aplicação **frontend** foi construída com **React + Vite** e é respons�
 ## 🛠️ Arquitetura
 
 <p align="center">
-  <img src="https://github.com/IgorCruzz/cdk-samples/blob/main/diagrams/site.png" alt="Arquitetura Frontend" />
+  <img src="https://github.com/IgorCruzz/cdk-samples/blob/main/_diagrams/site.png" alt="Arquitetura Frontend" />
 </p>
 
 ## 🚀 Principais Funcionalidades
