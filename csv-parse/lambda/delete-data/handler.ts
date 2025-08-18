@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
-import { service } from "./get-data.services";
+import { service } from "./delete-data.services";
 
 import { dbHelper } from "../_shared/repository/db-helper";
 import { secret } from "../_shared/infra/secret";
@@ -14,13 +14,9 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       isConnected = true;
     }
 
-    const page = parseInt(event.queryStringParameters?.page || "1");
+    const { id } = event.pathParameters as { id: string };
 
-    const limit = parseInt(event.queryStringParameters?.limit || "20");
-
-    const { archiveId } = event.pathParameters as { archiveId: string };
-
-    const files = await service({ page, limit, archiveId });
+    const files = await service({ id });
 
     return {
       statusCode: 200,
