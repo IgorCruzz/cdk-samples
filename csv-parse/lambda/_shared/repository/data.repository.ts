@@ -26,9 +26,31 @@ export interface IDataRepository {
   findById: (input: { id: string }) => Promise<unknown>;
   singleSave: (input: Record<string, unknown>) => Promise<void>;
   updateData: (input: Record<string, unknown>, id: string) => Promise<void>;
+  getKeys: (input: { archiveId: string }) => Promise<unknown>;
 }
 
 export const dataRepository: IDataRepository = {
+  async getKeys(input: { archiveId: string }): Promise<unknown> {
+    const collection = dbHelper.getCollection("data");
+
+    const data = await collection.findOne({
+      archiveId: new ObjectId(input.archiveId),
+    });
+
+    if (!data) {
+      return null;
+    }
+
+    const keys = Object.keys(data);
+
+    const emptyObject = keys.reduce((acc, key) => {
+      acc[key] = "";
+      return acc;
+    }, {} as Record<string, unknown>);
+
+    return emptyObject;
+  },
+
   async updateData(data: Record<string, unknown>, id: string): Promise<void> {
     const collection = dbHelper.getCollection("data");
     await collection.updateOne({ _id: new ObjectId(id) }, { $set: data });
