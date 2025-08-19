@@ -33,9 +33,18 @@ export const dataRepository: IDataRepository = {
   async getKeys(input: { archiveId: string }): Promise<unknown> {
     const collection = dbHelper.getCollection("data");
 
-    const data = await collection.findOne({
-      archiveId: new ObjectId(input.archiveId),
-    });
+    const data = await collection.findOne(
+      {
+        archiveId: new ObjectId(input.archiveId),
+      },
+      {
+        projection: {
+          _id: 0,
+          createdAt: 0,
+          archiveId: 0,
+        },
+      }
+    );
 
     if (!data) {
       return null;
