@@ -18,19 +18,23 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 
     const body = JSON.parse(event.body || "{}");
 
-    const preSignedUrl = await service({
+    const response = await service({
       filename: body.filename,
       size: body.size,
       userId,
       endpoint: body.endpoint,
     });
 
+    if (!response.success) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify(response),
+      };
+    }
+
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        url: preSignedUrl.url,
-        key: preSignedUrl.key,
-      }),
+      body: JSON.stringify(response),
     };
   } catch (error) {
     console.error("Error generating presigned URL:", error);
