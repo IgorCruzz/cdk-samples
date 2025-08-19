@@ -14,7 +14,9 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       isConnected = true;
     }
 
-    const { dataId } = event.pathParameters as { dataId: string };
+    const { dataId } = event.pathParameters as {
+      dataId: string;
+    };
 
     const response = await service({ id: dataId });
 
