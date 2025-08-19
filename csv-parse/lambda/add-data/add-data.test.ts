@@ -1,4 +1,4 @@
-import { service } from "../create-data/create-data.services";
+import { service } from "../add-data/add-data.services";
 import { dataRepository } from "../_shared/repository/data.repository";
 
 jest.mock("../_shared/repository/data.repository", () => ({
@@ -7,7 +7,7 @@ jest.mock("../_shared/repository/data.repository", () => ({
   },
 }));
 
-describe("createData", () => {
+describe("AddData", () => {
   it("should be defined", async () => {
     expect(service).toBeDefined();
   });

@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
-import { service } from "./create-data.services";
+import { service } from "./add-data.services";
 
 import { dbHelper } from "../_shared/repository/db-helper";
 import { secret } from "../_shared/infra/secret";
