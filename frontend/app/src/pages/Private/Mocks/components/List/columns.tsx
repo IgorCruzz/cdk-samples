@@ -67,6 +67,10 @@ export const columns: ColumnDef<File>[] = [
           </div>
 
           <div className="flex items-center gap-2">
+            <CopyButton method="UPDATE" text={`${import.meta.env.VITE_API_URL}${info.row.original.id}/{id}`} />
+          </div>
+
+          <div className="flex items-center gap-2">
             <CopyButton method="DELETE" text={`${import.meta.env.VITE_API_URL}${info.row.original.id}/{id}`} />
           </div>
         </div>
