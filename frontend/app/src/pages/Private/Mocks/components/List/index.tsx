@@ -24,7 +24,6 @@ export const List = () => {
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
       }),
-    refetchInterval: 10000,
   });
 
   return (
