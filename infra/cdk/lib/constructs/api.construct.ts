@@ -314,6 +314,27 @@ export class ApiConstruct extends Construct {
   }
 
   private createCsvParseResource() {
+    const addDataArn = StringParameter.fromStringParameterName(
+      this,
+      "add-data-function-arn",
+      "/api/add-data"
+    );
+
+    const addDataFn = NodejsFunction.fromFunctionAttributes(
+      this,
+      "lambda-add-data",
+      {
+        functionArn: addDataArn.stringValue,
+        sameEnvironment: true,
+      }
+    );
+
+    this.api.addRoutes({
+      path: "/{archiveId}",
+      integration: new HttpLambdaIntegration("integration-add-data", addDataFn),
+      methods: [HttpMethod.POST],
+    });
+
     const deleteDataArn = StringParameter.fromStringParameterName(
       this,
       "delete-data-function-arn",
@@ -411,6 +432,8 @@ export class ApiConstruct extends Construct {
       methods: [HttpMethod.POST],
       authorizer: this.authorizer,
     });
+
+    addDataFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
 
     deleteDataFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
 
