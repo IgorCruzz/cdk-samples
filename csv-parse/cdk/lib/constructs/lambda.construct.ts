@@ -30,6 +30,7 @@ export class LambdaConstruct extends Construct {
     this.createExtractDataFunction();
     this.createGetFilesDataFunction();
     this.createGetDataFunction();
+    this.createDeleteDataFunction();
   }
 
   private createGenerateUrlFunction() {
@@ -220,6 +221,46 @@ export class LambdaConstruct extends Construct {
         ],
       })
     );
+
+    return fn;
+  }
+
+  private createDeleteDataFunction() {
+    const fn = new NodejsFunction(this, "function-delete-data", {
+      memorySize: 128,
+      architecture: Architecture.X86_64,
+      runtime: Runtime.NODEJS_20_X,
+      timeout: Duration.seconds(30),
+      description: "A Lambda function to delete data",
+      entry: join(__dirname, "../../../lambda/delete-data/handler.ts"),
+      handler: "handler",
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: "es2020",
+      },
+      loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
+      logRetention: RetentionDays.ONE_WEEK,
+    });
+
+    const region = Stack.of(this).region;
+    const account = Stack.of(this).account;
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
+        ],
+      })
+    );
+
+    new StringParameter(this, "parameter-delete-data", {
+      parameterName: "/api/delete-data",
+      stringValue: fn.functionArn,
+      description: "Lambda function ARN for delete data",
+    });
 
     return fn;
   }
