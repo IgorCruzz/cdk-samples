@@ -6,7 +6,6 @@ import { dataRepository } from "../_shared/repository/data.repository";
 import { sendNotification } from "../_shared/infra/send-notification";
 import { normalizeRow } from "../_shared/utils/normalize.util";
 import { ObjectId } from "mongodb";
-import { dbHelper } from "../_shared/repository/db-helper";
 
 export const service = async ({
   s3Record,
