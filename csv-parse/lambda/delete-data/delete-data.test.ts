@@ -39,4 +39,14 @@ describe("deleteData", () => {
 
     expect(dataRepository.delete).toHaveBeenCalledWith({ id: "awesome-id" });
   });
+
+  it("should return success if data was deleted", async () => {
+    const svc = await service({ id: "awesome-id" });
+
+    expect(svc).toEqual({
+      message: "Data deleted successfully",
+      success: true,
+      data: null,
+    });
+  });
 });
