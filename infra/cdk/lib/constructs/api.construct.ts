@@ -335,7 +335,7 @@ export class ApiConstruct extends Construct {
         "integration-delete-data",
         deleteDataFn
       ),
-      methods: [HttpMethod.POST],
+      methods: [HttpMethod.DELETE],
     });
 
     const getDataArn = StringParameter.fromStringParameterName(
