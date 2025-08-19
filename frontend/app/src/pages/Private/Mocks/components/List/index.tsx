@@ -35,15 +35,16 @@ export const List = () => {
         </Button>
       </CardHeader>
 
-      <CardContent className="h-full flex items-center justify-center">
+      <CardContent className="h-full fslex items-center justify-center">
         <div className="flex flex-col justify-between w-full h-full">
           <DataTable
             pagination={pagination}
             setPagination={setPagination}
-            columns={columns}
+            columns={columns(data?.data.keys)}
             data={data?.data.itens || []}
             total={data?.data.count || 0}
             isLoading={isLoading || isRefetching}
+            keys={data?.data.keys}
           />
 
           <Pagination pagination={pagination} setPagination={setPagination} total={data?.data.count || 0} />
