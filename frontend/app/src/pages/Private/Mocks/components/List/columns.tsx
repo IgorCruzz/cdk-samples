@@ -1,4 +1,3 @@
-import { CopyButton } from '@/components/CopyButton';
 import { CurlSheet } from '@/components/CurlSheet';
 import { formatBytes } from '@/utils/formatByes';
 import { type ColumnDef } from '@tanstack/react-table';
@@ -12,7 +11,7 @@ export type File = {
   id: string;
 };
 
-export const columns: ColumnDef<File>[] = [
+export const columns = (keys: string): ColumnDef<File>[] => [
   {
     accessorKey: 'filename',
     header: 'Filename',
@@ -57,20 +56,13 @@ export const columns: ColumnDef<File>[] = [
   {
     header: 'Create',
     cell: (info) => {
-      const curlCommand = `
-      curl 
-      --location '${import.meta.env.VITE_API_URL}/68a3b89d64b9a8037c97582d' \
-      --header 'Content-Type: application/json' \
-      --data '{
-          "nome": "",
-          "cnpj": "",
-          "email": "",
-          "telefone": "",
-          "endereco": "",
-          "cidade": "",
-          "estado": "",
-          "cep": ""
-      }'`;
+      const id = info.row.original.id;
+      const curlCommand = [
+        'curl',
+        `--location '${import.meta.env.VITE_API_URL}/v1/${id}'`,
+        "--header 'Content-Type: application/json'",
+        `--data '${JSON.stringify(keys, null, 2)}'`,
+      ].join(' \\\n  ');
 
       return info.row.original.status === 'COMPLETED' ? (
         <CurlSheet curlText={curlCommand} triggerLabel="Create" />
@@ -83,20 +75,13 @@ export const columns: ColumnDef<File>[] = [
   {
     header: 'Update',
     cell: (info) => {
-      const curlCommand = `curl 
+      const id = info.row.original.id;
+
+      const curlCommand = `curl  
       --location 
-      --request PUT '${import.meta.env.VITE_API_URL}/68a3b89d64b9a8037c97582d/68a3d4e7a4b9a633d2652ab2' \
+      --request PUT '${import.meta.env.VITE_API_URL}/${id}/68a3d4e7a4b9a633d2652ab2' \
       --header 'Content-Type: application/json' \
-      --data '{
-          "nome": "",
-          "cnpj": "",
-          "email": "",
-          "telefone": "",
-          "endereco": "",
-          "cidade": "",
-          "estado": "",
-          "cep": ""
-      }'`;
+      --data '${JSON.stringify(keys)}'`;
 
       return info.row.original.status === 'COMPLETED' ? (
         <CurlSheet curlText={curlCommand} triggerLabel="Update" />
@@ -108,7 +93,9 @@ export const columns: ColumnDef<File>[] = [
   {
     header: 'Read',
     cell: (info) => {
-      const curlCommand = `curl --location '${import.meta.env.VITE_API_URL}/68a3b89d64b9a8037c97582d?limit=10&page=1'`;
+      const id = info.row.original.id;
+
+      const curlCommand = `curl --location '${import.meta.env.VITE_API_URL}/${id}?limit=10&page=1'`;
 
       return info.row.original.status === 'COMPLETED' ? (
         <CurlSheet curlText={curlCommand} triggerLabel="Read" />
@@ -120,10 +107,12 @@ export const columns: ColumnDef<File>[] = [
   {
     header: 'Delete',
     cell: (info) => {
+      const id = info.row.original.id;
+
       const curlCommand = `
       curl 
       --location 
-      --request DELETE '${import.meta.env.VITE_API_URL}/68a3b89d64b9a8037c97582d/68a3b8a6a1433c1ab714ee71'`;
+      --request DELETE '${import.meta.env.VITE_API_URL}/${id}/68a3b8a6a1433c1ab714ee71'`;
 
       return info.row.original.status === 'COMPLETED' ? (
         <CurlSheet curlText={curlCommand} triggerLabel="Delete" />
