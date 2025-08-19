@@ -50,13 +50,14 @@ export function Upload() {
     },
   });
 
-  const onSubmit = async ({ file }: { file: File }) => {
+  const onSubmit = async ({ file, endpoint }: { file: File; endpoint: string }) => {
     try {
       setLoading(true);
 
       const { data } = await PreSignedUrlMutateAsync({
         size: file.size,
         filename: file.name,
+        endpoint,
       });
 
       await UploadMutateAsync({
