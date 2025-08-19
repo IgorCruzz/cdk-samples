@@ -1,4 +1,5 @@
 import { CopyButton } from '@/components/CopyButton';
+import { CurlSheet } from '@/components/CurlSheet';
 import { formatBytes } from '@/utils/formatByes';
 import { type ColumnDef } from '@tanstack/react-table';
 import { CircleEllipsis, ThumbsDown, ThumbsUp } from 'lucide-react';
@@ -56,26 +57,49 @@ export const columns: ColumnDef<File>[] = [
   {
     header: 'Create',
     cell: (info) => {
+      const curlCommand = `
+      curl 
+      --location '${import.meta.env.VITE_API_URL}/68a3b89d64b9a8037c97582d' \
+      --header 'Content-Type: application/json' \
+      --data '{
+          "nome": "",
+          "cnpj": "",
+          "email": "",
+          "telefone": "",
+          "endereco": "",
+          "cidade": "",
+          "estado": "",
+          "cep": ""
+      }'`;
+
       return info.row.original.status === 'COMPLETED' ? (
-        <div className="flex gap-2">
-          <div className="flex items-center gap-2">
-            <CopyButton method="CREATE" text={`${import.meta.env.VITE_API_URL}${info.row.original.id}/{id}`} />
-          </div>
-        </div>
+        <CurlSheet curlText={curlCommand} triggerLabel="Create" />
       ) : (
         'N/A'
       );
     },
   },
+
   {
     header: 'Update',
     cell: (info) => {
+      const curlCommand = `curl 
+      --location 
+      --request PUT '${import.meta.env.VITE_API_URL}/68a3b89d64b9a8037c97582d/68a3d4e7a4b9a633d2652ab2' \
+      --header 'Content-Type: application/json' \
+      --data '{
+          "nome": "",
+          "cnpj": "",
+          "email": "",
+          "telefone": "",
+          "endereco": "",
+          "cidade": "",
+          "estado": "",
+          "cep": ""
+      }'`;
+
       return info.row.original.status === 'COMPLETED' ? (
-        <div className="flex gap-2">
-          <div className="flex items-center gap-2">
-            <CopyButton method="UPDATE" text={`${import.meta.env.VITE_API_URL}${info.row.original.id}/{id}`} />
-          </div>
-        </div>
+        <CurlSheet curlText={curlCommand} triggerLabel="Update" />
       ) : (
         'N/A'
       );
@@ -84,12 +108,10 @@ export const columns: ColumnDef<File>[] = [
   {
     header: 'Read',
     cell: (info) => {
+      const curlCommand = `curl --location '${import.meta.env.VITE_API_URL}/68a3b89d64b9a8037c97582d?limit=10&page=1'`;
+
       return info.row.original.status === 'COMPLETED' ? (
-        <div className="flex gap-2">
-          <div className="flex items-center gap-2">
-            <CopyButton method="READ" text={`${import.meta.env.VITE_API_URL}${info.row.original.id}/{id}`} />
-          </div>
-        </div>
+        <CurlSheet curlText={curlCommand} triggerLabel="Read" />
       ) : (
         'N/A'
       );
@@ -98,12 +120,13 @@ export const columns: ColumnDef<File>[] = [
   {
     header: 'Delete',
     cell: (info) => {
+      const curlCommand = `
+      curl 
+      --location 
+      --request DELETE '${import.meta.env.VITE_API_URL}/68a3b89d64b9a8037c97582d/68a3b8a6a1433c1ab714ee71'`;
+
       return info.row.original.status === 'COMPLETED' ? (
-        <div className="flex gap-2">
-          <div className="flex items-center gap-2">
-            <CopyButton method="DELETE" text={`${import.meta.env.VITE_API_URL}${info.row.original.id}/{id}`} />
-          </div>
-        </div>
+        <CurlSheet curlText={curlCommand} triggerLabel="Delete" />
       ) : (
         'N/A'
       );
