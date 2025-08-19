@@ -22,6 +22,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       filename: body.filename,
       size: body.size,
       userId,
+      endpoint: body.endpoint,
     });
 
     return {
