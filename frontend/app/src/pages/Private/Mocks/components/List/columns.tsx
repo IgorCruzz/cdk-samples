@@ -58,8 +58,7 @@ export const columns: ColumnDef<File>[] = [
     cell: (info) => {
       return info.row.original.status === 'COMPLETED' ? (
         <div className="flex items-center gap-2">
-          <p>{`${import.meta.env.VITE_API_URL}${info.row.original.id}`}</p>
-          <CopyButton text={`${import.meta.env.VITE_API_URL}${info.row.original.id}`} />
+          <CopyButton method="GET" text={`${import.meta.env.VITE_API_URL}${info.row.original.id}?limit=10&page=1`} />
         </div>
       ) : (
         'N/A'
