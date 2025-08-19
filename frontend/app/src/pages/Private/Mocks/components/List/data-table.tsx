@@ -26,6 +26,7 @@ interface DataTableProps<TData, TValue> {
   };
   total: number;
   isLoading?: boolean;
+  keys: Record<string, unknown>;
 }
 
 export function DataTable<TData, TValue>({
@@ -35,6 +36,7 @@ export function DataTable<TData, TValue>({
   setPagination,
   total,
   isLoading = false,
+  keys,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     columns,
