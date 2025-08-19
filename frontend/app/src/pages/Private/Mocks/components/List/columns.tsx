@@ -59,7 +59,11 @@ export const columns: ColumnDef<File>[] = [
       return info.row.original.status === 'COMPLETED' ? (
         <div className="flex gap-2">
           <div className="flex items-center gap-2">
-            <CopyButton method="GET" text={`${import.meta.env.VITE_API_URL}${info.row.original.id}?limit=10&page=1`} />
+            <CopyButton method="CREATE" text={`${import.meta.env.VITE_API_URL}${info.row.original.id}/{id}`} />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <CopyButton method="READ" text={`${import.meta.env.VITE_API_URL}${info.row.original.id}?limit=10&page=1`} />
           </div>
 
           <div className="flex items-center gap-2">
