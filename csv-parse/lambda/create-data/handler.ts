@@ -16,11 +16,18 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 
     const body = JSON.parse(event.body || "{}");
 
-    const files = await service(body);
+    const response = await service(body);
+
+    if (!response.success) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify(response),
+      };
+    }
 
     return {
       statusCode: 200,
-      body: JSON.stringify(files),
+      body: JSON.stringify(response),
     };
   } catch (error) {
     console.error("Error in handler:", error);
