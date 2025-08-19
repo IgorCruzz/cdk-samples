@@ -24,6 +24,7 @@ export interface IDataRepository {
   get: (input: GetFilesInput) => GetFilesOutput;
   delete: (input: { id: string }) => Promise<void>;
   findById: (input: { id: string }) => Promise<unknown>;
+  singleSave: (input: unknown) => Promise<void>;
 }
 
 export const dataRepository: IDataRepository = {
@@ -32,6 +33,11 @@ export const dataRepository: IDataRepository = {
 
     await Data.insertMany(data);
 
+    return;
+  },
+
+  async singleSave(data: unknown): Promise<void> {
+    const dataCollection = dbHelper.getCollection("data");
     return;
   },
 
