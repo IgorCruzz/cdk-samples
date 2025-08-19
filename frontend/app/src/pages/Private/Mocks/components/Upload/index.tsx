@@ -71,7 +71,7 @@ export function Upload() {
       queryClient.invalidateQueries({ queryKey: ['files'] });
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast.error('Oops! Something went wrong while uploading the file.');
+        toast.error(error.response?.data.message);
       }
       console.error(error);
     } finally {
