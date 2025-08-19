@@ -29,16 +29,14 @@ export function AppSidebar() {
   const getUser = useAuthStore((state) => state.getUser);
   const user = getUser();
 
-  const location = useLocation(); // hook para pegar rota atual
+  const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
 
   const onLogout = () => logout();
 
   return (
     <Sidebar
-      className={`transition-all duration-300 ${
-        collapsed ? 'w-16' : 'w-50'
-      } h-[95vh] overflow-hidden rounded-2xl shadow-lg m-4`}
+      className={`transition-all duration-300 ${collapsed ? 'w-16' : 'w-50'} h-[95vh] overflow-hidden shadow-lg m-4`}
     >
       <SidebarContent>
         <SidebarGroup>
