@@ -26,6 +26,15 @@ export const service = async ({
     throw new Error("User not found");
   }
 
+  const checkMethod = await archiveRepository.getByEndpoint({
+    endpoint,
+    userId,
+  });
+
+  if (checkMethod) {
+    throw new Error("Endpoint already exists");
+  }
+
   await archiveRepository.save({
     key: preSignedUrl.key,
     size,
