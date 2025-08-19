@@ -153,7 +153,6 @@ export const archiveRepository: IArchiveRepository = {
         ],
         total: [{ $count: "count" }],
       })
-
       .build();
 
     const [result] = await archiveCollection.aggregate(query).toArray();
