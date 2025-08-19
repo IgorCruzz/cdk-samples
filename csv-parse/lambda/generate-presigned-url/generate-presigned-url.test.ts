@@ -49,6 +49,13 @@ jest.mock("../_shared/repository/user.repository", () => ({
   },
 }));
 
+const request = {
+  userId: "userId",
+  size: 123465,
+  filename: "filename",
+  endpoint: "endpoint",
+};
+
 describe("generatePresignedUrl", () => {
   it("should be defined", async () => {
     expect(service).toBeDefined();
@@ -59,38 +66,27 @@ describe("generatePresignedUrl", () => {
       userId: "userId",
       size: 123465,
       filename: "filename",
+      endpoint: "endpoint",
     });
 
     expect(s3.createPresignedUrl).toHaveBeenCalled();
   });
 
   it("should be able to call findBySub", async () => {
-    await service({
-      userId: "userId",
-      size: 123465,
-      filename: "filename",
-    });
+    await service(request);
 
     expect(userRepository.findBySub).toHaveBeenCalledWith("userId");
   });
 
   it("throw an error if findBySub throws", async () => {
     (userRepository.findBySub as jest.Mock).mockResolvedValueOnce(null);
-    const svc = service({
-      userId: "userId",
-      size: 123465,
-      filename: "filename",
-    });
+    const svc = service(request);
 
     expect(svc).rejects.toThrow("User not found");
   });
 
   it("should be able to call save", async () => {
-    await service({
-      userId: "userId",
-      size: 123465,
-      filename: "filename",
-    });
+    await service(request);
 
     expect(archiveRepository.save).toHaveBeenCalledWith({
       key: "mocked-key.csv",
@@ -103,11 +99,7 @@ describe("generatePresignedUrl", () => {
   });
 
   it("should return url and key on success", async () => {
-    const svc = await service({
-      userId: "userId",
-      size: 123465,
-      filename: "filename",
-    });
+    const svc = await service(request);
 
     expect(svc).toEqual({
       url: "https://fake-s3-url.com/upload.csv",
