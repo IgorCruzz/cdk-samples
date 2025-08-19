@@ -22,9 +22,10 @@ import {
 } from '@/components/ui/dialog';
 import { Upload as UploadIcn } from 'lucide-react';
 import { queryClient } from '@/lib/query-client';
+import { Input } from '@/components/ui/input';
 
 export function Upload() {
-  const form = useForm<{ file: File }>({
+  const form = useForm<{ file: File; endpoint: string }>({
     resolver: zodResolver(fileSchema),
     mode: 'onChange',
   });
@@ -93,6 +94,20 @@ export function Upload() {
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 h-full">
                 <DropField name="file" />
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Endpoint</label>
+                  <div className="flex items-center border rounded-md overflow-hidden">
+                    <span className="px-3  select-none">/</span>
+                    <Input
+                      {...form.register('endpoint')}
+                      placeholder="your-endpoint"
+                      className="flex-1 border-none focus:ring-0 focus:border-none"
+                      required
+                    />
+                  </div>
+                </div>
+
                 <Button variant="outline" type="submit" disabled={!form.formState.isValid || loading}>
                   {loading ? `${uploadProgress}%` : <SendHorizontal />}
                 </Button>
