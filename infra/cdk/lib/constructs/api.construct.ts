@@ -314,6 +314,30 @@ export class ApiConstruct extends Construct {
   }
 
   private createCsvParseResource() {
+    const updateDataArn = StringParameter.fromStringParameterName(
+      this,
+      "update-data-function-arn",
+      "/api/update-data"
+    );
+
+    const updateDataFn = NodejsFunction.fromFunctionAttributes(
+      this,
+      "lambda-update-data",
+      {
+        functionArn: updateDataArn.stringValue,
+        sameEnvironment: true,
+      }
+    );
+
+    this.api.addRoutes({
+      path: "/{archiveId}/{dataId}",
+      integration: new HttpLambdaIntegration(
+        "integration-update-data",
+        updateDataFn
+      ),
+      methods: [HttpMethod.PUT],
+    });
+
     const addDataArn = StringParameter.fromStringParameterName(
       this,
       "add-data-function-arn",
@@ -432,6 +456,8 @@ export class ApiConstruct extends Construct {
       methods: [HttpMethod.POST],
       authorizer: this.authorizer,
     });
+
+    updateDataFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
 
     addDataFn.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
 
