@@ -13,8 +13,9 @@ export const service = async ({
   filename: string;
   endpoint: string;
 }): Promise<{
-  url: string;
-  key: string;
+  message: string;
+  success: boolean;
+  data: null | { url: string; key: string };
 }> => {
   const preSignedUrl = await s3.createPresignedUrl({
     bucket: process.env.BUCKET_NAME as string,
@@ -23,16 +24,16 @@ export const service = async ({
   const findUser = await userRepository.findBySub(userId);
 
   if (!findUser) {
-    throw new Error("User not found");
+    return { message: "User not found", success: false, data: null };
   }
 
   const checkMethod = await archiveRepository.getByEndpoint({
     endpoint,
-    userId,
+    userId: findUser.id,
   });
 
   if (checkMethod) {
-    throw new Error("Endpoint already exists");
+    return { message: "Endpoint already exists", success: false, data: null };
   }
 
   await archiveRepository.save({
@@ -46,7 +47,11 @@ export const service = async ({
   });
 
   return {
-    url: preSignedUrl.url,
-    key: preSignedUrl.key,
+    message: "Presigned URL generated successfully",
+    success: true,
+    data: {
+      url: preSignedUrl.url,
+      key: preSignedUrl.key,
+    },
   };
 };
