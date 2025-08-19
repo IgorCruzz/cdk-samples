@@ -48,9 +48,30 @@ export interface IArchiveRepository {
   ): Promise<void>;
   getStatistics(): GetStatisticOutput;
   getFileByKey: (input: { key: string }) => Promise<Files | null>;
+  getByEndpoint: (input: {
+    endpoint: string;
+    userId: string;
+  }) => Promise<Files | null>;
 }
 
 export const archiveRepository: IArchiveRepository = {
+  async getByEndpoint({
+    endpoint,
+    userId,
+  }: {
+    endpoint: string;
+    userId: string;
+  }): Promise<Files | null> {
+    const archiveCollection = dbHelper.getCollection("archives");
+
+    const file = await archiveCollection.findOne({
+      endpoint,
+      userId: new ObjectId(userId),
+    });
+
+    return file ? dbHelper.map(file) : null;
+  },
+
   async getFileByKey({ key }: { key: string }): Promise<Files | null> {
     const archiveCollection = dbHelper.getCollection("archives");
 
