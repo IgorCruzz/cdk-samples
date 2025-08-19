@@ -45,7 +45,7 @@ export const dataRepository: IDataRepository = {
     const dataCollection = dbHelper.getCollection("data");
     const data = await dataCollection.findOne({ _id: new ObjectId(id) });
 
-    return dbHelper.map(data);
+    return data ? dbHelper.map(data) : null;
   },
 
   async delete({ id }: { id: string }): Promise<void> {
