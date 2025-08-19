@@ -3,6 +3,7 @@ import { dbHelper } from "./db-helper";
 import { queryBuilder } from "./query-builder";
 
 export type Files = {
+  endpoint: string;
   key: string;
   size: number;
   message: string;
