@@ -6,10 +6,12 @@ export const service = async ({
   userId,
   size,
   filename,
+  endpoint,
 }: {
   userId: string;
   size: number;
   filename: string;
+  endpoint: string;
 }): Promise<{
   url: string;
   key: string;
@@ -31,6 +33,7 @@ export const service = async ({
     status: "PENDING",
     userId: findUser.id,
     filename,
+    endpoint,
   });
 
   return {
