@@ -9,5 +9,9 @@ export const service = async ({ id }: { id: string }) => {
 
   await dataRepository.delete({ id });
 
-  return null;
+  return {
+    message: "Data deleted successfully",
+    success: true,
+    data: null,
+  };
 };
