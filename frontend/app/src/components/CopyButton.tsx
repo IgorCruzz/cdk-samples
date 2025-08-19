@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { CheckIcon } from 'lucide-react';
+import { CheckIcon, PlusCircleIcon } from 'lucide-react';
 import { useState } from 'react';
 
 export function CopyButton({ text, method }: { text: string; method: string }) {
@@ -15,7 +15,7 @@ export function CopyButton({ text, method }: { text: string; method: string }) {
 
   return (
     <Button variant="outline" size="icon" onClick={handleCopy}>
-      {copied ? <CheckIcon className="h-4 text-green-500" /> : <p>{method}</p>}
+      {copied ? <CheckIcon className="h-4 text-green-500" /> : <PlusCircleIcon className="h-4 text-green-500" />}
     </Button>
   );
 }
