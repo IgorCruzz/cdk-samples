@@ -3,6 +3,8 @@ import {
   Files,
 } from "../_shared/repository/archive.repository";
 
+import { dataRepository } from "../_shared/repository/data.repository";
+
 export const service = async ({
   page,
   limit,
@@ -17,6 +19,7 @@ export const service = async ({
   page: number;
   limit: number;
   totalPages: number;
+  keys: any;
 }> => {
   const files = await archiveRepository.getFiles({
     page,
@@ -24,5 +27,12 @@ export const service = async ({
     sub,
   });
 
-  return files;
+  const keys = await dataRepository.getKeys({
+    archiveId: files.itens[0]?.id as string,
+  });
+
+  return {
+    ...files,
+    keys,
+  };
 };
