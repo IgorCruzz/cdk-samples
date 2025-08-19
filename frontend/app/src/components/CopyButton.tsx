@@ -15,7 +15,7 @@ export function CopyButton({ text, method }: { text: string; method: string }) {
 
   return (
     <Button variant="outline" size="icon" onClick={handleCopy}>
-      {copied ? <CheckIcon className="w-4 h-4 text-green-500" /> : <p>{method}</p>}
+      {copied ? <CheckIcon className="h-4 text-green-500" /> : <p>{method}</p>}
     </Button>
   );
 }
