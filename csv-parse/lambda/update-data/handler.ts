@@ -14,13 +14,13 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       isConnected = true;
     }
 
-    const { archiveId } = event.pathParameters as {
-      archiveId: string;
+    const { dataId } = event.pathParameters as {
+      dataId: string;
     };
 
     const body = JSON.parse(event.body || "{}");
 
-    const response = await service({ ...body }, archiveId);
+    const response = await service({ ...body }, dataId);
 
     if (!response.success) {
       return {
