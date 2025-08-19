@@ -28,7 +28,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const { refreshToken, setTokens, logout } = useAuthStore.getState();
+      const { refreshToken, setTokens, logout, idToken } = useAuthStore.getState();
 
       try {
         if (!refreshToken) return Promise.reject(error);
@@ -45,6 +45,7 @@ api.interceptors.response.use(
         setTokens({
           accessToken: response.data.data.accessToken,
           refreshToken,
+          idToken: idToken!,
         });
 
         error.config.headers.Authorization = `Bearer ${response.data.data.accessToken}`;
