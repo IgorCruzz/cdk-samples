@@ -1,5 +1,4 @@
 import { CurlSheet } from '@/components/CurlSheet';
-import { formatBytes } from '@/utils/formatByes';
 import { type ColumnDef } from '@tanstack/react-table';
 import { CircleEllipsis, ThumbsDown, ThumbsUp } from 'lucide-react';
 
@@ -9,27 +8,19 @@ export type File = {
   key: string;
   lines: number;
   id: string;
+  endpoint: string;
+  userId: string;
 };
 
 export const columns = (keys: string): ColumnDef<File>[] => [
   {
-    accessorKey: 'filename',
-    header: 'Filename',
-    cell: (info) => info.getValue(),
-  },
-  {
-    accessorKey: 'size',
-    header: 'Size',
-    cell: (info) => `${formatBytes(info.getValue() as number)}`,
+    accessorKey: 'endpoint',
+    header: 'Endpoint',
+    cell: (info) => '/' + info.getValue(),
   },
   {
     accessorKey: 'lines',
     header: 'Lines',
-    cell: (info) => info.getValue(),
-  },
-  {
-    accessorKey: 'createdAt',
-    header: 'Created',
     cell: (info) => info.getValue(),
   },
   {
@@ -56,10 +47,13 @@ export const columns = (keys: string): ColumnDef<File>[] => [
   {
     header: 'Create',
     cell: (info) => {
-      const id = info.row.original.id;
+      const id = info.row.original?.userId;
+
+      const endpoint = info.row.original.endpoint;
+
       const curlCommand = [
         'curl',
-        `--location '${import.meta.env.VITE_API_URL}/v1/${id}'`,
+        `--location '${import.meta.env.VITE_API_URL}${id}/${endpoint}'`,
         "--header 'Content-Type: application/json'",
         `--data '${JSON.stringify(keys, null, 2)}'`,
       ].join(' \\\n  ');
@@ -75,11 +69,13 @@ export const columns = (keys: string): ColumnDef<File>[] => [
   {
     header: 'Update',
     cell: (info) => {
-      const id = info.row.original.id;
+      const id = info.row.original?.userId;
+
+      const endpoint = info.row.original.endpoint;
 
       const curlCommand = `curl  
       --location 
-      --request PUT '${import.meta.env.VITE_API_URL}/${id}/68a3d4e7a4b9a633d2652ab2' \
+      --request PUT '${import.meta.env.VITE_API_URL}${id}/${endpoint}/{PUT_ID_HERE}' \
       --header 'Content-Type: application/json' \
       --data '${JSON.stringify(keys)}'`;
 
@@ -93,9 +89,11 @@ export const columns = (keys: string): ColumnDef<File>[] => [
   {
     header: 'Read',
     cell: (info) => {
-      const id = info.row.original.id;
+      const id = info.row.original?.userId;
 
-      const curlCommand = `curl --location '${import.meta.env.VITE_API_URL}/${id}?limit=10&page=1'`;
+      const endpoint = info.row.original.endpoint;
+
+      const curlCommand = `curl --location '${import.meta.env.VITE_API_URL}${id}/${endpoint}?limit=10&page=1'`;
 
       return info.row.original.status === 'COMPLETED' ? (
         <CurlSheet curlText={curlCommand} triggerLabel="Read" />
@@ -107,12 +105,14 @@ export const columns = (keys: string): ColumnDef<File>[] => [
   {
     header: 'Delete',
     cell: (info) => {
-      const id = info.row.original.id;
+      const id = info.row.original?.userId;
+
+      const endpoint = info.row.original.endpoint;
 
       const curlCommand = `
       curl 
       --location 
-      --request DELETE '${import.meta.env.VITE_API_URL}/${id}/68a3b8a6a1433c1ab714ee71'`;
+      --request DELETE '${import.meta.env.VITE_API_URL}${id}/${endpoint}/{PUT_ID_HERE}'`;
 
       return info.row.original.status === 'COMPLETED' ? (
         <CurlSheet curlText={curlCommand} triggerLabel="Delete" />
