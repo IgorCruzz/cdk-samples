@@ -1,15 +1,13 @@
 import { archiveRepository } from "../_shared/repository/archive.repository";
 import { dataRepository } from "../_shared/repository/data.repository";
 
-export const service = async ({
-  id,
-  userId,
-  endpoint,
-}: {
+type Input = {
   id: string;
   userId: string;
   endpoint: string;
-}) => {
+};
+
+export const service = async ({ id, userId, endpoint }: Input) => {
   const archive = await archiveRepository.getByEndpoint({
     endpoint,
     userId,
