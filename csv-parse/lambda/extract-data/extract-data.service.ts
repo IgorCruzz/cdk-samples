@@ -12,8 +12,6 @@ export const service = async ({
 }: {
   s3Record: S3EventRecord;
 }): Promise<void> => {
-  let lines = 0;
-
   const file = await archiveRepository.getFileByKey({
     key: s3Record.s3.object.key,
   });
@@ -59,7 +57,6 @@ export const service = async ({
 
         if (chunk.length === 10000) {
           await dataRepository.save(chunk);
-          lines += chunk.length;
           chunk.length = 0;
         }
       } catch (error) {
@@ -69,16 +66,14 @@ export const service = async ({
 
     if (chunk.length) {
       await dataRepository.save(chunk);
-      lines += chunk.length;
     }
 
-    const message = `Process completed successfully: Processed ${lines} records.`;
+    const message = `Process completed successfully`;
 
     await archiveRepository.updateStatus({
       key: s3Record.s3.object.key,
-      status: !lines ? "FAILED" : "COMPLETED",
+      status: "COMPLETED",
       message,
-      lines,
     });
 
     const response = await sendNotification.send({
@@ -100,7 +95,6 @@ export const service = async ({
       key: s3Record.s3.object.key,
       status: "FAILED",
       message,
-      lines: 0,
     });
 
     await sendNotification.send({
