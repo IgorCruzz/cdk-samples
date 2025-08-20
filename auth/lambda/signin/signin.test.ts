@@ -25,16 +25,18 @@ jest.mock("../_shared/repository/user.repository", () => ({
   },
 }));
 
+const request = {
+  email: "test@example.com",
+  password: "password123",
+};
+
 describe("signin services", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("should be able to call auth", async () => {
-    await service({
-      email: "test@example.com",
-      password: "password123",
-    });
+    await service(request);
 
     expect(cognito.auth).toHaveBeenCalledWith({
       email: "test@example.com",
@@ -48,10 +50,7 @@ describe("signin services", () => {
       session: "sessionData",
     });
 
-    const response = await service({
-      email: "test@example.com",
-      password: "password123",
-    });
+    const response = await service(request);
 
     expect(response).toEqual({
       message: "Invalid credentials",
@@ -61,10 +60,7 @@ describe("signin services", () => {
   });
 
   it("should be able to call findByEmail", async () => {
-    await service({
-      email: "test@example.com",
-      password: "password123",
-    });
+    await service(request);
 
     expect(userRepository.findByEmail).toHaveBeenCalledWith({
       email: "test@example.com",
@@ -74,10 +70,7 @@ describe("signin services", () => {
   it("should be able to return sucess false if user not exists", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValueOnce(null);
 
-    const response = await service({
-      email: "test@example.com",
-      password: "password123",
-    });
+    const response = await service(request);
 
     expect(response).toEqual({
       message: "Invalid email or password",
@@ -87,10 +80,7 @@ describe("signin services", () => {
   });
 
   it("should return success when auth succeeds", async () => {
-    const response = await service({
-      email: "test@example.com",
-      password: "password123",
-    });
+    const response = await service(request);
 
     expect(response).toEqual({
       message: "Authentication successful",
