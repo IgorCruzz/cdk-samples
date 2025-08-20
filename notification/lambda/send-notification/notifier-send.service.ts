@@ -2,11 +2,13 @@ import { APIGatewayProxyResult } from "aws-lambda";
 import { NotifyType } from "../_shared/types/notifier.type";
 import { sns } from "../_shared/infra/sns";
 
+type Input = {
+  notifications: NotifyType[];
+};
+
 export const service = async ({
   notifications,
-}: {
-  notifications: NotifyType[];
-}): Promise<APIGatewayProxyResult> => {
+}: Input): Promise<APIGatewayProxyResult> => {
   await sns.publishBatchMessage({
     data: notifications,
     attributes: [
