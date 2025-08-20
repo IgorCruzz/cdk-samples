@@ -13,17 +13,20 @@ jest.mock("../_shared/repository/data.repository", () => ({
   },
 }));
 
+const request = {
+  endpoint: "endpoint",
+  userId: "userId",
+  limit: 10,
+  page: 1,
+};
+
 describe("getData", () => {
   it("should be defined", async () => {
     expect(service).toBeDefined();
   });
 
   it("should be able to call get data", async () => {
-    await service({
-      archiveId: "id",
-      limit: 10,
-      page: 1,
-    });
+    await service(request);
 
     expect(dataRepository.get).toHaveBeenCalledWith({
       archiveId: "id",
@@ -33,11 +36,7 @@ describe("getData", () => {
   });
 
   it("should return data on success", async () => {
-    const svc = await service({
-      archiveId: "id",
-      limit: 10,
-      page: 1,
-    });
+    const svc = await service(request);
 
     expect(svc).toEqual({
       count: 1,
