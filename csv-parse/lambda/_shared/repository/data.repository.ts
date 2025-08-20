@@ -113,6 +113,10 @@ export const dataRepository: IDataRepository = {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
+      .project({
+        archiveId: 0,
+        createdAt: 0,
+      })
       .toArray();
 
     const totalPages = Math.ceil(count / limit);
