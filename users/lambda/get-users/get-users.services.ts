@@ -1,13 +1,15 @@
 import { userRepository, Users } from "../_shared/repository/user.repository";
 import { Output } from "../_shared/service/output";
 
+type Input = {
+  page: number;
+  limit: number;
+};
+
 export const service = async ({
   page,
   limit,
-}: {
-  page: number;
-  limit: number;
-}): Output<{
+}: Input): Output<{
   itens: Users[];
   count: number;
   page: number;
