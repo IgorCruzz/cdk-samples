@@ -42,11 +42,9 @@ export const service = async (
     };
   }
 
-  const { name } = user;
-
   return {
     message: "Authentication successful",
     success: true,
-    data: { ...auth, user: { name } },
+    data: auth,
   };
 };
