@@ -19,10 +19,18 @@ export const service = async ({
     return { message: "endpoint not found", success: false, data: null };
   }
 
-  const data = await dataRepository.findById({ id });
+  const data = (await dataRepository.findById({ id })) as { archiveId: string };
 
   if (!data) {
     return { message: "Data not found", success: false, data: null };
+  }
+
+  if (data.archiveId !== archive.id) {
+    return {
+      message: "Data does not belong to the endpoint",
+      success: false,
+      data: null,
+    };
   }
 
   await dataRepository.delete({ id });
