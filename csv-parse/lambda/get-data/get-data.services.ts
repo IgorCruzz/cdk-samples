@@ -31,7 +31,7 @@ export const service = async ({
       limit,
       totalPages: 0,
     };
-  }
+  } 
 
   const data = await dataRepository.get({
     page,
