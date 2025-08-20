@@ -2,17 +2,19 @@ import { s3 } from "../_shared/infra/s3";
 import { archiveRepository } from "../_shared/repository/archive.repository";
 import { userRepository } from "../_shared/repository/user.repository";
 
+type Input = {
+  userId: string;
+  size: number;
+  filename: string;
+  endpoint: string;
+};
+
 export const service = async ({
   userId,
   size,
   filename,
   endpoint,
-}: {
-  userId: string;
-  size: number;
-  filename: string;
-  endpoint: string;
-}): Promise<{
+}: Input): Promise<{
   message: string;
   success: boolean;
   data: null | { url: string; key: string };
