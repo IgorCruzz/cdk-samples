@@ -25,7 +25,10 @@ export interface IDataRepository {
   delete: (input: { id: string }) => Promise<void>;
   findById: (input: { id: string }) => Promise<unknown>;
   singleSave: (input: Record<string, unknown>) => Promise<void>;
-  updateData: (input: Record<string, unknown>, id: string) => Promise<void>;
+  updateData: (input: {
+    data: Record<string, unknown>;
+    id: string;
+  }) => Promise<void>;
   getKeys: (input: { archiveId: string }) => Promise<unknown>;
 }
 
@@ -60,7 +63,13 @@ export const dataRepository: IDataRepository = {
     return emptyObject;
   },
 
-  async updateData(data: Record<string, unknown>, id: string): Promise<void> {
+  async updateData({
+    data,
+    id,
+  }: {
+    data: Record<string, unknown>;
+    id: string;
+  }): Promise<void> {
     const collection = dbHelper.getCollection("data");
     await collection.updateOne({ _id: new ObjectId(id) }, { $set: data });
   },
