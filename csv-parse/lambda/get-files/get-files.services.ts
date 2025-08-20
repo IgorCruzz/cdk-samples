@@ -5,15 +5,17 @@ import {
 
 import { dataRepository } from "../_shared/repository/data.repository";
 
+type Input = {
+  page: number;
+  limit: number;
+  sub?: string;
+};
+
 export const service = async ({
   page,
   limit,
   sub,
-}: {
-  page: number;
-  limit: number;
-  sub?: string;
-}): Promise<{
+}: Input): Promise<{
   itens: Files[];
   count: number;
   page: number;
