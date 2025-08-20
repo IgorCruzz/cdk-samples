@@ -1,10 +1,16 @@
 import { archiveRepository } from "../_shared/repository/archive.repository";
 import { dataRepository } from "../_shared/repository/data.repository";
 
-export const service = async (data: Record<string, unknown>) => {
+type Input = {
+  data: Record<string, unknown>;
+  userId: string;
+  endpoint: string;
+};
+
+export const service = async ({ data, endpoint, userId }: Input) => {
   const archive = await archiveRepository.getByEndpoint({
-    endpoint: data.endpoint as string,
-    userId: data.userId as string,
+    endpoint,
+    userId,
   });
 
   if (!archive) {
