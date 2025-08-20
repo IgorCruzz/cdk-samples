@@ -7,16 +7,18 @@ jest.mock("../_shared/infra/cognito", () => ({
   },
 }));
 
+const request = {
+  email: "test@example.com",
+  code: "123456",
+};
+
 describe("Confirm Service", () => {
   it("should be able to call confirmSignup", async () => {
     (cognito.confirmSignup as jest.Mock).mockResolvedValueOnce({
       error: null,
     });
 
-    await service({
-      email: "test@example.com",
-      code: "123456",
-    });
+    await service(request);
 
     expect(cognito.confirmSignup).toHaveBeenCalledWith({
       email: "test@example.com",
@@ -30,10 +32,7 @@ describe("Confirm Service", () => {
       success: false,
     });
 
-    const svc = await service({
-      email: "test@example.com",
-      code: "123456",
-    });
+    const svc = await service(request);
 
     expect(svc).toEqual({
       message: "Invalid confirmation code",
@@ -48,10 +47,7 @@ describe("Confirm Service", () => {
       success: true,
     });
 
-    const svc = await service({
-      email: "test@example.com",
-      code: "123456",
-    });
+    const svc = await service(request);
 
     expect(svc).toEqual({
       message: "Account confirmed successfully",
