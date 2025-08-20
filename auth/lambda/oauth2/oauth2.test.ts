@@ -23,6 +23,10 @@ jest.mock("../_shared/repository/user.repository", () => ({
   },
 }));
 
+const request = {
+  code: "test-code",
+};
+
 describe("OAuth2 Service", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -35,9 +39,7 @@ describe("OAuth2 Service", () => {
       idToken: null,
     });
 
-    await service({
-      code: "test-code",
-    });
+    await service(request);
 
     expect(cognito.getToken).toHaveBeenCalledWith({
       code: "test-code",
@@ -58,9 +60,7 @@ describe("OAuth2 Service", () => {
       idToken: "mockIdToken",
     });
 
-    await service({
-      code: "test-code",
-    });
+    await service(request);
 
     expect(jwt.decode).toHaveBeenCalledWith({ token: "mockIdToken" });
   });
@@ -73,9 +73,7 @@ describe("OAuth2 Service", () => {
       sub: "c4386438-6051-70b8-e5b6-94553c68677f",
     });
 
-    await service({
-      code: "test-code",
-    });
+    await service(request);
 
     expect(userRepository.findByEmail).toHaveBeenCalledWith({
       email: "test@example.com",
@@ -91,9 +89,7 @@ describe("OAuth2 Service", () => {
     });
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(null);
 
-    await service({
-      code: "test-code",
-    });
+    await service(request);
 
     expect(userRepository.save).toHaveBeenCalledWith({
       email: "test@example.com",
@@ -122,9 +118,7 @@ describe("OAuth2 Service", () => {
       },
     });
 
-    await service({
-      code: "test-code",
-    });
+    await service(request);
 
     expect(userRepository.update).toHaveBeenCalled();
   });
@@ -138,9 +132,7 @@ describe("OAuth2 Service", () => {
 
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(null);
 
-    const response = await service({
-      code: "test-code",
-    });
+    const response = await service(request);
 
     expect(response).toEqual({
       message: "Login successful",
