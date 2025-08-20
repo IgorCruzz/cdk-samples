@@ -22,6 +22,12 @@ jest.mock("../_shared/repository/user.repository", () => ({
   },
 }));
 
+const request = {
+  name: "User One",
+  email: "user1@example.com",
+  id: "1",
+};
+
 describe("Update Users Service", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -32,11 +38,7 @@ describe("Update Users Service", () => {
   });
 
   it("should be able to call findById", async () => {
-    await service({
-      name: "User One",
-      email: "user1@example.com",
-      id: "1",
-    });
+    await service(request);
 
     expect(userRepository.findById).toHaveBeenCalledWith("1");
   });
@@ -44,11 +46,7 @@ describe("Update Users Service", () => {
   it("should return success false when user does not exists", async () => {
     (userRepository.findById as jest.Mock).mockResolvedValueOnce(null);
 
-    const result = await service({
-      name: "User One",
-      email: "user1@example.com",
-      id: "1",
-    });
+    const result = await service(request);
 
     expect(result).toEqual({
       message: "User not found",
@@ -58,11 +56,7 @@ describe("Update Users Service", () => {
   });
 
   it("should be able to call findByEmail", async () => {
-    await service({
-      name: "User One",
-      email: "user1@example.com",
-      id: "1",
-    });
+    await service(request);
 
     expect(userRepository.findByEmail).toHaveBeenCalledWith(
       "user1@example.com"
@@ -84,11 +78,7 @@ describe("Update Users Service", () => {
   });
 
   it("should be able to call update", async () => {
-    await service({
-      name: "User One",
-      email: "user1@example.com",
-      id: "1",
-    });
+    await service(request);
 
     expect(userRepository.update).toHaveBeenCalledWith({
       id: "1",
@@ -98,11 +88,7 @@ describe("Update Users Service", () => {
   });
 
   it("should return success with user was updated", async () => {
-    const result = await service({
-      name: "User One",
-      email: "user1@example.com",
-      id: "1",
-    });
+    const result = await service(request);
 
     expect(result).toEqual({
       message: "User updated successfully",
