@@ -354,7 +354,7 @@ export class ApiConstruct extends Construct {
     );
 
     this.api.addRoutes({
-      path: "/{archiveId}",
+      path: "/{userId}/{endpoint}",
       integration: new HttpLambdaIntegration("integration-add-data", addDataFn),
       methods: [HttpMethod.POST],
     });
