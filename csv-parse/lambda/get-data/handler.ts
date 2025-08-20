@@ -18,9 +18,12 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 
     const limit = parseInt(event.queryStringParameters?.limit || "20");
 
-    const { archiveId } = event.pathParameters as { archiveId: string };
+    const { userId, endpoint } = event.pathParameters as {
+      userId: string;
+      endpoint: string;
+    };
 
-    const files = await service({ page, limit, archiveId });
+    const files = await service({ page, limit, userId, endpoint });
 
     return {
       statusCode: 200,
