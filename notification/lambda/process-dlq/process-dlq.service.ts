@@ -1,11 +1,11 @@
 import { SQSRecord } from "aws-lambda";
 import { sns } from "../_shared/infra/sns";
 
-export const service = async ({
-  records,
-}: {
+type Input = {
   records: SQSRecord[];
-}): Promise<void> => {
+};
+
+export const service = async ({ records }: Input): Promise<void> => {
   for (const record of records) {
     try {
       const body = JSON.parse(record.body);
