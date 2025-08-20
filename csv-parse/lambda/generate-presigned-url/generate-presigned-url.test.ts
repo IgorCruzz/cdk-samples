@@ -18,6 +18,7 @@ jest.mock("../_shared/infra/s3", () => ({
 
 jest.mock("../_shared/repository/archive.repository", () => ({
   archiveRepository: {
+    getByEndpoint: jest.fn().mockResolvedValue(null),
     getFileByKey: jest.fn().mockResolvedValue({
       key: "key",
       size: 0,
@@ -99,6 +100,7 @@ describe("generatePresignedUrl", () => {
       status: "PENDING",
       userId: "userId",
       filename: "filename",
+      endpoint: "endpoint",
     });
   });
 
@@ -106,8 +108,12 @@ describe("generatePresignedUrl", () => {
     const svc = await service(request);
 
     expect(svc).toEqual({
-      url: "https://fake-s3-url.com/upload.csv",
-      key: "mocked-key.csv",
+      message: "Presigned URL generated successfully",
+      success: true,
+      data: {
+        url: "https://fake-s3-url.com/upload.csv",
+        key: "mocked-key.csv",
+      },
     });
   });
 });
