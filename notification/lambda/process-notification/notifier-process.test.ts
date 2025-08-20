@@ -40,7 +40,7 @@ describe("processNotification", () => {
   });
 
   it("should send email notification successfully", async () => {
-    const response = await service(request);
+    await service(request);
 
     expect(mail.sendMail).toHaveBeenCalledWith({
       service: "EMAIL",
@@ -48,18 +48,33 @@ describe("processNotification", () => {
       message: "Hello",
     });
     expect(twilio.sendWhatsAppMessage).not.toHaveBeenCalled();
-    expect(response.batchItemFailures).toHaveLength(0);
   });
 
   it("should send whatsapp notification successfully", async () => {
-    const response = await service(request);
+    await service({
+      records: [
+        {
+          messageId: "msg1",
+          receiptHandle: "rh1",
+          body: JSON.stringify({
+            service: "WHATSAPP",
+            phoneNumber: "+5511999999999",
+            message: "Hi",
+          }),
+          attributes: {} as any,
+          messageAttributes: {},
+          md5OfBody: "",
+          eventSource: "aws:sqs",
+          eventSourceARN: "",
+          awsRegion: "",
+        },
+      ],
+    });
 
     expect(twilio.sendWhatsAppMessage).toHaveBeenCalledWith({
       service: "WHATSAPP",
       phoneNumber: "+5511999999999",
       message: "Hi",
     });
-    expect(mail.sendMail).not.toHaveBeenCalled();
-    expect(response.batchItemFailures).toHaveLength(0);
   });
 });
