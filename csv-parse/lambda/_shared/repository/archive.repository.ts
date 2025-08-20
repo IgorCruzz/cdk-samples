@@ -8,7 +8,6 @@ export type Files = {
   size: number;
   message: string;
   status: "PROCESSING" | "COMPLETED" | "FAILED" | "PENDING";
-  lines?: number;
   userId: string;
   id?: string;
   filename?: string;
@@ -44,7 +43,7 @@ export interface IArchiveRepository {
   getFiles: (input: GetFilesInput) => GetFilesOutput;
   save: (input: ArchiveRepositoryInput) => Promise<ArchiveRepositoryOutput>;
   updateStatus(
-    data: Pick<ArchiveRepositoryInput, "key" | "status" | "message" | "lines">
+    data: Pick<ArchiveRepositoryInput, "key" | "status" | "message">
   ): Promise<void>;
   getStatistics(): GetStatisticOutput;
   getFileByKey: (input: { key: string }) => Promise<Files | null>;
@@ -182,7 +181,7 @@ export const archiveRepository: IArchiveRepository = {
     });
   },
 
-  async updateStatus({ key, status, message, lines = 0 }): Promise<void> {
+  async updateStatus({ key, status, message }): Promise<void> {
     const archives = dbHelper.getCollection("archives");
 
     await archives.updateOne(
@@ -191,7 +190,6 @@ export const archiveRepository: IArchiveRepository = {
         $set: {
           status,
           message,
-          lines,
           updatedAt: new Date(),
         },
       }
