@@ -18,17 +18,20 @@ jest.mock("../_shared/infra/cognito", () => ({
   },
 }));
 
+const request = {
+  email: "existing@example.com",
+  password: "password123",
+  firstName: "Foo",
+  lastName: "Bar",
+};
+
 describe("Signup Services", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("should be able to call findByEmail", async () => {
-    await service({
-      email: "existing@example.com",
-      password: "password123",
-      name: "Existing User",
-    });
+    await service(request);
 
     expect(userRepository.findByEmail).toHaveBeenCalledWith({
       email: "existing@example.com",
@@ -38,18 +41,15 @@ describe("Signup Services", () => {
   it("should throw an error if user already exists", async () => {
     jest.spyOn(userRepository, "findByEmail").mockResolvedValueOnce({
       email: "existing@example.com",
-      name: "Existing User",
+      firstName: "Foo",
+      lastName: "Bar",
       providers: {
         cognito: "existing-sub",
         google: null,
       },
     });
 
-    const svc = await service({
-      email: "existing@example.com",
-      password: "password123",
-      name: "Existing User",
-    });
+    const svc = await service(request);
 
     expect(svc).toEqual({
       message: "Email already exists",
@@ -59,11 +59,7 @@ describe("Signup Services", () => {
   });
 
   it("should call cognito.signUp with correct parameters", async () => {
-    await service({
-      email: "existing@example.com",
-      password: "password123",
-      name: "Existing User",
-    });
+    await service(request);
 
     expect(cognito.signUp).toHaveBeenCalledWith(
       "Existing User",
@@ -73,11 +69,7 @@ describe("Signup Services", () => {
   });
 
   it("should save the user with correct data", async () => {
-    await service({
-      email: "existing@example.com",
-      password: "password123",
-      name: "Existing User",
-    });
+    await service(request);
 
     expect(userRepository.save).toHaveBeenCalledWith({
       name: "Existing User",
@@ -91,11 +83,7 @@ describe("Signup Services", () => {
   });
 
   it("should return success message on successful signup", async () => {
-    const svc = await service({
-      email: "existing@example.com",
-      password: "password123",
-      name: "Existing User",
-    });
+    const svc = await service(request);
 
     expect(svc).toEqual({
       message: "User created successfully",
