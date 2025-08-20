@@ -11,13 +11,15 @@ jest.mock("../_shared/repository/data.repository", () => ({
   },
 }));
 
+const request = { id: "awesome-id", endpoint: "endpoint", userId: "userId" };
+
 describe("deleteData", () => {
   it("should be defined", async () => {
     expect(service).toBeDefined();
   });
 
   it("should be able to call findById", async () => {
-    await service({ id: "awesome-id" });
+    await service(request);
 
     expect(dataRepository.delete).toHaveBeenCalledWith({ id: "awesome-id" });
   });
@@ -25,7 +27,7 @@ describe("deleteData", () => {
   it("should return success false if data not found", async () => {
     (dataRepository.findById as jest.Mock).mockResolvedValueOnce(null);
 
-    const svc = await service({ id: "awesome-id" });
+    const svc = await service(request);
 
     expect(svc).toEqual({
       message: "Data not found",
@@ -35,13 +37,13 @@ describe("deleteData", () => {
   });
 
   it("should be able to call delete", async () => {
-    await service({ id: "awesome-id" });
+    await service(request);
 
     expect(dataRepository.delete).toHaveBeenCalledWith({ id: "awesome-id" });
   });
 
   it("should return success if data was deleted", async () => {
-    const svc = await service({ id: "awesome-id" });
+    const svc = await service(request);
 
     expect(svc).toEqual({
       message: "Data deleted successfully",
