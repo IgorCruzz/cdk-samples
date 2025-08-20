@@ -4,14 +4,15 @@ import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
 import { files } from '@/services/endpoints/files';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import DropField from '@/components/DropField';
 import { useState } from 'react';
 import { fileSchema } from '@/schemas/file';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AxiosError } from 'axios';
-import { SendHorizontal } from 'lucide-react';
+import { SendHorizontal, Upload as UploadIcn } from 'lucide-react';
+import { queryClient } from '@/lib/query-client';
+import { Input } from '@/components/ui/input';
 import {
   Dialog,
   DialogContent,
@@ -20,9 +21,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Upload as UploadIcn } from 'lucide-react';
-import { queryClient } from '@/lib/query-client';
-import { Input } from '@/components/ui/input';
 
 export function Upload() {
   const form = useForm<{ file: File; endpoint: string }>({
@@ -32,6 +30,7 @@ export function Upload() {
 
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const { mutateAsync: PreSignedUrlMutateAsync } = useMutation({
     mutationFn: files.preSignedUrl,
@@ -60,30 +59,41 @@ export function Upload() {
         endpoint,
       });
 
-      await UploadMutateAsync({
-        url: data.url,
-        file,
-      });
+      const { url } = data.data;
+
+      await UploadMutateAsync({ url, file });
 
       toast.success('File uploaded successfully!');
       form.reset();
-
       queryClient.invalidateQueries({ queryKey: ['files'] });
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
+        toast.error(error.response?.data?.message || 'Upload failed');
+      } else {
+        toast.error('Upload failed');
       }
       console.error(error);
     } finally {
       setLoading(false);
+      setUploadProgress(0);
+    }
+  };
+
+  const handleOpenChange = (value: boolean) => {
+    if (loading) return;
+    setOpen(value);
+    if (!value) {
+      form.reset();
+      setUploadProgress(0);
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger className="btn">
         <UploadIcn />
       </DialogTrigger>
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Upload file</DialogTitle>
@@ -99,7 +109,7 @@ export function Upload() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Endpoint</label>
                   <div className="flex items-center border rounded-md overflow-hidden">
-                    <span className="px-3  select-none">/</span>
+                    <span className="px-3 select-none">/</span>
                     <Input
                       {...form.register('endpoint')}
                       placeholder="your-endpoint"
