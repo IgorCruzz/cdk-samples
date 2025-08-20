@@ -23,16 +23,18 @@ jest.mock("../_shared/repository/archive.repository", () => ({
 }));
 
 const request = {
-  nome: "Teixeira Cardoso - ME",
-  cnpj: "23.579.041/0001-80",
-  email: "rodrigueslivia@azevedo.com",
-  telefone: "(40) 6977-4635",
-  endereco: "Jardim de Mendes, 18",
-  cidade: "Belém",
-  estado: "MT",
-  cep: "50588-358",
+  data: {
+    nome: "Teixeira Cardoso - ME",
+    cnpj: "23.579.041/0001-80",
+    email: "rodrigueslivia@azevedo.com",
+    telefone: "(40) 6977-4635",
+    endereco: "Jardim de Mendes, 18",
+    cidade: "Belém",
+    estado: "MT",
+    cep: "50588-358",
+  },
+  id: "awesome-id",
 };
-const id = "awesome-id";
 
 describe("UpdateData", () => {
   it("should be defined", async () => {
@@ -40,7 +42,7 @@ describe("UpdateData", () => {
   });
 
   it("should be able to call updateData", async () => {
-    await service(request, id);
+    await service(request);
 
     expect(dataRepository.updateData).toHaveBeenCalledWith(
       {
