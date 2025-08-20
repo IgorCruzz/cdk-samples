@@ -330,7 +330,7 @@ export class ApiConstruct extends Construct {
     );
 
     this.api.addRoutes({
-      path: "/{archiveId}/{dataId}",
+      path: "/{userId}/{endpoint}/{dataId}",
       integration: new HttpLambdaIntegration(
         "integration-update-data",
         updateDataFn
