@@ -62,7 +62,8 @@ describe("Signup Services", () => {
     await service(request);
 
     expect(cognito.signUp).toHaveBeenCalledWith(
-      "Existing User",
+      "Foo",
+      "Bar",
       "existing@example.com",
       "password123"
     );
@@ -72,7 +73,8 @@ describe("Signup Services", () => {
     await service(request);
 
     expect(userRepository.save).toHaveBeenCalledWith({
-      name: "Existing User",
+      firstName: "Foo",
+      lastName: "Bar",
       email: "existing@example.com",
       password: "password123",
       providers: {
