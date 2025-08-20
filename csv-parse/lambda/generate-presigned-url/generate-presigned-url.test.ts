@@ -81,7 +81,8 @@ describe("generatePresignedUrl", () => {
 
   it("throw an error if findBySub throws", async () => {
     (userRepository.findBySub as jest.Mock).mockResolvedValueOnce(null);
-    const svc = service(request);
+
+    const svc = await service(request);
 
     expect(svc).toEqual({
       data: null,
