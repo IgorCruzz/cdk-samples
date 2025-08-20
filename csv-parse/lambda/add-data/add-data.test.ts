@@ -7,23 +7,25 @@ jest.mock("../_shared/repository/data.repository", () => ({
   },
 }));
 
+const request = {
+  nome: "Teixeira Cardoso - ME",
+  cnpj: "23.579.041/0001-80",
+  email: "rodrigueslivia@azevedo.com",
+  telefone: "(40) 6977-4635",
+  endereco: "Jardim de Mendes, 18",
+  cidade: "Belém",
+  estado: "MT",
+  cep: "50588-358",
+  archiveId: "68a3b89d64b9a8037c97582d",
+};
+
 describe("AddData", () => {
   it("should be defined", async () => {
     expect(service).toBeDefined();
   });
 
   it("should be able to call singleSave", async () => {
-    await service({
-      nome: "Teixeira Cardoso - ME",
-      cnpj: "23.579.041/0001-80",
-      email: "rodrigueslivia@azevedo.com",
-      telefone: "(40) 6977-4635",
-      endereco: "Jardim de Mendes, 18",
-      cidade: "Belém",
-      estado: "MT",
-      cep: "50588-358",
-      archiveId: "68a3b89d64b9a8037c97582d",
-    });
+    await service(request);
 
     expect(dataRepository.singleSave).toHaveBeenCalledWith({
       nome: "Teixeira Cardoso - ME",
@@ -39,17 +41,7 @@ describe("AddData", () => {
   });
 
   it("should be able to return success if data was added", async () => {
-    const svc = await service({
-      nome: "Teixeira Cardoso - ME",
-      cnpj: "23.579.041/0001-80",
-      email: "rodrigueslivia@azevedo.com",
-      telefone: "(40) 6977-4635",
-      endereco: "Jardim de Mendes, 18",
-      cidade: "Belém",
-      estado: "MT",
-      cep: "50588-358",
-      archiveId: "68a3b89d64b9a8037c97582d",
-    });
+    const svc = await service(request);
 
     expect(svc).toEqual({
       message: "Data created successfully",
