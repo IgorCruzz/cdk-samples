@@ -27,17 +27,19 @@ jest.mock("../_shared/repository/archive.repository", () => ({
   },
 }));
 
+const request = {
+  limit: 10,
+  page: 1,
+  sub: "sub",
+};
+
 describe("getFiles", () => {
   it("should be defined", async () => {
     expect(service).toBeDefined();
   });
 
   it("should be able to call getFiles", async () => {
-    await service({
-      limit: 10,
-      page: 1,
-      sub: "sub",
-    });
+    await service(request);
 
     expect(archiveRepository.getFiles).toHaveBeenCalledWith({
       limit: 10,
@@ -47,11 +49,7 @@ describe("getFiles", () => {
   });
 
   it("should return files on success", async () => {
-    const svc = await service({
-      limit: 10,
-      page: 1,
-      sub: "sub",
-    });
+    const svc = await service(request);
 
     expect(svc).toEqual({
       itens: [
