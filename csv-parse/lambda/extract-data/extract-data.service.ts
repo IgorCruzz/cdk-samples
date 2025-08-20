@@ -7,11 +7,11 @@ import { sendNotification } from "../_shared/infra/send-notification";
 import { normalizeRow } from "../_shared/utils/normalize.util";
 import { ObjectId } from "mongodb";
 
-export const service = async ({
-  s3Record,
-}: {
+type Input = {
   s3Record: S3EventRecord;
-}): Promise<void> => {
+};
+
+export const service = async ({ s3Record }: Input): Promise<void> => {
   const file = await archiveRepository.getFileByKey({
     key: s3Record.s3.object.key,
   });
