@@ -27,7 +27,7 @@ export const service = async ({
 
   if (data.archiveId !== archive.id) {
     return {
-      message: "Data does not belong to the endpoint",
+      message: "Data does not exists",
       success: false,
       data: null,
     };
