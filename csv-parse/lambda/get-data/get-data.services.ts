@@ -1,13 +1,16 @@
 import { dataRepository } from "../_shared/repository/data.repository";
+import { archiveRepository } from "../_shared/repository/archive.repository";
 
 export const service = async ({
   page,
   limit,
-  archiveId,
+  userId,
+  endpoint,
 }: {
   page: number;
   limit: number;
-  archiveId: string;
+  userId: string;
+  endpoint: string;
 }): Promise<{
   itens: unknown[];
   count: number;
@@ -15,10 +18,25 @@ export const service = async ({
   limit: number;
   totalPages: number;
 }> => {
+  const archive = await archiveRepository.getByEndpoint({
+    endpoint,
+    userId,
+  });
+
+  if (!archive) {
+    return {
+      itens: [],
+      count: 0,
+      page,
+      limit,
+      totalPages: 0,
+    };
+  }
+
   const data = await dataRepository.get({
     page,
     limit,
-    archiveId,
+    archiveId: archive.id!,
   });
 
   return data;
