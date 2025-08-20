@@ -15,6 +15,11 @@ jest.mock("../_shared/repository/user.repository", () => ({
   },
 }));
 
+const request = {
+  limit: 10,
+  page: 1,
+};
+
 describe("Get Users Service", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -25,10 +30,7 @@ describe("Get Users Service", () => {
   });
 
   it("should be able to call getUsers", async () => {
-    await service({
-      limit: 10,
-      page: 1,
-    });
+    await service(request);
 
     expect(userRepository.getUsers).toHaveBeenCalledWith({
       limit: 10,
@@ -37,10 +39,7 @@ describe("Get Users Service", () => {
   });
 
   it("should be able to return sucess", async () => {
-    const svc = await service({
-      limit: 10,
-      page: 1,
-    });
+    const svc = await service(request);
 
     expect(svc).toEqual({
       message: "Users retrieved successfully",
