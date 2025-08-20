@@ -82,7 +82,11 @@ describe("generatePresignedUrl", () => {
     (userRepository.findBySub as jest.Mock).mockResolvedValueOnce(null);
     const svc = service(request);
 
-    expect(svc).rejects.toThrow("User not found");
+    expect(svc).toEqual({
+      data: null,
+      message: "User not found",
+      success: false,
+    });
   });
 
   it("should be able to call save", async () => {
