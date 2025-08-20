@@ -97,7 +97,8 @@ describe("OAuth2 Service", () => {
         cognito: null,
         google: "c4386438-6051-70b8-e5b6-94553c68677f",
       },
-      name: "Foo Bar",
+      firstName: "Foo",
+      lastName: "Bar",
     });
   });
 
@@ -110,7 +111,8 @@ describe("OAuth2 Service", () => {
 
     (userRepository.findByEmail as jest.Mock).mockResolvedValue({
       id: "user-id",
-      name: "Existing User",
+      firstName: "Foo",
+      lastName: "Bar",
       email: "test@example.com",
       providers: {
         cognito: "some-cognito-id",
