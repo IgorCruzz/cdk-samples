@@ -76,7 +76,11 @@ export const dataRepository: IDataRepository = {
   async singleSave(data: Record<string, unknown>): Promise<void> {
     const dataCollection = dbHelper.getCollection("data");
 
-    await dataCollection.insertOne({ ...data, createdAt: new Date() });
+    await dataCollection.insertOne({
+      ...data,
+      archiveId: new ObjectId(data.archiveId as string),
+      createdAt: new Date(),
+    });
 
     return;
   },
