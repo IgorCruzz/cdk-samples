@@ -13,12 +13,13 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       await dbHelper.connect(uri);
       isConnected = true;
     }
-
-    const { dataId } = event.pathParameters as {
+    const { userId, endpoint, dataId } = event.pathParameters as {
+      userId: string;
+      endpoint: string;
       dataId: string;
     };
 
-    const response = await service({ id: dataId });
+    const response = await service({ id: dataId, userId, endpoint });
 
     if (!response.success) {
       return {
