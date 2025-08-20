@@ -19,13 +19,13 @@ export const service = async ({
     return { message: "endpoint not found", success: false, data: null };
   }
 
-  const data = (await dataRepository.findById({ id })) as { archiveId: string };
+  const data = await dataRepository.findById({ id });
 
   if (!data) {
     return { message: "Data not found", success: false, data: null };
   }
 
-  if (data.archiveId !== archive.id) {
+  if (data.archiveId.toString() !== archive.id.toString()) {
     return {
       message: "Data does not exists",
       success: false,
