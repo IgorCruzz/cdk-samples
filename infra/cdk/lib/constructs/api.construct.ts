@@ -399,7 +399,7 @@ export class ApiConstruct extends Construct {
     );
 
     this.api.addRoutes({
-      path: "/{archiveId}",
+      path: "/{userId}/{endpoint}",
       integration: new HttpLambdaIntegration(
         "integration-get-files-data",
         getDataFn
