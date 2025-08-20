@@ -2,13 +2,13 @@ import { userRepository } from "../_shared/repository/user.repository";
 import { Output } from "../_shared/service/output";
 import { cognito } from "../_shared/infra/cognito";
 
-type CreateUserInput = {
+type Input = {
   email: string;
   password: string;
   name: string;
 };
 
-export const service = async (data: CreateUserInput): Output => {
+export const service = async (data: Input): Output => {
   const existingUser = await userRepository.findByEmail(data.email);
   if (existingUser) {
     return { message: "Email already exists", success: false, data: null };
