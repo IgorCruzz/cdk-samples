@@ -3,11 +3,13 @@ import { NotifyType } from "../_shared/types/notifier.type";
 import { twilio } from "../_shared/infra/twilio";
 import { mail } from "../_shared/infra/mail";
 
+type Input = {
+  records: SQSRecord[];
+};
+
 export const service = async ({
   records,
-}: {
-  records: SQSRecord[];
-}): Promise<SQSBatchResponse> => {
+}: Input): Promise<SQSBatchResponse> => {
   const serviceSender: {
     [key: string]: (args: NotifyType) => Promise<void>;
   } = {
