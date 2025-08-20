@@ -20,7 +20,10 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 
     const body = JSON.parse(event.body || "{}");
 
-    const response = await service({ ...body }, dataId);
+    const response = await service({
+      data: body,
+      id: dataId,
+    });
 
     if (!response.success) {
       return {
