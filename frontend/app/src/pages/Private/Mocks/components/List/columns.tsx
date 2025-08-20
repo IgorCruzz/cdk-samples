@@ -15,7 +15,7 @@ export type File = {
 export const columns = (keys: string): ColumnDef<File>[] => [
   {
     accessorKey: 'endpoint',
-    header: 'Endpoint',
+    header: 'Api',
     cell: (info) => '/' + info.getValue(),
   },
   {
