@@ -19,11 +19,6 @@ export const columns = (keys: string): ColumnDef<File>[] => [
     cell: (info) => '/' + info.getValue(),
   },
   {
-    accessorKey: 'lines',
-    header: 'Lines',
-    cell: (info) => info.getValue(),
-  },
-  {
     accessorKey: 'status',
     header: 'Status',
     cell: (info) => {
