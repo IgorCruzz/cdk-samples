@@ -89,9 +89,6 @@ describe("signin services", () => {
         accessToken: "accessToken",
         refreshToken: "refreshToken",
         idToken: "idToken",
-        user: {
-          name: "User One",
-        },
       },
     });
     expect(cognito.auth).toHaveBeenCalledTimes(1);
