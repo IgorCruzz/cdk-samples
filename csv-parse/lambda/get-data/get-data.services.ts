@@ -1,17 +1,19 @@
 import { dataRepository } from "../_shared/repository/data.repository";
 import { archiveRepository } from "../_shared/repository/archive.repository";
 
+type Input = {
+  page: number;
+  limit: number;
+  userId: string;
+  endpoint: string;
+};
+
 export const service = async ({
   page,
   limit,
   userId,
   endpoint,
-}: {
-  page: number;
-  limit: number;
-  userId: string;
-  endpoint: string;
-}): Promise<{
+}: Input): Promise<{
   itens: unknown[];
   count: number;
   page: number;
