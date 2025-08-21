@@ -16,62 +16,58 @@ export type Files = {
   };
 };
 
-type ArchiveRepositoryInput = Files;
+export type SaveArchiveInput = Files;
 
-type ArchiveRepositoryOutput = void;
-
-type GetFilesInput = {
+export type GetFilesInput = {
   page: number;
   limit: number;
   sub?: string;
 };
 
-type GetFilesOutput = Promise<{
+export type UpdateStatusInput = Pick<Files, "key" | "status" | "message">;
+export type GetFileByKeyInput = { key: string };
+export type GetByEndpointInput = { endpoint: string; userId: string };
+
+export type SaveArchiveOutput = void;
+
+export type GetFilesOutput = {
   itens: Files[];
   count: number;
   page: number;
   limit: number;
   totalPages: number;
-}>;
+};
 
-type GetStatisticOutput = Promise<{
+export type GetStatisticOutput = {
   totalSuccess: number;
   totalFailed: number;
-}>;
+};
+
+export type GetFileByKeyOutput = Files | null;
+export type GetByEndpointOutput = Files | null;
 
 export interface IArchiveRepository {
-  getFiles: (input: GetFilesInput) => GetFilesOutput;
-  save: (input: ArchiveRepositoryInput) => Promise<ArchiveRepositoryOutput>;
-  updateStatus(
-    data: Pick<ArchiveRepositoryInput, "key" | "status" | "message">
-  ): Promise<void>;
-  getStatistics(): GetStatisticOutput;
-  getFileByKey: (input: { key: string }) => Promise<Files | null>;
-  getByEndpoint: (input: {
-    endpoint: string;
-    userId: string;
-  }) => Promise<Files | null>;
+  getFiles(input: GetFilesInput): Promise<GetFilesOutput>;
+  save(input: SaveArchiveInput): Promise<SaveArchiveOutput>;
+  updateStatus(input: UpdateStatusInput): Promise<void>;
+  getStatistics(): Promise<GetStatisticOutput>;
+  getFileByKey(input: GetFileByKeyInput): Promise<GetFileByKeyOutput>;
+  getByEndpoint(input: GetByEndpointInput): Promise<GetByEndpointOutput>;
 }
 
 export const archiveRepository: IArchiveRepository = {
-  async getByEndpoint({
-    endpoint,
-    userId,
-  }: {
-    endpoint: string;
-    userId: string;
-  }): Promise<Files | null> {
+  async getByEndpoint(input: GetByEndpointInput): Promise<GetByEndpointOutput> {
     const archiveCollection = dbHelper.getCollection("archives");
 
     const file = await archiveCollection.findOne({
-      endpoint,
-      userId: new ObjectId(userId),
+      endpoint: input.endpoint,
+      userId: new ObjectId(input.userId),
     });
 
     return file ? dbHelper.map(file) : null;
   },
 
-  async getFileByKey({ key }: { key: string }): Promise<Files | null> {
+  async getFileByKey(input: GetFileByKeyInput): Promise<GetFileByKeyOutput> {
     const archiveCollection = dbHelper.getCollection("archives");
 
     const query = queryBuilder()
@@ -81,9 +77,7 @@ export const archiveRepository: IArchiveRepository = {
         foreignField: "_id",
         as: "user",
       })
-      .match({
-        key,
-      })
+      .match({ key: input.key })
       .unwind({
         path: "$user",
         preserveNullAndEmptyArrays: true,
@@ -95,7 +89,7 @@ export const archiveRepository: IArchiveRepository = {
     return file ? dbHelper.map(file) : null;
   },
 
-  async getStatistics(): GetStatisticOutput {
+  async getStatistics(): Promise<GetStatisticOutput> {
     const archiveCollection = dbHelper.getCollection("archives");
 
     const totalSuccess = await archiveCollection.countDocuments({
@@ -106,15 +100,12 @@ export const archiveRepository: IArchiveRepository = {
       status: "FAILED",
     });
 
-    return {
-      totalSuccess,
-      totalFailed,
-    };
+    return { totalSuccess, totalFailed };
   },
 
-  async getFiles({ page, limit, sub }: GetFilesInput): GetFilesOutput {
+  async getFiles(input: GetFilesInput): Promise<GetFilesOutput> {
     const archiveCollection = dbHelper.getCollection("archives");
-    const skip = (page - 1) * limit;
+    const skip = (input.page - 1) * input.limit;
 
     const query = queryBuilder()
       .lookup({
@@ -125,8 +116,8 @@ export const archiveRepository: IArchiveRepository = {
       })
       .match({
         $or: [
-          { "user.providers.google": sub },
-          { "user.providers.cognito": sub },
+          { "user.providers.google": input.sub },
+          { "user.providers.cognito": input.sub },
         ],
       })
       .unwind({
@@ -137,7 +128,7 @@ export const archiveRepository: IArchiveRepository = {
         data: [
           { $sort: { createdAt: -1 } },
           { $skip: skip },
-          { $limit: limit },
+          { $limit: input.limit },
           {
             $addFields: {
               createdAt: {
@@ -158,38 +149,37 @@ export const archiveRepository: IArchiveRepository = {
 
     const itens = dbHelper.mapCollection(result.data || []);
     const total = result.total?.[0]?.count || 0;
-    const totalPages = Math.ceil(total / limit);
 
     return {
       itens,
       count: total,
-      page,
-      limit,
-      totalPages,
+      page: input.page,
+      limit: input.limit,
+      totalPages: Math.ceil(total / input.limit),
     };
   },
 
-  async save(item: ArchiveRepositoryInput): Promise<ArchiveRepositoryOutput> {
+  async save(input: SaveArchiveInput): Promise<SaveArchiveOutput> {
     const archives = dbHelper.getCollection("archives");
 
     await archives.insertOne({
-      ...item,
-      userId: new ObjectId(item.userId),
+      ...input,
+      userId: new ObjectId(input.userId),
       lines: 0,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
   },
 
-  async updateStatus({ key, status, message }): Promise<void> {
+  async updateStatus(input: UpdateStatusInput): Promise<void> {
     const archives = dbHelper.getCollection("archives");
 
     await archives.updateOne(
-      { key },
+      { key: input.key },
       {
         $set: {
-          status,
-          message,
+          status: input.status,
+          message: input.message,
           updatedAt: new Date(),
         },
       }
