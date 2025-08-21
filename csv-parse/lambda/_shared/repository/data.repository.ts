@@ -41,9 +41,15 @@ export interface IDataRepository {
   delete: (input: DeleteInput) => Promise<DeleteOutput>;
   updateData: (input: UpdateDataInput) => Promise<UpdateDataOutput>;
   getKeys: (input: GetKeysInput) => Promise<GetKeysOutput>;
+  deleteMany: (input: { archiveId: string }) => Promise<void>;
 }
 
 export const dataRepository: IDataRepository = {
+  async deleteMany({ archiveId }: { archiveId: string }): Promise<void> {
+    const collection = dbHelper.getCollection("data");
+    await collection.deleteMany({ archiveId: new ObjectId(archiveId) });
+  },
+
   async save(input: SaveManyInput): Promise<SaveOutput> {
     const collection = dbHelper.getCollection("data");
     await collection.insertMany(input);
