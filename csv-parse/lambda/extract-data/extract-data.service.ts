@@ -55,7 +55,7 @@ export const service = async ({ s3Record }: Input): Promise<void> => {
 
         chunk.push(data);
 
-        if (chunk.length === 10000) {
+        if (chunk.length === 500) {
           await dataRepository.save(chunk);
           chunk.length = 0;
         }
