@@ -105,7 +105,9 @@ export function Upload() {
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 h-full">
                 <DropField name="file" />
-
+                <p className="text-sm text-red-400 mt-1 text-center">
+                  Only the first 10,000 lines of the file will be processed.
+                </p>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Endpoint</label>
                   <div className="flex items-center border rounded-md overflow-hidden">
@@ -118,7 +120,6 @@ export function Upload() {
                     />
                   </div>
                 </div>
-
                 <Button variant="outline" type="submit" disabled={!form.formState.isValid || loading}>
                   {loading ? `${uploadProgress}%` : <SendHorizontal />}
                 </Button>
