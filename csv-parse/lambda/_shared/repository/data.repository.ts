@@ -1,7 +1,6 @@
 import { ObjectId } from "mongodb";
 import { dbHelper } from "./db-helper";
 
-/* ---------- Types de Entrada ---------- */
 export type SaveManyInput = Record<string, unknown>[];
 export type SaveOneInput = Record<string, unknown>;
 
@@ -45,12 +44,12 @@ export interface IDataRepository {
 }
 
 export const dataRepository: IDataRepository = {
-  async save(input) {
+  async save(input: SaveManyInput): Promise<SaveOutput> {
     const collection = dbHelper.getCollection("data");
     await collection.insertMany(input);
   },
 
-  async singleSave(input) {
+  async singleSave(input: SaveOneInput): Promise<SaveOneOutput> {
     const collection = dbHelper.getCollection("data");
     await collection.insertOne({
       ...input,
@@ -59,7 +58,7 @@ export const dataRepository: IDataRepository = {
     });
   },
 
-  async get(input) {
+  async get(input: GetFilesInput): Promise<GetFilesOutput> {
     const collection = dbHelper.getCollection("data");
     const { page, limit, archiveId } = input;
 
@@ -84,23 +83,23 @@ export const dataRepository: IDataRepository = {
     };
   },
 
-  async findById({ id }) {
+  async findById({ id }: FindByIdInput): Promise<FindByIdOutput> {
     const collection = dbHelper.getCollection("data");
     const data = await collection.findOne({ _id: new ObjectId(id) });
     return data ? dbHelper.map(data) : null;
   },
 
-  async delete({ id }) {
+  async delete({ id }: DeleteInput): Promise<DeleteOutput> {
     const collection = dbHelper.getCollection("data");
     await collection.deleteOne({ _id: new ObjectId(id) });
   },
 
-  async updateData({ id, data }) {
+  async updateData({ id, data }: UpdateDataInput): Promise<UpdateDataOutput> {
     const collection = dbHelper.getCollection("data");
     await collection.updateOne({ _id: new ObjectId(id) }, { $set: data });
   },
 
-  async getKeys({ archiveId }) {
+  async getKeys({ archiveId }: GetKeysInput): Promise<GetKeysOutput> {
     const collection = dbHelper.getCollection("data");
 
     const data = await collection.findOne(
