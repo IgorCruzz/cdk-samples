@@ -15,6 +15,8 @@ export const service = async ({ archiveId }: Input) => {
     };
   }
 
+  await archiveRepository.delete({ id: archiveId });
+
   return {
     message: "Api deleted successfully",
     success: true,
