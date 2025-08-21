@@ -1,5 +1,12 @@
 import { service } from "../delete-api/delete-api.services";
 import { archiveRepository } from "../_shared/repository/archive.repository";
+import { dataRepository } from "../_shared/repository/data.repository";
+
+jest.mock("../_shared/repository/data.repository", () => ({
+  dataRepository: {
+    deleteMany: jest.fn().mockResolvedValue(undefined),
+  },
+}));
 
 jest.mock("../_shared/repository/archive.repository", () => ({
   archiveRepository: {
@@ -51,6 +58,14 @@ describe("deleteData", () => {
 
     expect(archiveRepository.delete).toHaveBeenCalledWith({
       id: "some-archive-id",
+    });
+  });
+
+  it("should be able to call deleteMany", async () => {
+    await service(request);
+
+    expect(dataRepository.deleteMany).toHaveBeenCalledWith({
+      archiveId: "some-archive-id",
     });
   });
 });
