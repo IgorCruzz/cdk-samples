@@ -1,8 +1,8 @@
 import { api } from '../api';
 
 export const files = {
-  statistics: async () => {
-    return await api.get('files/statistics');
+  delete: async ({ apiId }: { apiId: string }) => {
+    return await api.delete(`api/${apiId}`);
   },
   preSignedUrl: async ({ size, filename, endpoint }: { size: number; filename: string; endpoint: string }) => {
     return await api.post('files/generate-pre-signed-url', { size, filename, endpoint });
