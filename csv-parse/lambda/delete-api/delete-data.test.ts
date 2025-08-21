@@ -72,7 +72,7 @@ describe("deleteData", () => {
 
     expect(archiveRepository.delete).toHaveBeenCalledWith({
       id: "id",
-      session: expect.anything(),
+      session: expect.any(Object),
     });
   });
 
@@ -81,7 +81,7 @@ describe("deleteData", () => {
 
     expect(dataRepository.deleteMany).toHaveBeenCalledWith({
       archiveId: "id",
-      session: expect.anything(),
+      session: expect.any(Object),
     });
   });
 
