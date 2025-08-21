@@ -13,11 +13,11 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       await dbHelper.connect(uri);
       isConnected = true;
     }
-    const { archiveId } = event.pathParameters as {
-      archiveId: string;
+    const { apiId } = event.pathParameters as {
+      apiId: string;
     };
 
-    const response = await service({ archiveId });
+    const response = await service({ archiveId: apiId });
 
     if (!response.success) {
       return {
