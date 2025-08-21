@@ -84,4 +84,14 @@ describe("deleteData", () => {
       session: expect.anything(),
     });
   });
+
+  it("should return success true if api was deleted succesfully", async () => {
+    const svc = service(request);
+
+    expect(svc).toEqual({
+      message: "Api deleted successfully",
+      success: true,
+      data: null,
+    });
+  });
 });
