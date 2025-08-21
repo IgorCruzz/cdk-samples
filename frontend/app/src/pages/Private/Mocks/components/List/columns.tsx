@@ -1,6 +1,7 @@
 import { CurlSheet } from '@/components/CurlSheet';
 import { type ColumnDef } from '@tanstack/react-table';
 import { CircleEllipsis, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { DeleteApi } from '../DeleteApi';
 
 export type File = {
   size: number;
@@ -114,6 +115,12 @@ export const columns = (keys: string): ColumnDef<File>[] => [
       ) : (
         'N/A'
       );
+    },
+  },
+  {
+    header: 'Exclude',
+    cell: (info) => {
+      return <DeleteApi id={info.row.original.id} />;
     },
   },
 ];
