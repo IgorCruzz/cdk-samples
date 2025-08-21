@@ -54,13 +54,16 @@ export interface IArchiveRepository {
   getFileByKey(input: GetFileByKeyInput): Promise<GetFileByKeyOutput>;
   getByEndpoint(input: GetByEndpointInput): Promise<GetByEndpointOutput>;
   getFileById(input: { id: string }): Promise<Files | null>;
-  delete(input: { id: string }): Promise<void>;
+  delete(input: { id: string; session: any }): Promise<void>;
 }
 
 export const archiveRepository: IArchiveRepository = {
-  async delete(input: { id: string }): Promise<void> {
+  async delete(input: { id: string; session?: any }): Promise<void> {
     const archiveCollection = dbHelper.getCollection("archives");
-    await archiveCollection.deleteOne({ _id: new ObjectId(input.id) });
+    await archiveCollection.deleteOne(
+      { _id: new ObjectId(input.id) },
+      { session: input.session }
+    );
   },
 
   async getFileById(input: { id: string }): Promise<Files | null> {
