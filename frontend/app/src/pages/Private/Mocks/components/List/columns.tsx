@@ -23,15 +23,9 @@ export const columns = (keys: string): ColumnDef<File>[] => [
     accessorKey: 'status',
     header: 'Status',
     cell: (info) => {
-      const rowData = info.row.original;
-
-      const lines = rowData.lines;
-
       return (
         <>
-          {info.getValue() === 'COMPLETED' && (
-            <>{lines > 0 ? <ThumbsUp color="green" /> : <ThumbsDown color="red" />}</>
-          )}
+          {info.getValue() === 'COMPLETED' && <ThumbsUp color="green" />}
 
           {info.getValue() === 'FAILED' && <ThumbsDown color="red" />}
 
