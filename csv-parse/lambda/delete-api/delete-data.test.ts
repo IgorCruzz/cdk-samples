@@ -2,6 +2,20 @@ import { service } from "../delete-api/delete-api.services";
 import { archiveRepository } from "../_shared/repository/archive.repository";
 import { dataRepository } from "../_shared/repository/data.repository";
 
+jest.mock("../_shared/repository/db-helper", () => ({
+  dbHelper: {
+    getClient: jest.fn(() => ({
+      startSession: jest.fn(() => ({
+        withTransaction: jest.fn(async (fn) => {
+          await fn();
+        }),
+        abortTransaction: jest.fn(),
+        endSession: jest.fn(),
+      })),
+    })),
+  },
+}));
+
 jest.mock("../_shared/repository/data.repository", () => ({
   dataRepository: {
     deleteMany: jest.fn().mockResolvedValue(undefined),
@@ -57,7 +71,8 @@ describe("deleteData", () => {
     await service(request);
 
     expect(archiveRepository.delete).toHaveBeenCalledWith({
-      id: "some-archive-id",
+      id: "id",
+      session: expect.anything(),
     });
   });
 
@@ -65,7 +80,8 @@ describe("deleteData", () => {
     await service(request);
 
     expect(dataRepository.deleteMany).toHaveBeenCalledWith({
-      archiveId: "some-archive-id",
+      archiveId: "id",
+      session: expect.anything(),
     });
   });
 });
