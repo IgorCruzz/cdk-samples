@@ -106,7 +106,7 @@ export const columns = (keys: string): ColumnDef<File>[] => [
   {
     header: 'Exclude',
     cell: (info) => {
-      return <DeleteApi id={info.row.original.id} />;
+      return info.row.original.status === 'COMPLETED' ? <DeleteApi id={info.row.original.id} /> : 'N/A';
     },
   },
 ];
