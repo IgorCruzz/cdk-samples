@@ -33,6 +33,7 @@ export class LambdaConstruct extends Construct {
     this.createDeleteDataFunction();
     this.createAddDataFunction();
     this.createUpdateDataFunction();
+    this.createDeleteApiFunction();
   }
 
   private createGenerateUrlFunction() {
@@ -330,6 +331,46 @@ export class LambdaConstruct extends Construct {
       parameterName: "/api/update-data",
       stringValue: fn.functionArn,
       description: "Lambda function ARN for update data",
+    });
+
+    const region = Stack.of(this).region;
+    const account = Stack.of(this).account;
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          `arn:aws:secretsmanager:${region}:${account}:secret:mongodb/uri-*`,
+        ],
+      })
+    );
+
+    return fn;
+  }
+
+  async createDeleteApiFunction() {
+    const fn = new NodejsFunction(this, "function-delete-api", {
+      memorySize: 128,
+      architecture: Architecture.X86_64,
+      runtime: Runtime.NODEJS_20_X,
+      timeout: Duration.seconds(30),
+      description: "A Lambda function to delete API",
+      entry: join(__dirname, "../../../lambda/delete-api/handler.ts"),
+      handler: "handler",
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: "es2020",
+      },
+      loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
+      logRetention: RetentionDays.ONE_WEEK,
+    });
+
+    new StringParameter(this, "parameter-delete-api", {
+      parameterName: "/api/delete-api",
+      stringValue: fn.functionArn,
+      description: "Lambda function ARN for delete API",
     });
 
     const region = Stack.of(this).region;
