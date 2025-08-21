@@ -1,4 +1,5 @@
 import { archiveRepository } from "../_shared/repository/archive.repository";
+import { dataRepository } from "../_shared/repository/data.repository";
 
 type Input = {
   archiveId: string;
@@ -16,6 +17,8 @@ export const service = async ({ archiveId }: Input) => {
   }
 
   await archiveRepository.delete({ id: archiveId });
+
+  await dataRepository.deleteMany({ archiveId: archive.id! });
 
   return {
     message: "Api deleted successfully",
