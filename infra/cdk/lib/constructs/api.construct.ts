@@ -314,6 +314,30 @@ export class ApiConstruct extends Construct {
   }
 
   private createCsvParseResource() {
+    const deleteApiArn = StringParameter.fromStringParameterName(
+      this,
+      "delete-api-function-arn",
+      "/api/delete-api"
+    );
+
+    const deleteApiFn = NodejsFunction.fromFunctionAttributes(
+      this,
+      "lambda-delete-api",
+      {
+        functionArn: deleteApiArn.stringValue,
+        sameEnvironment: true,
+      }
+    );
+
+    this.api.addRoutes({
+      path: "/api/{apiId}",
+      integration: new HttpLambdaIntegration(
+        "integration-delete-api",
+        deleteApiFn
+      ),
+      methods: [HttpMethod.DELETE],
+    });
+
     const updateDataArn = StringParameter.fromStringParameterName(
       this,
       "update-data-function-arn",
