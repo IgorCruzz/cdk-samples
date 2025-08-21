@@ -3,7 +3,16 @@ import { archiveRepository } from "../_shared/repository/archive.repository";
 
 jest.mock("../_shared/repository/archive.repository", () => ({
   archiveRepository: {
-    getFileById: jest.fn(),
+    getFileById: jest.fn().mockResolvedValue({
+      key: "key",
+      size: 0,
+      message: "message",
+      status: "PROCESSING",
+      lines: 0,
+      userId: "userId",
+      id: "id",
+      filename: "filename",
+    }),
   },
 }));
 
