@@ -49,7 +49,7 @@ export const columns = (keys: string): ColumnDef<File>[] => [
       ].join(' \\\n  ');
 
       return info.row.original.status === 'COMPLETED' ? (
-        <CurlSheet curlText={curlCommand} triggerLabel="Create" />
+        <CurlSheet curlText={curlCommand} triggerLabel="POST" />
       ) : (
         'N/A'
       );
@@ -69,11 +69,7 @@ export const columns = (keys: string): ColumnDef<File>[] => [
       --header 'Content-Type: application/json' \
       --data '${JSON.stringify(keys)}'`;
 
-      return info.row.original.status === 'COMPLETED' ? (
-        <CurlSheet curlText={curlCommand} triggerLabel="Update" />
-      ) : (
-        'N/A'
-      );
+      return info.row.original.status === 'COMPLETED' ? <CurlSheet curlText={curlCommand} triggerLabel="PUT" /> : 'N/A';
     },
   },
   {
@@ -85,11 +81,7 @@ export const columns = (keys: string): ColumnDef<File>[] => [
 
       const curlCommand = `curl --location '${import.meta.env.VITE_API_URL}${id}/${endpoint}?limit=10&page=1'`;
 
-      return info.row.original.status === 'COMPLETED' ? (
-        <CurlSheet curlText={curlCommand} triggerLabel="Read" />
-      ) : (
-        'N/A'
-      );
+      return info.row.original.status === 'COMPLETED' ? <CurlSheet curlText={curlCommand} triggerLabel="GET" /> : 'N/A';
     },
   },
   {
@@ -105,7 +97,7 @@ export const columns = (keys: string): ColumnDef<File>[] => [
       --request DELETE '${import.meta.env.VITE_API_URL}${id}/${endpoint}/{PUT_ID_HERE}'`;
 
       return info.row.original.status === 'COMPLETED' ? (
-        <CurlSheet curlText={curlCommand} triggerLabel="Delete" />
+        <CurlSheet curlText={curlCommand} triggerLabel="DELETE" />
       ) : (
         'N/A'
       );
