@@ -36,15 +36,24 @@ export const service = async ({ s3Record }: Input): Promise<void> => {
     });
 
     const chunk = [];
+    let lines = 0;
+    const limit = 10000;
 
-    for await (const row of stream.pipe(
-      parse({
-        skipEmptyLines: true,
-        trim: true,
-        columns: true,
-      })
-    )) {
+    const parser = parse({
+      skip_empty_lines: true,
+      trim: true,
+      columns: true,
+    });
+
+    for await (const row of stream.pipe(parser)) {
       try {
+        lines++;
+
+        if (lines > limit) {
+          parser.destroy();
+          break;
+        }
+
         const normalizedRow = normalizeRow(row);
 
         const data = {
