@@ -1,5 +1,5 @@
 {
-  "app": "npx ts-node --prefer-ts-exts bin/cron-job.ts",
+  "app": "npx ts-node --prefer-ts-exts cdk/bin/cron-job.ts",
   "watch": {
     "include": [
       "**"
