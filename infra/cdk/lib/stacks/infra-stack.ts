@@ -4,11 +4,14 @@ import {
   CertificateConstruct,
   ApiConstruct,
   CognitoConstruct,
+  VpcConstruct,
 } from "../constructs";
 
 export class InfraStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
+
+    new VpcConstruct(this, "construct-vpc");
 
     const { certificate } = new CertificateConstruct(
       this,
