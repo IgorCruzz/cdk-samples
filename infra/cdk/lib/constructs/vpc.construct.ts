@@ -9,9 +9,10 @@ export class VpcConstruct extends Construct {
   }
 
   private createVPC() {
-    new Vpc(this, "vpc", {
+    new Vpc(this, "vpc-1", {
       cidr: "10.0.0.0/16",
-      maxAzs: 3,
+      maxAzs: 2,
+      natGateways: 0,
     });
   }
 }
