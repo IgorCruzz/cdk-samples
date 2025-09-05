@@ -1,4 +1,9 @@
-export const service = () => {
-  console.log("HELLO, HELLO, HELLO, HELLO, HELLO, HELLO");
-  return true;
+import { driverRepository } from "../__shared/repository/driver.repository";
+
+export const service = async () => {
+  const expiredDrivers = await driverRepository.getExpiredDrivers();
+
+  if (!expiredDrivers.length) return;
+
+  console.log({ expiredDrivers });
 };
