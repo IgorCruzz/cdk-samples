@@ -1,5 +1,9 @@
 import { service } from "./cron.service";
 
 export const handler = async () => {
-  return service();
+  try {
+    await service();
+  } catch (error) {
+    console.error(error);
+  }
 };
