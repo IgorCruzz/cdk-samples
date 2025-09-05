@@ -1,6 +1,8 @@
-import { Duration } from "aws-cdk-lib";
+import { Duration, Fn } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
+import { Vpc } from "aws-cdk-lib/aws-ec2";
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import {
   Architecture,
   LoggingFormat,
@@ -22,6 +24,21 @@ export class LambdaConstruct extends Construct {
   }
 
   private createCronJobFunction() {
+    const vpcId = StringParameter.valueForStringParameter(this, "/vpc/id");
+
+    const vpc = Vpc.fromVpcAttributes(this, "cron-job-vpc", {
+      vpcId,
+      availabilityZones: Fn.getAzs(),
+      privateSubnetIds: [
+        StringParameter.valueForStringParameter(this, "/vpc/private-subnet-1"),
+        StringParameter.valueForStringParameter(this, "/vpc/private-subnet-2"),
+      ],
+      publicSubnetIds: [
+        StringParameter.valueForStringParameter(this, "/vpc/public-subnet-1"),
+        StringParameter.valueForStringParameter(this, "/vpc/public-subnet-2"),
+      ],
+    });
+
     const fn = new NodejsFunction(this, "function-cron-job", {
       memorySize: 128,
       architecture: Architecture.X86_64,
@@ -38,6 +55,7 @@ export class LambdaConstruct extends Construct {
       loggingFormat: LoggingFormat.JSON,
       tracing: Tracing.ACTIVE,
       logRetention: RetentionDays.ONE_WEEK,
+      vpc,
     });
 
     const rule = new Rule(this, "rule-cron-job", {
