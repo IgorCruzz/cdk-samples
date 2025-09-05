@@ -29,13 +29,9 @@ export class LambdaConstruct extends Construct {
     const vpc = Vpc.fromVpcAttributes(this, "cron-job-vpc", {
       vpcId,
       availabilityZones: Fn.getAzs(),
-      privateSubnetIds: [
-        StringParameter.valueForStringParameter(this, "/vpc/private-subnet-1"),
-        StringParameter.valueForStringParameter(this, "/vpc/private-subnet-2"),
-      ],
-      publicSubnetIds: [
-        StringParameter.valueForStringParameter(this, "/vpc/public-subnet-1"),
-        StringParameter.valueForStringParameter(this, "/vpc/public-subnet-2"),
+      isolatedSubnetIds: [
+        StringParameter.valueForStringParameter(this, "/vpc/isolated-subnet-1"),
+        StringParameter.valueForStringParameter(this, "/vpc/isolated-subnet-2"),
       ],
     });
 
