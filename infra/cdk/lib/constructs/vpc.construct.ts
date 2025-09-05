@@ -21,9 +21,9 @@ export class VpcConstruct extends Construct {
       stringValue: vpc.vpcId,
     });
 
-    vpc.privateSubnets.forEach((subnet, index) => {
-      new StringParameter(this, `private-subnet-${index + 1}`, {
-        parameterName: `/vpc/private-subnet-${index + 1}`,
+    vpc.isolatedSubnets.forEach((subnet, index) => {
+      new StringParameter(this, `IsolatedSubnet${index + 1}`, {
+        parameterName: `/vpc/isolated-subnet-${index + 1}`,
         stringValue: subnet.subnetId,
       });
     });
