@@ -25,15 +25,6 @@ export class RdsConstruct extends Construct {
   }
 
   private createRdsInstance() {
-    const dbSecret = new Secret(this, "secret-rds", {
-      secretName: "postgres-rds-credentials",
-      generateSecretString: {
-        secretStringTemplate: JSON.stringify({ username: "postgres" }),
-        generateStringKey: "password",
-        excludeCharacters: '"@/\\',
-      },
-    });
-
     const vpcId = StringParameter.valueForStringParameter(this, "/vpc/id");
 
     const vpc = Vpc.fromVpcAttributes(this, "cron-job-vpc", {
@@ -49,7 +40,6 @@ export class RdsConstruct extends Construct {
       vpcSubnets: {
         subnetType: SubnetType.PUBLIC,
       },
-      credentials: Credentials.fromSecret(dbSecret),
       instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
       allocatedStorage: 20,
       maxAllocatedStorage: 20,
