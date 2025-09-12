@@ -7,13 +7,11 @@ import {
   Vpc,
 } from "aws-cdk-lib/aws-ec2";
 import {
-  Credentials,
   DatabaseInstance,
   DatabaseInstanceEngine,
   PostgresEngineVersion,
   StorageType,
 } from "aws-cdk-lib/aws-rds";
-import { Secret } from "aws-cdk-lib/aws-secretsmanager";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { Construct } from "constructs";
 
