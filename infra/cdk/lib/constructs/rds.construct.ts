@@ -28,6 +28,10 @@ export class RdsConstruct extends Construct {
     const vpc = Vpc.fromVpcAttributes(this, "cron-job-vpc", {
       vpcId,
       availabilityZones: Fn.getAzs(),
+      publicSubnetIds: [
+        StringParameter.valueForStringParameter(this, "/vpc/public-subnet-1"),
+        StringParameter.valueForStringParameter(this, "/vpc/public-subnet-2"),
+      ],
     });
 
     new DatabaseInstance(this, "instance-rds", {
