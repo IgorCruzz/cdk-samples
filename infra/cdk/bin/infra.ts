@@ -2,6 +2,7 @@
 import * as cdk from "aws-cdk-lib";
 import { InfraStack } from "../lib/stacks/infra-stack";
 import { VpcStack } from "../lib/stacks/vpc-stack";
+import { RdsConstruct } from "../lib/constructs/rds.construct";
 
 const app = new cdk.App();
 
@@ -13,3 +14,5 @@ new InfraStack(app, "stack-infra", {
     region: process.env.CDK_DEFAULT_REGION,
   },
 });
+
+new RdsConstruct(app, "rds-construct");
