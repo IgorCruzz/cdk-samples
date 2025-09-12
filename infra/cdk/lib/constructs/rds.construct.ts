@@ -25,7 +25,7 @@ export class RdsConstruct extends Construct {
   }
 
   private createRdsInstance() {
-    const dbSecret = new Secret(this, "RdsSecret", {
+    const dbSecret = new Secret(this, "secret-rds", {
       secretName: "postgres-rds-credentials",
       generateSecretString: {
         secretStringTemplate: JSON.stringify({ username: "postgres" }),
