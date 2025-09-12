@@ -1,4 +1,4 @@
-import { RemovalPolicy } from "aws-cdk-lib";
+import { Fn, RemovalPolicy } from "aws-cdk-lib";
 import {
   InstanceClass,
   InstanceSize,
@@ -14,11 +14,14 @@ import {
   StorageType,
 } from "aws-cdk-lib/aws-rds";
 import { Secret } from "aws-cdk-lib/aws-secretsmanager";
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { Construct } from "constructs";
 
 export class RdsConstruct extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id);
+
+    this.createRdsInstance();
   }
 
   private createRdsInstance() {
@@ -31,7 +34,14 @@ export class RdsConstruct extends Construct {
       },
     });
 
-    const dbInstance = new DatabaseInstance(this, "instance-rds", {
+    const vpcId = StringParameter.valueForStringParameter(this, "/vpc/id");
+
+    const vpc = Vpc.fromVpcAttributes(this, "cron-job-vpc", {
+      vpcId,
+      availabilityZones: Fn.getAzs(),
+    });
+
+    new DatabaseInstance(this, "instance-rds", {
       engine: DatabaseInstanceEngine.postgres({
         version: PostgresEngineVersion.VER_15,
       }),
