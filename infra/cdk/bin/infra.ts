@@ -2,7 +2,7 @@
 import * as cdk from "aws-cdk-lib";
 import { InfraStack } from "../lib/stacks/infra-stack";
 import { VpcStack } from "../lib/stacks/vpc-stack";
-import { RdsConstruct } from "../lib/constructs/rds.construct";
+import { RdsStack } from "../lib/stacks/rds-stack";
 
 const app = new cdk.App();
 
@@ -15,4 +15,4 @@ new InfraStack(app, "stack-infra", {
   },
 });
 
-new RdsConstruct(app, "rds-construct");
+new RdsStack(app, "stack-rds");
