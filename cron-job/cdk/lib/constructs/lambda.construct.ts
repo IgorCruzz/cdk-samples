@@ -1,7 +1,7 @@
 import { Duration, Fn } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
-import { Vpc } from "aws-cdk-lib/aws-ec2";
+import { SecurityGroup, Vpc } from "aws-cdk-lib/aws-ec2";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import {
   Architecture,
@@ -13,6 +13,7 @@ import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { join } from "node:path";
 import { Rule, Schedule } from "aws-cdk-lib/aws-events";
 import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
+import { DatabaseInstance } from "aws-cdk-lib/aws-rds";
 
 export class LambdaConstruct extends Construct {
   public readonly cronJobFunction: NodejsFunction;
@@ -35,6 +36,12 @@ export class LambdaConstruct extends Construct {
       ],
     });
 
+    const sgLambda = new SecurityGroup(this, "sg-lambda", {
+      vpc,
+      description: "Security group for Lambda to access RDS",
+      allowAllOutbound: true,
+    });
+
     const fn = new NodejsFunction(this, "function-cron-job", {
       memorySize: 128,
       architecture: Architecture.X86_64,
@@ -52,6 +59,7 @@ export class LambdaConstruct extends Construct {
       tracing: Tracing.ACTIVE,
       logRetention: RetentionDays.ONE_WEEK,
       vpc,
+      securityGroups: [sgLambda],
     });
 
     const rule = new Rule(this, "rule-cron-job", {
