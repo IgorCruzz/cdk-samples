@@ -3,6 +3,7 @@ import {
   InstanceClass,
   InstanceSize,
   InstanceType,
+  SecurityGroup,
   SubnetType,
   Vpc,
 } from "aws-cdk-lib/aws-ec2";
@@ -34,7 +35,14 @@ export class RdsConstruct extends Construct {
       ],
     });
 
+    const sgRds = new SecurityGroup(this, "sg-rds", {
+      vpc,
+      description: "Security Group do RDS",
+      allowAllOutbound: true,
+    });
+
     new DatabaseInstance(this, "instance-rds", {
+      securityGroups: [sgRds],
       engine: DatabaseInstanceEngine.postgres({
         version: PostgresEngineVersion.VER_15,
       }),
