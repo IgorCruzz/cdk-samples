@@ -1,4 +1,4 @@
-import { Duration, Fn } from "aws-cdk-lib";
+import { Duration, Fn, Stack } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { SecurityGroup, Vpc } from "aws-cdk-lib/aws-ec2";
@@ -13,6 +13,7 @@ import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { join } from "node:path";
 import { Rule, Schedule } from "aws-cdk-lib/aws-events";
 import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
+import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 
 export class LambdaConstruct extends Construct {
   public readonly cronJobFunction: NodejsFunction;
@@ -29,7 +30,7 @@ export class LambdaConstruct extends Construct {
     const vpc = Vpc.fromVpcAttributes(this, "cron-job-vpc", {
       vpcId,
       availabilityZones: Fn.getAzs(),
-      isolatedSubnetIds: [
+      publicSubnetIds: [
         StringParameter.valueForStringParameter(this, "/vpc/public-subnet-1"),
         StringParameter.valueForStringParameter(this, "/vpc/public-subnet-2"),
       ],
@@ -52,10 +53,11 @@ export class LambdaConstruct extends Construct {
     );
 
     const fn = new NodejsFunction(this, "function-cron-job", {
+      allowPublicSubnet: true,
       memorySize: 128,
       architecture: Architecture.X86_64,
       runtime: Runtime.NODEJS_20_X,
-      timeout: Duration.seconds(30),
+      timeout: Duration.seconds(60),
       description: "A Lambda function to cron job",
       entry: join(__dirname, "../../../lambda/cron/handler.ts"),
       handler: "handler",
@@ -84,6 +86,27 @@ export class LambdaConstruct extends Construct {
       parameterName: "/cron-job/lambda-arn",
       stringValue: fn.functionArn,
     });
+
+    const region = Stack.of(this).region;
+    const account = Stack.of(this).account;
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["ssm:GetParameter"],
+        resources: [
+          `arn:aws:ssm:${region}:${account}:parameter/rds/rds-secret-arn`,
+        ],
+      })
+    );
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          `arn:aws:secretsmanager:${region}:${account}:secret:constructrdsinstancerdsSecr-UZbGHQz8Ht1L`,
+        ],
+      })
+    );
 
     return fn;
   }
