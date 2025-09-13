@@ -13,7 +13,6 @@ import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { join } from "node:path";
 import { Rule, Schedule } from "aws-cdk-lib/aws-events";
 import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
-import { DatabaseInstance } from "aws-cdk-lib/aws-rds";
 
 export class LambdaConstruct extends Construct {
   public readonly cronJobFunction: NodejsFunction;
