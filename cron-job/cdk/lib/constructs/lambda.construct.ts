@@ -75,13 +75,7 @@ export class LambdaConstruct extends Construct {
     });
 
     const rule = new Rule(this, "rule-cron-job", {
-      schedule: Schedule.cron({
-        minute: "*",
-        hour: "*",
-        month: "*",
-        day: "*",
-        year: "*",
-      }),
+      schedule: Schedule.rate(Duration.minutes(1)),
     });
 
     rule.addTarget(new LambdaFunction(fn));
