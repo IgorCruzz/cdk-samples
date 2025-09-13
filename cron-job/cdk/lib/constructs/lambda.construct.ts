@@ -74,6 +74,11 @@ export class LambdaConstruct extends Construct {
 
     rule.addTarget(new LambdaFunction(fn));
 
+    new StringParameter(this, "parameter-cron-job-arn", {
+      parameterName: "/cron-job/lambda-arn",
+      stringValue: fn.functionArn,
+    });
+
     return fn;
   }
 }
