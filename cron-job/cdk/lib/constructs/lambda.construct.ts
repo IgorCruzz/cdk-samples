@@ -46,6 +46,11 @@ export class LambdaConstruct extends Construct {
       stringValue: sgLambda.securityGroupId,
     });
 
+    const secretDbArn = StringParameter.valueForStringParameter(
+      this,
+      "/rds/rds-secret-arn"
+    );
+
     const fn = new NodejsFunction(this, "function-cron-job", {
       memorySize: 128,
       architecture: Architecture.X86_64,
@@ -64,6 +69,9 @@ export class LambdaConstruct extends Construct {
       logRetention: RetentionDays.ONE_WEEK,
       vpc,
       securityGroups: [sgLambda],
+      environment: {
+        RDS_SECRET_ARN: secretDbArn,
+      },
     });
 
     const rule = new Rule(this, "rule-cron-job", {
