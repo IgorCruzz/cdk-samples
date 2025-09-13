@@ -55,7 +55,7 @@ export class RdsConstruct extends Construct {
 
     sgRds.addIngressRule(lambdaSg, Port.tcp(5432), "Allow Postgres access");
 
-    new DatabaseInstance(this, "instance-rds", {
+    const db = new DatabaseInstance(this, "instance-rds", {
       securityGroups: [sgRds],
       engine: DatabaseInstanceEngine.postgres({
         version: PostgresEngineVersion.VER_15,
@@ -73,6 +73,13 @@ export class RdsConstruct extends Construct {
       autoMinorVersionUpgrade: true,
       deletionProtection: false,
       removalPolicy: RemovalPolicy.DESTROY,
+    });
+
+    const dbSecret = db.secret!;
+
+    new StringParameter(this, "rds-secret-arn", {
+      parameterName: "/rds/rds-secret-arn",
+      stringValue: dbSecret.secretArn,
     });
   }
 }
