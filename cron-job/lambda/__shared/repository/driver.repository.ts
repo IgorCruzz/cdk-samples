@@ -1,4 +1,4 @@
-import { client } from "./client";
+import { dbHelper } from "./client";
 
 type getExpiredDriversOutput = {
   id: string;
@@ -12,6 +12,8 @@ export interface IDriverRepository {
 
 export const driverRepository: IDriverRepository = {
   getExpiredDrivers: async (): Promise<getExpiredDriversOutput> => {
+    const client = dbHelper.client!;
+
     const result = await client.query(
       "SELECT id, name, email FROM drivers WHERE DATE(license_expiration) = CURRENT_DATE;",
       []
