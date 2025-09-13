@@ -42,6 +42,11 @@ export class LambdaConstruct extends Construct {
       allowAllOutbound: true,
     });
 
+    new StringParameter(this, "parameter-cron-job-sg", {
+      parameterName: "/cron-job/sg",
+      stringValue: sgLambda.securityGroupId,
+    });
+
     const fn = new NodejsFunction(this, "function-cron-job", {
       memorySize: 128,
       architecture: Architecture.X86_64,
