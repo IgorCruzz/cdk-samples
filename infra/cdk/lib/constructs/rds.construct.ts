@@ -6,6 +6,7 @@ import {
   SecurityGroup,
   SubnetType,
   Vpc,
+  Port,
 } from "aws-cdk-lib/aws-ec2";
 import {
   DatabaseInstance,
@@ -40,6 +41,8 @@ export class RdsConstruct extends Construct {
       description: "Security Group do RDS",
       allowAllOutbound: true,
     });
+
+    sgRds.addIngressRule(sgRds, Port.tcp(5432), "Allow Postgres access");
 
     new DatabaseInstance(this, "instance-rds", {
       securityGroups: [sgRds],
