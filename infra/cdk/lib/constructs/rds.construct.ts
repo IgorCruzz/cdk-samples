@@ -79,7 +79,7 @@ export class RdsConstruct extends Construct {
 
     new StringParameter(this, "rds-secret-arn", {
       parameterName: "/rds/rds-secret-arn",
-      stringValue: dbSecret.secretArn,
+      stringValue: dbSecret.secretName,
     });
   }
 }
