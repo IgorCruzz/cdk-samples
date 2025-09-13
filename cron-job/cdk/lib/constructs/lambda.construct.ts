@@ -30,8 +30,8 @@ export class LambdaConstruct extends Construct {
       vpcId,
       availabilityZones: Fn.getAzs(),
       isolatedSubnetIds: [
-        StringParameter.valueForStringParameter(this, "/vpc/isolated-subnet-1"),
-        StringParameter.valueForStringParameter(this, "/vpc/isolated-subnet-2"),
+        StringParameter.valueForStringParameter(this, "/vpc/public-subnet-1"),
+        StringParameter.valueForStringParameter(this, "/vpc/public-subnet-2"),
       ],
     });
 
