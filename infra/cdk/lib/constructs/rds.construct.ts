@@ -36,13 +36,24 @@ export class RdsConstruct extends Construct {
       ],
     });
 
+    const lambdaSgId = StringParameter.valueForStringParameter(
+      this,
+      "/cron-job/sg"
+    );
+
+    const lambdaSg = SecurityGroup.fromSecurityGroupId(
+      this,
+      "lambda-sg",
+      lambdaSgId
+    );
+
     const sgRds = new SecurityGroup(this, "sg-rds", {
       vpc,
       description: "Security Group do RDS",
       allowAllOutbound: true,
     });
 
-    sgRds.addIngressRule(sgRds, Port.tcp(5432), "Allow Postgres access");
+    sgRds.addIngressRule(lambdaSg, Port.tcp(5432), "Allow Postgres access");
 
     new DatabaseInstance(this, "instance-rds", {
       securityGroups: [sgRds],
