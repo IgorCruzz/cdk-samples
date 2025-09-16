@@ -48,7 +48,6 @@ export class LambdaConstruct extends Construct {
     });
 
     const fn = new NodejsFunction(this, "function-cron-job", {
-      allowPublicSubnet: true,
       memorySize: 128,
       architecture: Architecture.X86_64,
       runtime: Runtime.NODEJS_20_X,
