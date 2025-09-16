@@ -30,9 +30,9 @@ export class LambdaConstruct extends Construct {
     const vpc = Vpc.fromVpcAttributes(this, "cron-job-vpc", {
       vpcId,
       availabilityZones: Fn.getAzs(),
-      publicSubnetIds: [
-        StringParameter.valueForStringParameter(this, "/vpc/public-subnet-1"),
-        StringParameter.valueForStringParameter(this, "/vpc/public-subnet-2"),
+      privateSubnetIds: [
+        StringParameter.valueForStringParameter(this, "/vpc/private-subnet-1"),
+        StringParameter.valueForStringParameter(this, "/vpc/private-subnet-2"),
       ],
     });
 
@@ -46,11 +46,6 @@ export class LambdaConstruct extends Construct {
       parameterName: "/cron-job/sg",
       stringValue: sgLambda.securityGroupId,
     });
-
-    const secretDbArn = StringParameter.valueForStringParameter(
-      this,
-      "/rds/rds-secret-arn"
-    );
 
     const fn = new NodejsFunction(this, "function-cron-job", {
       allowPublicSubnet: true,
@@ -71,9 +66,6 @@ export class LambdaConstruct extends Construct {
       logRetention: RetentionDays.ONE_WEEK,
       vpc,
       securityGroups: [sgLambda],
-      environment: {
-        RDS_SECRET_ARN: secretDbArn,
-      },
     });
 
     const rule = new Rule(this, "rule-cron-job", {
