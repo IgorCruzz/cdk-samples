@@ -1,3 +1,4 @@
+import { mail } from "../__shared/infra/mail";
 import { driverRepository } from "../__shared/repository/driver.repository";
 
 export const service = async () => {
@@ -9,5 +10,9 @@ export const service = async () => {
     console.log("No expired drivers found.");
   }
 
-  console.log({ expiredDrivers });
+  await mail.sendMail({
+    title: "drivers",
+    message: JSON.stringify(expiredDrivers),
+    email: "igorcruz.dev@gmail.com",
+  });
 };
