@@ -12,17 +12,17 @@ export const secret = {
     host: string;
     port: number;
   }> {
-    // const res = await secretsManager.send(
-    //   new GetSecretValueCommand({
-    //     SecretId: process.env.RDS_SECRET_ARN,
-    //   })
-    // );
+    const res = await secretsManager.send(
+      new GetSecretValueCommand({
+        SecretId: process.env.RDS_SECRET_ARN,
+      })
+    );
 
-    // const secret = JSON.parse(res.SecretString ?? "{}");
+    const secret = JSON.parse(res.SecretString ?? "{}");
     return {
-      username: "postgres", //secret["username"],
-      password: "w8u-ypPB9FiYW6x2bbagH8Xa1sXFt^",
-      host: "stack-rds-constructrdsinstancerdsa1a86a3e-41uajpcq8mhh.c9tnmo9usbin.us-east-1.rds.amazonaws.com",
+      username: secret["username"],
+      password: secret["password"],
+      host: secret["host"],
       port: 5432,
     };
   },
