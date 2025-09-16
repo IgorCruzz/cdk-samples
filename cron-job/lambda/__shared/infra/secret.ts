@@ -11,21 +11,19 @@ export const secret = {
     password: string;
     host: string;
     port: number;
-    dbname: string;
   }> {
-    const res = await secretsManager.send(
-      new GetSecretValueCommand({
-        SecretId: process.env.RDS_SECRET_ARN,
-      })
-    );
+    // const res = await secretsManager.send(
+    //   new GetSecretValueCommand({
+    //     SecretId: process.env.RDS_SECRET_ARN,
+    //   })
+    // );
 
-    const secret = JSON.parse(res.SecretString ?? "{}");
+    // const secret = JSON.parse(res.SecretString ?? "{}");
     return {
-      username: secret["username"],
-      password: secret["password"],
-      host: secret["host"],
-      port: parseInt(secret["port"], 10),
-      dbname: secret["dbname"],
+      username: "postgres", //secret["username"],
+      password: "w8u-ypPB9FiYW6x2bbagH8Xa1sXFt^",
+      host: "stack-rds-constructrdsinstancerdsa1a86a3e-41uajpcq8mhh.c9tnmo9usbin.us-east-1.rds.amazonaws.com",
+      port: 5432,
     };
   },
   async getBrevoApiKey(): Promise<string> {
