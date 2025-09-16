@@ -10,10 +10,10 @@ export class VpcConstruct extends Construct {
   }
 
   private createVPC() {
-    const vpc = new Vpc(this, "vpc-1", {
-      cidr: "10.0.0.0/16",
+    const vpc = new Vpc(this, "vpc-app", {
+      cidr: "10.1.0.0/16",
       maxAzs: 2,
-      natGateways: 0,
+      natGateways: 2,
     });
 
     new StringParameter(this, "vpc-id-parameter", {
@@ -21,9 +21,9 @@ export class VpcConstruct extends Construct {
       stringValue: vpc.vpcId,
     });
 
-    vpc.isolatedSubnets.forEach((subnet, index) => {
-      new StringParameter(this, `IsolatedSubnet${index + 1}`, {
-        parameterName: `/vpc/isolated-subnet-${index + 1}`,
+    vpc.privateSubnets.forEach((subnet, index) => {
+      new StringParameter(this, `PrivateSubnet${index + 1}`, {
+        parameterName: `/vpc/private-subnet-${index + 1}`,
         stringValue: subnet.subnetId,
       });
     });
