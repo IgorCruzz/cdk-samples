@@ -1,15 +1,27 @@
-# Welcome to your CDK TypeScript project
+👥 Cron Job Service – Leitura Agendada de Dados
+Esta aplicação serverless permite realizar leituras periódicas de dados no RDS PostgreSQL utilizando EventBridge e AWS Lambda.
 
-You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`CronJobStack`)
-which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
+🛠️ Arquitetura
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+<p align="center"> <img src="https://github.com/IgorCruzz/cdk-samples/blob/main/_diagrams/cron-job.png" alt="Arquitetura Cron Job Service" /> </p>
 
-## Useful commands
+🚀 Principais Funcionalidades
+⏰ Agendamento de tarefas via EventBridge (cron expression)
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+🔄 Execução automática de funções Lambda conforme agendamento
+
+📊 Leitura de dados no RDS PostgreSQL sem alterações
+
+📝 Possibilidade de gerar relatórios, enviar dados para outro serviço ou armazenar em logs
+
+📦 Tecnologias & Serviços
+
+Amazon EventBridge – Agendador de eventos para disparar funções Lambda periodicamente
+
+AWS Lambda – Função serverless responsável por consultar dados no RDS
+
+RDS PostgreSQL (Read-Only) – Banco relacional utilizado somente para leitura
+
+AWS CDK – Infraestrutura como código (IaC) para provisionamento de recursos
+
+CloudWatch – Monitoramento de logs e métricas da execução
