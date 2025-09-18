@@ -23,6 +23,8 @@ Cada pasta representa um exemplo independente, com foco em diferentes serviços 
 
 - [Auth](./auth/) - Serviço de autenticação (login, geração, validação de tokens e refresh token) com arquitetura serverless usando API Gateway, Lambda e MongoDB
 
+- [Cron](./cron-job/) Serviço agendado utilizando Event Bridge, Lambda e RDS
+
 ## Como Utilizar os Exemplos
 
 Siga os passos abaixo para instalar e executar qualquer projeto CDK deste repositório:
